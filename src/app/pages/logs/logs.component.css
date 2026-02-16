@@ -1,0 +1,48 @@
+.filter-dropdown {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    transition: border-color 0.2s;
+    min-width: 140px;
+}
+
+.filter-dropdown:hover {
+    border-color: var(--accent-primary);
+}
+
+.filter-dropdown select {
+    appearance: none;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 500;
+    padding-right: 20px;
+    outline: none;
+    cursor: pointer;
+    width: 100%;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.filter-dropdown select option {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    padding: 8px;
+}
+
+.filter-dropdown i {
+    position: absolute;
+    right: 8px;
+    pointer-events: none;
+    color: var(--text-secondary);
+}
+
+.filter-dropdown span {
+    white-space: nowrap;
+}

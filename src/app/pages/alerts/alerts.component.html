@@ -1,0 +1,65 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">Detection Rules</h1>
+        <p style="color: var(--text-secondary);">Configure automated rules to create incidents from anomalies.</p>
+    </div>
+    <button class="btn btn-primary"><i data-lucide="plus" size="18"></i> Add Rule</button>
+</div>
+
+<div class="card" *ngFor="let rule of alertRules" style="margin-bottom: 16px;">
+    <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div style="flex: 1;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                <h3 style="font-size: 16px; font-weight: 600;">{{rule.name}}</h3>
+                <span class="status-badge" [ngClass]="{
+                'badge-critical': rule.severity === 'Critical',
+                'badge-high': rule.severity === 'High',
+                'badge-medium': rule.severity === 'Medium'
+              }">{{rule.severity}}</span>
+                <span class="status-badge badge-low" *ngIf="rule.enabled">Enabled</span>
+                <span class="status-badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted);"
+                    *ngIf="!rule.enabled">Disabled</span>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">{{rule.description}}</p>
+
+            <div style="display: flex; gap: 24px; align-items: center;">
+                <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
+                    <span style="color: var(--text-muted);">Condition:</span>
+                    <span style="color: var(--text-primary); font-weight: 600;">{{rule.condition}}</span>
+                </div>
+                <!-- Action binding -->
+
+                <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
+                    <span style="color: var(--text-muted);">Automatic Action:</span>
+                    <span
+                        style="display: flex; align-items: center; gap: 4px; color: var(--accent-primary); font-weight: 600;">
+                        <i data-lucide="shield-alert" size="12"></i> {{rule.action}}
+                    </span>
+
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <label class="switch">
+                <input type="checkbox" [checked]="rule.enabled" (change)="toggleRule(rule)">
+                <span class="slider round"></span>
+            </label>
+            <button class="btn btn-secondary" style="padding: 8px 12px;">
+                <i data-lucide="settings" size="16"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 24px; background: rgba(255, 77, 77, 0.05); border-color: var(--sev-critical);">
+    <div style="display: flex; align-items: start; gap: 12px;">
+        <i data-lucide="alert-triangle" size="20" style="color: var(--sev-critical); margin-top: 2px;"></i>
+        <div>
+            <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--sev-critical);">Internal
+                Routing Only</h3>
+            <p style="font-size: 13px; color: var(--text-secondary);">For this project scope, triggers only generate
+                internal dashboard incidents. External integrations (Slack/Email) are currenty out of scope.</p>
+        </div>
+    </div>
+</div>

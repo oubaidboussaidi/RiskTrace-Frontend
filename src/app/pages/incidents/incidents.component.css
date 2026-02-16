@@ -1,0 +1,19 @@
+.border-critical {
+    border-color: var(--sev-critical) !important;
+    border-left: 4px solid var(--sev-critical) !important;
+}
+
+.border-high {
+    border-color: var(--sev-high) !important;
+    border-left: 4px solid var(--sev-high) !important;
+}
+
+.border-medium {
+    border-color: var(--sev-medium) !important;
+    border-left: 4px solid var(--sev-medium) !important;
+}
+
+.border-low {
+    border-color: var(--sev-low) !important;
+    border-left: 4px solid var(--sev-low) !important;
+}

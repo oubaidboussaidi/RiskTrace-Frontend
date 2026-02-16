@@ -1,0 +1,116 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">Team Management</h1>
+        <p style="color: var(--text-secondary);">Manage user accounts and role assignments.</p>
+    </div>
+    <button class="btn btn-primary" (click)="showCreateForm = true">
+        <i data-lucide="user-plus" size="18"></i> Add User
+    </button>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let member of teamMembers">
+                <td>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="avatar-small" [style.background]="member.enabled ? '#a371f7' : 'var(--text-muted)'">
+                            {{ getInitials(member.fullName) }}
+                        </div>
+                        <span style="font-weight: 500;">{{member.fullName}}</span>
+                    </div>
+                </td>
+                <td style="color: var(--text-secondary);">{{member.email}}</td>
+                <td>
+                    <select class="role-select" [value]="member.role" (change)="changeRole(member.id, $event)">
+                        <option value="ADMIN">Admin</option>
+                        <option value="ANALYST">Analyst</option>
+                    </select>
+                </td>
+                <td>
+                    <span class="status-badge" [ngClass]="member.enabled ? 'badge-low' : 'badge-medium'">
+                        {{member.enabled ? 'Active' : 'Disabled'}}
+                    </span>
+                </td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11px;"
+                            (click)="toggleStatus(member)">
+                            {{member.enabled ? 'Disable' : 'Enable'}}
+                        </button>
+                        <button class="btn btn-secondary"
+                            style="padding: 6px 12px; font-size: 11px; color: var(--sev-critical); border-color: rgba(239, 68, 68, 0.2);"
+                            (click)="deleteUser(member)">
+                            <i data-lucide="trash-2" size="14"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="padding: 24px; text-align: center; color: var(--text-secondary);" *ngIf="teamMembers.length === 0">
+        No team members found.
+    </div>
+</div>
+
+
+<div class="card" style="margin-top: 24px; background: rgba(88, 166, 255, 0.05); border-color: var(--accent-primary);">
+    <div style="display: flex; align-items: start; gap: 12px;">
+        <i data-lucide="info" size="20" style="color: var(--accent-primary); margin-top: 2px;"></i>
+        <div>
+            <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--accent-primary);">Role
+                Permissions</h3>
+            <div style="font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+                <div><strong style="color: var(--text-primary);">Admin:</strong> Full access - manage sites, users, view
+                    all analytics</div>
+                <div><strong style="color: var(--text-primary);">Analyst:</strong> View logs, create/assign incidents,
+                    basic analytics</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Add User Modal Popup ── -->
+<div class="modal-overlay" *ngIf="showCreateForm" (click)="showCreateForm = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <span class="modal-title">Invite New Member</span>
+            <button class="modal-close" (click)="showCreateForm = false">
+                <i data-lucide="x" size="20"></i>
+            </button>
+        </div>
+
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" [(ngModel)]="newUser.name" placeholder="e.g. John Doe" autofocus>
+        </div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" [(ngModel)]="newUser.email" placeholder="john@company.com">
+        </div>
+
+        <div class="hint-box">
+            Default role: <strong>ANALYST</strong> &nbsp;·&nbsp; Default password: <strong>password123</strong><br>
+            The user will receive a verification email to activate their account.
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="showCreateForm = false">Cancel</button>
+            <button class="btn btn-primary" (click)="createUser()">
+                <i data-lucide="send" size="16"></i> Send Invite
+            </button>
+        </div>
+
+    </div>
+</div>

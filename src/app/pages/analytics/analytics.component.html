@@ -1,0 +1,37 @@
+<h1 style="margin-bottom: 32px;">ML Analytics & Model Health</h1>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div class="card">
+        <h3>Detection Confidence Score</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px;">Model accuracy based on SOC manual overrides.</p>
+        <div style="height: 200px; display: flex; align-items: flex-end; gap: 4px;">
+            <div style="flex: 1; height: 90%; background: var(--sev-low); opacity: 0.6; border-radius: 2px;"></div>
+            <div style="flex: 1; height: 92%; background: var(--sev-low); opacity: 0.6; border-radius: 2px;"></div>
+            <div style="flex: 1; height: 88%; background: var(--sev-low); opacity: 0.8; border-radius: 2px;"></div>
+            <div style="flex: 1; height: 85%; background: var(--sev-low); opacity: 0.6; border-radius: 2px;"></div>
+            <div style="flex: 1; height: 94%; background: var(--sev-low); opacity: 1; border-radius: 2px;"></div>
+            <div style="flex: 1; height: 91%; background: var(--sev-low); opacity: 0.6; border-radius: 2px;"></div>
+        </div>
+        <div
+            style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 11px; color: var(--text-muted);">
+            <span>30 days ago</span>
+            <span>Confidence: 94.2%</span>
+            <span>Today</span>
+        </div>
+    </div>
+    <div class="card">
+        <h3>Feature Importance</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px;">Weight of attributes in anomaly detection.</p>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div *ngFor="let f of featureImportance">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                    <span>{{f.feature}}</span><span>{{(f.importance * 100).toFixed(0)}}%</span>
+                </div>
+                <div style="height: 6px; background: var(--bg-elevated); border-radius: 3px;">
+                    <div style="height: 100%; background: var(--accent-primary); border-radius: 3px;"
+                        [style.width.%]="f.importance * 100"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

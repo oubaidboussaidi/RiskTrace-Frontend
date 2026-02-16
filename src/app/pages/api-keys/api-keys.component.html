@@ -1,0 +1,66 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">API Keys</h1>
+        <p style="color: var(--text-secondary);">Manage and rotate your API access tokens.</p>
+    </div>
+    <button class="btn btn-primary"><i data-lucide="plus" size="18"></i> Generate New Key</button>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Key</th>
+                <th>Created</th>
+                <th>Last Used</th>
+                <th>Permissions</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let key of apiKeys">
+                <td style="font-weight: 500;">{{key.name}}</td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-family: var(--font-mono); font-size: 12px;">{{key.key}}</span>
+                        <i data-lucide="copy" size="14" style="cursor: pointer; color: var(--text-muted);"
+                            (click)="copyKey(key.key)"></i>
+                    </div>
+                </td>
+                <td style="font-size: 12px; color: var(--text-secondary);">{{key.created}}</td>
+                <td style="font-size: 12px; color: var(--text-secondary);">{{key.lastUsed}}</td>
+                <td>
+                    <div style="display: flex; gap: 4px;">
+                        <span *ngFor="let perm of key.permissions"
+                            style="background: var(--bg-elevated); padding: 2px 6px; border-radius: 4px; font-size: 10px; text-transform: uppercase;">
+                            {{perm}}
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <span class="status-badge" [ngClass]="{
+                  'badge-low': key.status === 'Active',
+                  'badge-critical': key.status === 'Revoked'
+                }">
+                        {{key.status}}
+                    </span>
+                </td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px;"
+                            *ngIf="key.status === 'Active'">
+                            <i data-lucide="rotate-cw" size="12"></i>
+                        </button>
+                        <button class="btn btn-secondary"
+                            style="padding: 4px 8px; font-size: 11px; color: var(--sev-critical);"
+                            (click)="revokeKey(key.id)" *ngIf="key.status === 'Active'">
+                            <i data-lucide="trash-2" size="12"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,61 @@
+<div
+    style="background: var(--bg-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card" style="width: 440px; padding: 48px; text-align: center;">
+
+        <!-- Logo -->
+        <div style="margin: 0 auto 24px; width: 48px; height: 48px; font-size: 24px;
+                    background: linear-gradient(135deg, #58a6ff, #a371f7); border-radius: 8px;
+                    display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">
+            R
+        </div>
+
+        <!-- LOADING STATE -->
+        <div *ngIf="state === 'loading'">
+            <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+            <h2 style="color: var(--text-primary); margin-bottom: 12px;">Verifying your email...</h2>
+            <p style="color: var(--text-secondary); font-size: 14px;">Please wait while we confirm your account.</p>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div *ngIf="state === 'success'">
+            <div style="font-size: 56px; margin-bottom: 20px;">✅</div>
+            <h2 style="color: var(--text-primary); margin-bottom: 12px;">Email Verified!</h2>
+            <p style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 32px;">
+                Your account has been successfully verified. You can now sign in.
+            </p>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center;" (click)="goToLogin()">
+                Sign In to RiskTrace
+            </button>
+        </div>
+
+        <!-- ERROR STATE -->
+        <div *ngIf="state === 'error'">
+            <div style="font-size: 56px; margin-bottom: 20px;">❌</div>
+            <h2 style="color: var(--sev-critical); margin-bottom: 12px;">Verification Failed</h2>
+            <p
+                style="color: var(--text-secondary); font-size: 15px; line-height: 1.6; margin-bottom: 24px;
+                      background: rgba(239,68,68,0.08); padding: 12px; border-radius: 8px; border: 1px solid rgba(239,68,68,0.2);">
+                {{ message }}
+            </p>
+
+            <!-- Resend option for expired tokens -->
+            <div *ngIf="isExpired" style="margin-bottom: 24px;">
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                    Enter your email to receive a new verification link:
+                </p>
+                <input type="email" [(ngModel)]="email" style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color);
+                           border-radius: var(--radius-md); color: white; margin-bottom: 12px; box-sizing: border-box;"
+                    placeholder="your@email.com">
+                <button class="btn btn-secondary" style="width: 100%; justify-content: center;"
+                    (click)="resendVerification()">
+                    📧 Resend Verification Email
+                </button>
+            </div>
+
+            <button class="btn btn-secondary" style="width: 100%; justify-content: center;" (click)="goToLogin()">
+                ← Back to Sign In
+            </button>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,132 @@
+:host {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    width: 400px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    gap: 8px;
+    transition: border-color 0.2s;
+}
+
+.search-container:focus-within {
+    border-color: var(--accent-primary);
+}
+
+.search-container input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    flex: 1;
+    outline: none;
+    font-size: 13px;
+}
+
+.cmd-k {
+    margin-left: auto;
+    background: var(--bg-elevated);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sev-low);
+    box-shadow: 0 0 8px rgba(63, 185, 80, 0.4);
+}
+
+.action-icon {
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.action-icon:hover {
+    color: var(--text-primary);
+    transform: scale(1.1);
+}
+
+.btn-sm {
+    font-size: 12px;
+    padding: 6px 12px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* User Menu Styles */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name {
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.user-email {
+    color: var(--text-secondary);
+    font-size: 11px;
+}

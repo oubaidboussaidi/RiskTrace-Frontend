@@ -1,0 +1,124 @@
+<div style="max-width: 800px; margin: 0 auto;">
+    <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Account Settings</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 32px;">Manage your profile and system preferences.</p>
+
+    <!-- Profile Section -->
+    <div class="card" style="margin-bottom: 24px;">
+        <h3
+            style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            Profile Information</h3>
+
+        <div style="display: flex; gap: 24px; align-items: start;">
+            <div
+                style="width: 80px; height: 80px; border-radius: 50%; background: #a371f7; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white;">
+                {{ fullName.charAt(0).toUpperCase() || 'U' }}
+            </div>
+            <div style="flex: 1;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" [(ngModel)]="fullName">
+                </div>
+                <div class="form-group">
+                    <label>Project Role</label>
+                    <input type="text"
+                        [value]="(currentUser?.role?.toLowerCase() === 'admin' ? 'Admin' : 'Analyst') || 'User'"
+                        disabled style="opacity: 0.6; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" [value]="currentUser?.email ?? ''" disabled
+                        style="opacity: 0.6; cursor: not-allowed;">
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+            <button class="btn btn-primary" (click)="saveProfile()">Save Changes</button>
+        </div>
+    </div>
+
+    <!-- Security -->
+    <div class="card" style="margin-bottom: 24px;">
+        <h3
+            style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            Security</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <button class="btn btn-secondary" style="width: 100%; justify-content: space-between;"
+                (click)="togglePasswordForm()">
+                Change Password <i data-lucide="chevron-right" size="16"></i>
+            </button>
+
+            <div *ngIf="showPasswordForm"
+                style="padding: 16px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" [(ngModel)]="passwordData.oldPassword">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" [(ngModel)]="passwordData.newPassword">
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" [(ngModel)]="passwordData.confirmPassword">
+                </div>
+                <div style="margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px;">
+                    <button class="btn btn-secondary" (click)="showPasswordForm = false">Cancel</button>
+                    <button class="btn btn-primary" (click)="changePassword()">Update Password</button>
+                </div>
+            </div>
+
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--border-color);">
+
+                <div>
+                    <div style="font-size: 14px; font-weight: 500;">Two-Factor Authentication</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">Protect your account with an extra
+                        security layer.</div>
+                </div>
+                <span style="color: var(--sev-low); font-size: 12px; font-weight: 600;">Enabled</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Section -->
+    <div class="card" style="margin-bottom: 24px;">
+        <h3
+            style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+            Session Management</h3>
+        <button class="btn btn-secondary" (click)="logout()" style="width: 100%; justify-content: center;">
+            <i data-lucide="log-out" size="16"></i> Logout
+        </button>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card"
+        style="margin-bottom: 24px; border-color: var(--sev-critical); background: rgba(255, 77, 77, 0.05);">
+        <h3
+            style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--sev-critical); padding-bottom: 12px; color: var(--sev-critical);">
+            Danger Zone</h3>
+        <div style="margin-bottom: 12px;">
+            <div style="font-size: 14px; font-weight: 500; margin-bottom: 4px;">Delete Account</div>
+            <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
+                Once you delete your account, there is no going back. Please be certain.
+            </div>
+        </div>
+        <button class="btn" (click)="deleteAccount()"
+            style="background: var(--sev-critical); color: white; border-color: var(--sev-critical); width: 100%; justify-content: center;">
+            <i data-lucide="trash-2" size="16"></i> Delete My Account
+        </button>
+    </div>
+
+    <div class="card" style="background: rgba(88, 166, 255, 0.05); border-color: var(--accent-primary);">
+        <div style="display: flex; align-items: start; gap: 12px;">
+            <i data-lucide="info" size="20" style="color: var(--accent-primary); margin-top: 2px;"></i>
+            <div>
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--accent-primary);">System
+                    Architecture</h3>
+                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                    RiskTrace is built using Angular 18, Spring Boot, and MongoDB. The anomaly detection engine is
+                    powered by Python ML microservices using Isolation Forest algorithms.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

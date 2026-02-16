@@ -1,0 +1,136 @@
+<div id="auth-screen" class="content-frame"
+    style="background: var(--bg-dark); height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card" style="width: 420px; padding: 48px; text-align: center;">
+
+        <!-- Logo -->
+        <div class="logo-icon"
+            style="margin: 0 auto 24px; width: 48px; height: 48px; font-size: 24px; background: linear-gradient(135deg, #58a6ff, #a371f7); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white;">
+            R
+        </div>
+
+        <!-- Title -->
+        <h1 style="margin-bottom: 8px; color: var(--text-primary);">
+            {{ isForgotMode ? 'Reset Password' : isRegisterMode ? 'Create Account' : 'Welcome Back' }}
+        </h1>
+        <p style="color: var(--text-secondary); margin-bottom: 32px;">
+            {{ isForgotMode ? 'Enter your email to receive a reset link' :
+            isRegisterMode ? 'Register to access the SOC' : 'Enter your credentials to access the SOC' }}
+        </p>
+
+        <!-- ======================= FORGOT PASSWORD FORM ======================= -->
+        <div *ngIf="isForgotMode">
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
+                    Email Address
+                </label>
+                <input type="email" [(ngModel)]="email" (keyup.enter)="submit()"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="user@example.com">
+            </div>
+        </div>
+
+        <!-- ======================= REGISTER FORM ======================= -->
+        <div *ngIf="isRegisterMode && !isForgotMode">
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Full
+                    Name</label>
+                <input type="text" [(ngModel)]="name"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="John Doe">
+            </div>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Email
+                    Address</label>
+                <input type="email" [(ngModel)]="email"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="user@example.com">
+            </div>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label
+                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Password</label>
+                <input type="password" [(ngModel)]="password"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="Min. 8 characters">
+            </div>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label
+                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Confirm
+                    Password</label>
+                <input type="password" [(ngModel)]="confirmPassword" (keyup.enter)="submit()"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="••••••••">
+            </div>
+        </div>
+
+        <!-- ======================= LOGIN FORM ======================= -->
+        <div *ngIf="!isRegisterMode && !isForgotMode">
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Email
+                    Address</label>
+                <input type="email" [(ngModel)]="email"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="user@example.com">
+            </div>
+            <div style="text-align: left; margin-bottom: 8px;">
+                <label
+                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Password</label>
+                <input type="password" [(ngModel)]="password" (keyup.enter)="submit()"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    placeholder="••••••••">
+            </div>
+            <!-- Forgot password link -->
+            <div style="text-align: right; margin-bottom: 20px;">
+                <a href="javascript:void(0)" (click)="showForgotPassword()"
+                    style="font-size: 12px; color: var(--accent-primary); text-decoration: none;">
+                    Forgot password?
+                </a>
+            </div>
+        </div>
+
+        <!-- ======================= SUCCESS MESSAGE ======================= -->
+        <p *ngIf="successMessage"
+            style="color: var(--sev-info); font-size: 14px; margin-bottom: 16px; text-align: left; background: rgba(56, 189, 248, 0.1); padding: 12px; border-radius: 6px; line-height: 1.5;">
+            {{successMessage}}
+        </p>
+
+        <!-- ======================= ERROR MESSAGE ======================= -->
+        <p *ngIf="error"
+            style="color: var(--sev-critical); font-size: 14px; margin-bottom: 8px; text-align: left; background: rgba(239, 68, 68, 0.1); padding: 12px; border-radius: 6px; line-height: 1.5;">
+            {{error}}
+        </p>
+
+        <!-- Resend Verification Button (shown after ACCOUNT_NOT_VERIFIED) -->
+        <button *ngIf="showResendButton" class="btn btn-secondary"
+            style="width: 100%; margin-bottom: 16px; justify-content: center;" (click)="resendVerification()"
+            [disabled]="loading">
+            📧 Resend Verification Email
+        </button>
+
+        <!-- ======================= SUBMIT BUTTON ======================= -->
+        <button class="btn btn-primary" style="width: 100%;" (click)="submit()" [disabled]="loading">
+            <span *ngIf="!loading">
+                {{ isForgotMode ? 'Send Reset Link' : isRegisterMode ? 'Create Account' : 'Sign In to Dashboard' }}
+            </span>
+            <span *ngIf="loading">
+                {{ isForgotMode ? 'Sending...' : isRegisterMode ? 'Creating Account...' : 'Signing In...' }}
+            </span>
+        </button>
+
+        <!-- ======================= FOOTER LINKS ======================= -->
+        <div style="margin-top: 24px; font-size: 12px; color: var(--text-muted);">
+            <span *ngIf="!isForgotMode">
+                {{ isRegisterMode ? 'Already have an account?' : "Don't have an account?" }}
+                <a href="javascript:void(0)" (click)="toggleMode()"
+                    style="color: var(--accent-primary); text-decoration: none; font-weight: 500; margin-left: 4px;">
+                    {{ isRegisterMode ? 'Sign In' : 'Register' }}
+                </a>
+            </span>
+            <span *ngIf="isForgotMode">
+                <a href="javascript:void(0)" (click)="backToLogin()"
+                    style="color: var(--accent-primary); text-decoration: none; font-weight: 500;">
+                    ← Back to Sign In
+                </a>
+            </span>
+        </div>
+    </div>
+</div>

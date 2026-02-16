@@ -1,0 +1,85 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">Log Explorer</h1>
+        <p style="color: var(--text-secondary);">Filter and analyze raw application events.</p>
+    </div>
+    <div style="display: flex; gap: 12px;">
+        <button class="btn btn-secondary"><i data-lucide="download" size="16"></i> Export</button>
+        <button class="btn btn-primary">Live Tail</button>
+    </div>
+</div>
+
+<div class="card" style="padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
+
+    <!-- Site Filter -->
+    <div class="filter-dropdown">
+        <span style="color: var(--text-secondary);">Site:</span>
+        <select [(ngModel)]="selectedSite" (change)="filterLogs()">
+            <option *ngFor="let site of sites" [value]="site">{{site}}</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <!-- Status Filter -->
+    <div class="filter-dropdown">
+        <span style="color: var(--text-secondary);">Status:</span>
+        <select [(ngModel)]="selectedStatus" (change)="filterLogs()">
+            <option value="All Status">All Status</option>
+            <option value="4xx, 5xx">Errors (4xx, 5xx)</option>
+            <option value="2xx">Success (2xx)</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <!-- Method Filter -->
+    <div class="filter-dropdown">
+        <span style="color: var(--text-secondary);">Method:</span>
+        <select [(ngModel)]="selectedMethod" (change)="filterLogs()">
+            <option value="All Methods">All Methods</option>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <div style="flex-grow: 1; position: relative;">
+        <input type="text" [(ngModel)]="searchQuery" (input)="filterLogs()"
+            placeholder="Filter by keyword (e.g. 'injection', 'admin')..."
+            style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+    </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table *ngIf="logs.length > 0; else noData">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Site</th>
+                <th>Method</th>
+                <th>Path</th>
+                <th>IP Address</th>
+                <th>Score</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let log of logs">
+                <td style="font-family: var(--font-mono); font-size: 11px;">{{log.timestamp}}</td>
+                <td>{{log.site}}</td>
+                <td><span [style.color]="log.methodColor">{{log.method}}</span></td>
+                <td style="font-family: var(--font-mono);">{{log.path}}</td>
+                <td>{{log.ip}}</td>
+                <td><span class="status-badge" [ngClass]="log.scoreClass">{{log.score}}</span></td>
+                <td><i data-lucide="more-horizontal" size="16" style="cursor: pointer;"></i></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ng-template #noData>
+        <div style="padding: 32px; text-align: center; color: var(--text-secondary);">
+            No logs match your filter criteria.
+        </div>
+    </ng-template>
+</div>

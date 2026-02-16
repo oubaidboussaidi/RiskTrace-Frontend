@@ -1,0 +1,164 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">Applications &amp; Tracking</h1>
+        <p style="color: var(--text-secondary);">Monitor your sites and manage tracker API keys.</p>
+    </div>
+    <div style="display: flex; gap: 12px;">
+        <button class="btn btn-secondary" (click)="openHelp()">
+            <i data-lucide="help-circle" size="18"></i> How to Integrate
+        </button>
+        <button class="btn btn-primary" (click)="toggleCreateForm()">
+            <i data-lucide="plus" size="18"></i> Add Site
+        </button>
+    </div>
+</div>
+
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    <div class="card" *ngFor="let site of sites">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <div
+                    style="width: 40px; height: 40px; border-radius: 8px; background: rgba(88,166,255,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-primary);">
+                    <i data-lucide="globe"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 16px; font-weight: 600;">{{site.siteName}}</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary);">{{site.domain}}</p>
+                </div>
+            </div>
+            <div class="status-badge badge-low">{{site.status}}</div>
+        </div>
+
+        <!-- API Key Display -->
+        <div
+            style="background: var(--bg-dark); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
+            <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
+                Tracker API Key
+            </div>
+            <div
+                style="font-family: var(--font-mono); font-size: 13px; display: flex; justify-content: space-between; align-items: center; word-break: break-all;">
+                <span style="color: var(--accent-primary); letter-spacing: 1px;">{{site.apiKey}}</span>
+                <i data-lucide="copy" size="14"
+                    style="color: var(--text-muted); cursor: pointer; margin-left: 8px; flex-shrink: 0;"
+                    (click)="copyEmbed(site)" title="Copy embed script tag">
+                </i>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display: flex; gap: 8px;">
+            <button class="btn btn-primary" style="flex: 1; font-size: 12px;" (click)="showIntegration(site)">
+                <i data-lucide="code" size="14"></i>
+                {{ copiedSiteId === site.id ? '✅ Copied!' : 'Copy Script' }}
+            </button>
+            <button class="btn btn-secondary" style="padding: 10px 14px; font-size: 12px;"
+                (click)="regenerateKey(site.id)" title="Regenerate API key">
+                <i data-lucide="refresh-cw" size="14"></i>
+            </button>
+            <button class="btn btn-secondary"
+                style="padding: 10px 14px; color: var(--sev-critical); border-color: rgba(239,68,68,0.2);"
+                (click)="deleteSite(site)" title="Delete site">
+                <i data-lucide="trash-2" size="14"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="sites.length === 0"
+        style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-muted);">
+        <i data-lucide="globe" size="48" style="margin-bottom: 16px; opacity: 0.3;"></i>
+        <p style="font-size: 16px;">No applications yet. Add your first site to get started.</p>
+    </div>
+</div>
+
+
+<!-- ── How to Integrate Modal ── -->
+<div class="modal-overlay" *ngIf="showHelp" (click)="showHelp = false">
+    <div class="modal-content" style="max-width: 640px;" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <span class="modal-title">
+                {{ selectedSite ? 'Integrate — ' + selectedSite.siteName : 'How to Integrate RiskTrace' }}
+            </span>
+            <button class="modal-close" (click)="showHelp = false">
+                <i data-lucide="x" size="20"></i>
+            </button>
+        </div>
+
+        <!-- Step 1: embed tag -->
+        <div class="step" style="margin-bottom: 24px;">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>Add the script tag to your site</h3>
+                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">
+                    Paste this just before the <code style="color: var(--accent-primary);">&lt;/body&gt;</code> tag:
+                </p>
+                <div class="code-block">
+                    <code *ngIf="selectedSite">&lt;script src="http://localhost:8080/tracker.js"
+       data-api-key="<strong style="color:#f0883e;">{{selectedSite.apiKey}}</strong>"&gt;&lt;/script&gt;</code>
+                    <code *ngIf="!selectedSite">&lt;script src="http://localhost:8080/tracker.js"
+       data-api-key="YOUR_API_KEY"&gt;&lt;/script&gt;</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="step" style="margin-bottom: 24px;">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>Browse your application</h3>
+                <p style="color: var(--text-secondary); font-size: 13px;">
+                    The tracker automatically captures page loads, API requests, XHR calls, form submits, JS errors —
+                    and detects suspicious activity (>20 req/min).
+                </p>
+            </div>
+        </div>
+
+        <div class="step" style="margin-bottom: 28px;">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>Watch logs appear in real-time</h3>
+                <p style="color: var(--text-secondary); font-size: 13px;">
+                    Go to <strong>Log Explorer</strong> in your dashboard — logs are batched and sent every 5 seconds or
+                    when 10 events accumulate.
+                </p>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" style="width: 100%;" (click)="copyScript(selectedSite)">
+            <i data-lucide="copy" size="16"></i>
+            {{ selectedSite ? 'Copy Full Tracker Script (with your API key)' : 'Copy Tracker Script Template' }}
+        </button>
+    </div>
+</div>
+
+<!-- ── Add Site Modal Popup ── -->
+<div class="modal-overlay" *ngIf="showCreateForm" (click)="showCreateForm = false">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <span class="modal-title">Add New Application</span>
+            <button class="modal-close" (click)="showCreateForm = false">
+                <i data-lucide="x" size="20"></i>
+            </button>
+        </div>
+
+        <div class="form-group">
+            <label>Application Name</label>
+            <input type="text" [(ngModel)]="newSite.siteName" placeholder="e.g. My E-Commerce Store" autofocus>
+        </div>
+
+        <div class="form-group">
+            <label>Domain / URL</label>
+            <input type="text" [(ngModel)]="newSite.domain" placeholder="e.g. store.example.com">
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="showCreateForm = false">Cancel</button>
+            <button class="btn btn-primary" (click)="createSite()">
+                <i data-lucide="plus-circle" size="16"></i> Create &amp; Generate Key
+            </button>
+        </div>
+
+    </div>
+</div>

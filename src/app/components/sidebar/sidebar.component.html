@@ -1,0 +1,56 @@
+<div class="sidebar-content">
+    <div class="logo-container">
+        <div class="logo-icon">R</div>
+        <div class="app-title">RiskTrace</div>
+    </div>
+
+    <div class="nav-group">
+        <div class="nav-label">General</div>
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+            <i data-lucide="layout-dashboard"></i> Overview
+        </a>
+        <a routerLink="/incidents" routerLinkActive="active" class="nav-item">
+            <i data-lucide="shield-alert"></i> Incidents
+            <span class="badge-count" *ngIf="incidentCount > 0">{{incidentCount}}</span>
+        </a>
+    </div>
+
+    <div class="nav-group">
+        <div class="nav-label">Investigation</div>
+        <a routerLink="/logs" routerLinkActive="active" class="nav-item">
+            <i data-lucide="file-search"></i> Log Explorer
+        </a>
+        <a routerLink="/analytics" routerLinkActive="active" class="nav-item">
+            <i data-lucide="bar-chart-3"></i> ML Analytics
+        </a>
+    </div>
+
+    <div class="nav-group">
+        <div class="nav-label">Management</div>
+        <a routerLink="/sites" routerLinkActive="active" class="nav-item">
+            <i data-lucide="globe"></i> Applications
+        </a>
+        <a routerLink="/alerts" routerLinkActive="active" class="nav-item">
+            <i data-lucide="bell-ring"></i> Alert Center
+        </a>
+        <!-- Team & Roles: only visible to admins -->
+        <a *ngIf="authService.isAdmin()" routerLink="/team" routerLinkActive="active" class="nav-item">
+            <i data-lucide="users"></i> Team &amp; Roles
+        </a>
+    </div>
+
+    <div class="user-profile" (click)="navigateToSettings()" style="cursor: pointer;">
+        <div class="avatar">{{ currentUser?.fullName?.charAt(0)?.toUpperCase() || 'U' }}</div>
+        <div class="user-info">
+            <div class="user-name">{{ currentUser?.fullName || currentUser?.email || 'User' }}</div>
+            <div class="user-role">{{ currentUser?.role || 'User' }}</div>
+        </div>
+        <i data-lucide="settings" size="16" style="color: var(--text-muted); margin-left: auto;"></i>
+    </div>
+
+    <button class="btn btn-secondary" (click)="logout()"
+        style="width: calc(100% - 32px); margin: 0 16px 16px 16px; padding: 10px; font-size: 13px;">
+        <i data-lucide="log-out" size="16"></i> Logout
+    </button>
+
+</div>
