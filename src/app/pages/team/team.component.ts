@@ -30,11 +30,14 @@ export class TeamComponent implements OnInit, AfterViewInit {
 
   refreshTeam() {
     this.apiService.getUsers().subscribe(users => {
-      this.teamMembers = (users || []).map(u => {
-        let role = u.role ? u.role.toUpperCase() : 'ANALYST';
-        if (role === 'USER') role = 'ANALYST'; // Map legacy USER to ANALYST for UI
-        return { ...u, role };
-      });
+      const currentUserId = this.apiService.getCurrentUserId();
+      this.teamMembers = (users || [])
+        .filter(u => u.id !== currentUserId)
+        .map(u => {
+          let role = u.role ? u.role.toUpperCase() : 'ANALYST';
+          if (role === 'USER') role = 'ANALYST'; // Map legacy USER to ANALYST for UI
+          return { ...u, role };
+        });
       setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
     });
   }
@@ -79,6 +82,7 @@ export class TeamComponent implements OnInit, AfterViewInit {
         const index = this.teamMembers.findIndex(u => u.id === updatedUser.id);
         if (index !== -1) {
           this.teamMembers[index] = updatedUser;
+          setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
         }
       },
       error: () => alert('Failed to update role')
@@ -93,6 +97,7 @@ export class TeamComponent implements OnInit, AfterViewInit {
         const index = this.teamMembers.findIndex(u => u.id === updatedUser.id);
         if (index !== -1) {
           this.teamMembers[index] = updatedUser;
+          setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
         }
       },
       error: () => alert('Failed to update status')

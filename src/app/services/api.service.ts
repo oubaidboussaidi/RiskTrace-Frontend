@@ -26,6 +26,15 @@ export interface UpdateProfileRequest {
     password?: string;
 }
 
+export interface UpdateFullNameRequest {
+    fullName: string;
+}
+
+export interface ChangePasswordRequest {
+    currentPassword: string;
+    newPassword: string;
+}
+
 export interface UpdateUserRequest {
     role?: string;
     enabled?: boolean;
@@ -40,11 +49,8 @@ export class ApiService {
     constructor(private http: HttpClient) { }
 
     private getHeaders(): HttpHeaders {
-        const token = localStorage.getItem('token');
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        });
+        // Authorization header is automatically added by jwt.interceptor.ts
+        return new HttpHeaders({ 'Content-Type': 'application/json' });
     }
 
     getCurrentUserId(): string | null {
@@ -60,7 +66,19 @@ export class ApiService {
 
     // --- Auth ---
     login(credentials: { email: string, password: string }): Observable<AuthResponse> {
-        return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials);
+        return this.http.post<AuthResponse>(`${this.apiUrl}/auth/login`, credentials, { withCredentials: true });
+    }
+
+    logout(): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.apiUrl}/auth/logout`, {}, {
+            headers: this.getHeaders(),
+            withCredentials: true // needed so the browser sends the httpOnly refreshToken cookie
+        });
+    }
+
+    /** Called by the interceptor when access token expires (401). Cookie is sent automatically. */
+    refreshAccessToken(): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/auth/refresh`, {}, { withCredentials: true });
     }
 
     register(user: { fullName: string, email: string, password: string }): Observable<UserResponse> {
@@ -124,6 +142,14 @@ export class ApiService {
 
     updateProfile(data: UpdateProfileRequest): Observable<UserResponse> {
         return this.http.put<UserResponse>(`${this.apiUrl}/profile`, data, { headers: this.getHeaders() });
+    }
+
+    updateFullName(data: UpdateFullNameRequest): Observable<UserResponse> {
+        return this.http.put<UserResponse>(`${this.apiUrl}/profile/fullname`, data, { headers: this.getHeaders() });
+    }
+
+    changePassword(data: ChangePasswordRequest): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.apiUrl}/profile/change-password`, data, { headers: this.getHeaders() });
     }
 
     // --- Admin: Sites (Restored) ---

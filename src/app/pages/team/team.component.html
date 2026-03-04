@@ -49,6 +49,9 @@
                         </button>
                         <button class="btn btn-secondary"
                             style="padding: 6px 12px; font-size: 11px; color: var(--sev-critical); border-color: rgba(239, 68, 68, 0.2);"
+                            [disabled]="member.role === 'ADMIN'" [style.opacity]="member.role === 'ADMIN' ? '0.5' : '1'"
+                            [style.cursor]="member.role === 'ADMIN' ? 'not-allowed' : 'pointer'"
+                            title="{{member.role === 'ADMIN' ? 'Cannot delete other admins' : 'Delete user'}}"
                             (click)="deleteUser(member)">
                             <i data-lucide="trash-2" size="14"></i>
                         </button>

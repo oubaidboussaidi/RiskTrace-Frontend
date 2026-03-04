@@ -51,11 +51,16 @@ export class SitesComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if (!confirm(`Are you sure you want to add "${this.newSite.siteName}" (${this.newSite.domain})?`)) {
+      return;
+    }
+
     this.apiService.createSite(this.newSite).subscribe({
       next: () => {
         this.refreshSites();
         this.showCreateForm = false;
         this.newSite = { siteName: '', domain: '' };
+        alert('Application added successfully! You can now copy the tracking code.');
       },
       error: () => alert('Failed to create site.')
     });
@@ -118,6 +123,7 @@ export class SitesComponent implements OnInit, AfterViewInit {
         const index = this.sites.findIndex(s => s.id === updatedSite.id);
         if (index !== -1) {
           this.sites[index] = updatedSite;
+          setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
         }
       });
     }

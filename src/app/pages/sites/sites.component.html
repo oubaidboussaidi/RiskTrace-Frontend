@@ -16,7 +16,7 @@
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div class="card" *ngFor="let site of sites">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
             <div style="display: flex; gap: 12px; align-items: center;">
                 <div
                     style="width: 40px; height: 40px; border-radius: 8px; background: rgba(88,166,255,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-primary);">
@@ -48,18 +48,19 @@
 
         <!-- Actions -->
         <div style="display: flex; gap: 8px;">
-            <button class="btn btn-primary" style="flex: 1; font-size: 12px;" (click)="showIntegration(site)">
-                <i data-lucide="code" size="14"></i>
-                {{ copiedSiteId === site.id ? '✅ Copied!' : 'Copy Script' }}
+            <button class="btn btn-primary" style="flex: 1;" (click)="showIntegration(site)" title="How to Integrate">
+                <i data-lucide="code" size="16"></i>
+                Get Script
             </button>
-            <button class="btn btn-secondary" style="padding: 10px 14px; font-size: 12px;"
-                (click)="regenerateKey(site.id)" title="Regenerate API key">
-                <i data-lucide="refresh-cw" size="14"></i>
+            <button class="btn btn-secondary" style="flex: 1;" (click)="regenerateKey(site.id)"
+                title="Regenerate API key">
+                <i data-lucide="refresh-cw" size="16"></i>
+                New Key
             </button>
             <button class="btn btn-secondary"
-                style="padding: 10px 14px; color: var(--sev-critical); border-color: rgba(239,68,68,0.2);"
+                style="padding-left: 14px; padding-right: 14px; color: var(--sev-critical); border-color: rgba(239,68,68,0.2);"
                 (click)="deleteSite(site)" title="Delete site">
-                <i data-lucide="trash-2" size="14"></i>
+                <i data-lucide="trash-2" size="16"></i>
             </button>
         </div>
     </div>

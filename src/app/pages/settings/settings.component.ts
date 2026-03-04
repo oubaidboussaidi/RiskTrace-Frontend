@@ -2,8 +2,8 @@ import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-import { ApiService, AuthResponse } from '../../services/api.service';
+import { AuthService, StoredUser } from '../../services/auth.service';
+import { ApiService } from '../../services/api.service';
 
 declare var lucide: any;
 
@@ -15,7 +15,7 @@ declare var lucide: any;
   styleUrl: './settings.component.css'
 })
 export class SettingsComponent implements OnInit, AfterViewInit {
-  currentUser: AuthResponse | null = null;
+  currentUser: StoredUser | null = null;
 
   // Editable profile fields (using fullName as per backend DTO)
   fullName = '';
@@ -46,20 +46,14 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   }
 
   saveProfile() {
-    this.apiService.updateProfile({
+    this.apiService.updateFullName({
       fullName: this.fullName
     }).subscribe({
       next: (updatedUser) => {
         alert('Profile updated successfully!');
-        // Sync updated fullName back into local storage / BehaviorSubject
-        const current = this.authService.currentUserValue;
-        if (current) {
-          const merged = { ...current, fullName: updatedUser.fullName };
-          localStorage.setItem('user', JSON.stringify(merged));
-          // Keep local reference in sync
-          this.currentUser = merged;
-          this.fullName = updatedUser.fullName;
-        }
+        this.authService.updateCurrentUser({ fullName: updatedUser.fullName });
+        this.currentUser = this.authService.currentUserValue;
+        this.fullName = updatedUser.fullName;
       },
       error: () => alert('Failed to update profile.')
     });
@@ -75,16 +69,16 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // The backend UpdateProfileRequest accepts a `password` field for changing it
-    this.apiService.updateProfile({
-      password: this.passwordData.newPassword
+    this.apiService.changePassword({
+      currentPassword: this.passwordData.oldPassword,
+      newPassword: this.passwordData.newPassword
     }).subscribe({
       next: () => {
         alert('Password changed successfully');
         this.passwordData = { oldPassword: '', newPassword: '', confirmPassword: '' };
         this.showPasswordForm = false;
       },
-      error: () => alert('Failed to change password. Please check your old password.')
+      error: () => alert('Failed to change password. Please check your current password.')
     });
   }
 
