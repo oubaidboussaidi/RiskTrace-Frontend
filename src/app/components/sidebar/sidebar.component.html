@@ -1,56 +1,124 @@
-<div class="sidebar-content">
-    <div class="logo-container">
-        <div class="logo-icon">R</div>
-        <div class="app-title">RiskTrace</div>
+<div class="sidebar-content" [class.collapsed]="isCollapsed">
+
+    <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
+        <i data-lucide="chevron-left" size="14"></i>
+    </button>
+
+    <div class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon">R</div>
+            <div class="logo-meta">
+                <span class="logo-text">RiskTrace</span>
+                <a class="org-chip" routerLink="/organizations" title="Switch Organization">
+                    <span class="org-chip-dot"></span>
+                    <span class="org-chip-name">{{ activeOrgName }}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                        class="org-chip-chevron">
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="nav-group">
-        <div class="nav-label">General</div>
-        <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
-            <i data-lucide="layout-dashboard"></i> Overview
-        </a>
-        <a routerLink="/incidents" routerLinkActive="active" class="nav-item">
-            <i data-lucide="shield-alert"></i> Incidents
-            <span class="badge-count" *ngIf="incidentCount > 0">{{incidentCount}}</span>
-        </a>
-    </div>
+    <!-- Scrollable nav area -->
+    <div class="nav-scroll">
 
-    <div class="nav-group">
-        <div class="nav-label">Investigation</div>
-        <a routerLink="/logs" routerLinkActive="active" class="nav-item">
-            <i data-lucide="file-search"></i> Log Explorer
-        </a>
-        <a routerLink="/analytics" routerLinkActive="active" class="nav-item">
-            <i data-lucide="bar-chart-3"></i> ML Analytics
-        </a>
-    </div>
+        <!-- General -->
+        <div class="nav-group">
+            <div class="nav-label">General</div>
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" title="Overview">
+                <i data-lucide="layout-dashboard" size="18"></i>
+                <span class="nav-text">Overview</span>
+            </a>
+            <a routerLink="/incidents" routerLinkActive="active" class="nav-item" title="Incidents">
+                <i data-lucide="shield-alert" size="18"></i>
+                <span class="nav-text">Incidents</span>
+                <span class="incident-badge" *ngIf="incidentCount > 0">{{incidentCount}}</span>
+            </a>
+        </div>
 
-    <div class="nav-group">
-        <div class="nav-label">Management</div>
-        <a routerLink="/sites" routerLinkActive="active" class="nav-item">
-            <i data-lucide="globe"></i> Applications
-        </a>
-        <a routerLink="/alerts" routerLinkActive="active" class="nav-item">
-            <i data-lucide="bell-ring"></i> Alert Center
-        </a>
-        <!-- Team & Roles: only visible to admins -->
-        <a *ngIf="authService.isAdmin()" routerLink="/team" routerLinkActive="active" class="nav-item">
-            <i data-lucide="users"></i> Team &amp; Roles
-        </a>
-    </div>
+        <!-- Investigation -->
+        <div class="nav-group">
+            <div class="nav-label">Investigation</div>
+            <a routerLink="/logs" routerLinkActive="active" class="nav-item" title="Log Explorer">
+                <i data-lucide="file-search" size="18"></i>
+                <span class="nav-text">Log Explorer</span>
+            </a>
+            <a routerLink="/analytics" routerLinkActive="active" class="nav-item" title="ML Analytics">
+                <i data-lucide="bar-chart-3" size="18"></i>
+                <span class="nav-text">ML Analytics</span>
+            </a>
+        </div>
 
-    <div class="user-profile" (click)="navigateToSettings()" style="cursor: pointer;">
+        <!-- Management -->
+        <div class="nav-group">
+            <div class="nav-label">Management</div>
+            <a routerLink="/organizations" routerLinkActive="active" class="nav-item" title="Organizations">
+                <i data-lucide="building-2" size="18"></i>
+                <span class="nav-text">Organizations</span>
+            </a>
+            <a routerLink="/sites" routerLinkActive="active" class="nav-item" title="Applications">
+                <i data-lucide="globe" size="18"></i>
+                <span class="nav-text">Applications</span>
+            </a>
+            <a routerLink="/alerts" routerLinkActive="active" class="nav-item" title="Alert Center">
+                <i data-lucide="bell-ring" size="18"></i>
+                <span class="nav-text">Alert Center</span>
+            </a>
+            <a routerLink="/team" routerLinkActive="active" class="nav-item" title="Team &amp; Roles">
+                <i data-lucide="users" size="18"></i>
+                <span class="nav-text">Team &amp; Roles</span>
+            </a>
+        </div>
+
+        <!-- Platform Admin — collapsible single entry -->
+        <div class="nav-group admin-group" *ngIf="isPlatformAdmin">
+
+            <!-- Toggle trigger -->
+            <div class="nav-item admin-toggle" (click)="toggleAdmin($event)" [class.admin-active]="adminExpanded"
+                title="Admin Panel">
+                <i data-lucide="shield-check" size="18"></i>
+                <span class="nav-text">Admin Panel</span>
+                <svg class="chevron nav-text" [class.chevron-open]="adminExpanded" xmlns="http://www.w3.org/2000/svg"
+                    width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+
+            <!-- Sub-items (slide in/out) -->
+            <div class="admin-submenu" [class.open]="adminExpanded">
+                <a routerLink="/admin/users" routerLinkActive="active" class="nav-item sub-item" title="Global Users">
+                    <i data-lucide="users-2" size="16"></i>
+                    <span class="nav-text">Global Users</span>
+                </a>
+                <a routerLink="/admin/organizations" routerLinkActive="active" class="nav-item sub-item"
+                    title="Global Orgs">
+                    <i data-lucide="building" size="16"></i>
+                    <span class="nav-text">Global Orgs</span>
+                </a>
+                <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item sub-item" title="Global Logs">
+                    <i data-lucide="file-search" size="16"></i>
+                    <span class="nav-text">Global Logs</span>
+                </a>
+            </div>
+
+        </div>
+
+    </div><!-- /nav-scroll -->
+
+    <!-- User Profile Footer -->
+    <div class="user-profile" (click)="navigateToSettings()">
         <div class="avatar">{{ currentUser?.fullName?.charAt(0)?.toUpperCase() || 'U' }}</div>
         <div class="user-info">
             <div class="user-name">{{ currentUser?.fullName || currentUser?.email || 'User' }}</div>
             <div class="user-role">{{ currentUser?.role || 'User' }}</div>
         </div>
-        <i data-lucide="settings" size="16" style="color: var(--text-muted); margin-left: auto;"></i>
+        <button class="profile-logout-btn" (click)="$event.stopPropagation(); logout()" title="Logout">
+            <i data-lucide="log-out" size="16"></i>
+        </button>
     </div>
-
-    <button class="btn btn-secondary" (click)="logout()"
-        style="width: calc(100% - 32px); margin: 0 16px 16px 16px; padding: 10px; font-size: 13px;">
-        <i data-lucide="log-out" size="16"></i> Logout
-    </button>
 
 </div>
