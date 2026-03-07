@@ -15,7 +15,12 @@ export class RoleGuard implements CanActivate {
         const expectedRole = route.data['expectedRole'];
         const userRole = this.authService.getUserRole();
 
-        if (this.authService.isAuthenticated() && userRole === expectedRole) {
+        // If trying to access PLATFORM_ADMIN pages, allow legacy ADMINS for now
+        if (expectedRole === 'PLATFORM_ADMIN') {
+            if (userRole === 'PLATFORM_ADMIN' || userRole === 'ADMIN') {
+                return true;
+            }
+        } else if (userRole === expectedRole) {
             return true;
         }
 

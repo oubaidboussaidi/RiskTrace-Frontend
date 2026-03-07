@@ -24,14 +24,22 @@ export const routes: Routes = [
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: DashboardComponent },
+            { path: 'organizations', loadComponent: () => import('./pages/organizations/organizations.component').then(m => m.OrganizationsComponent) },
+            { path: 'admin/organizations', loadComponent: () => import('./pages/admin-organizations/admin-organizations.component').then(m => m.AdminOrganizationsComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
+            { path: 'admin/users', loadComponent: () => import('./pages/admin-users/admin-users.component').then(m => m.AdminUsersComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
+            { path: 'admin/logs', loadComponent: () => import('./pages/admin-logs/admin-logs.component').then(m => m.AdminLogsComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
+
+
             { path: 'incidents', component: IncidentsComponent },
+
             { path: 'logs', component: LogsComponent },
             { path: 'analytics', component: AnalyticsComponent },
             { path: 'sites', component: SitesComponent },
             { path: 'settings', component: SettingsComponent },
             { path: 'alerts', component: AlertsComponent },
             { path: 'api-keys', component: ApiKeysComponent },
-            { path: 'team', component: TeamComponent, canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'ADMIN' } },
+            { path: 'team', component: TeamComponent, canActivate: [AuthGuard] },
+
         ]
     },
     {
