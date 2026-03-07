@@ -40,6 +40,38 @@ export interface UpdateUserRequest {
     enabled?: boolean;
 }
 
+export interface OrganizationRequest {
+    name: string;
+}
+
+export interface OrganizationResponse {
+    id: string;
+    name: string;
+    createdAt: string;
+    createdBy: string;
+    enabled: boolean;
+    membersCount: number;
+}
+
+export interface OrganizationMemberResponse {
+    id: string;
+    userId: string;
+    email: string;
+    fullName: string;
+    organizationId: string;
+    role: string; // OWNER | ANALYST | VIEWER
+    createdAt: string;
+}
+
+export interface InviteMemberRequest {
+    email: string;
+    role: string; // OWNER | ANALYST | VIEWER
+}
+
+export interface TransferOwnershipRequest {
+    newOwnerUserId: string;
+}
+
 @Injectable({
     providedIn: 'root'
 })
@@ -72,11 +104,10 @@ export class ApiService {
     logout(): Observable<{ message: string }> {
         return this.http.post<{ message: string }>(`${this.apiUrl}/auth/logout`, {}, {
             headers: this.getHeaders(),
-            withCredentials: true // needed so the browser sends the httpOnly refreshToken cookie
+            withCredentials: true
         });
     }
 
-    /** Called by the interceptor when access token expires (401). Cookie is sent automatically. */
     refreshAccessToken(): Observable<AuthResponse> {
         return this.http.post<AuthResponse>(`${this.apiUrl}/auth/refresh`, {}, { withCredentials: true });
     }
@@ -118,30 +149,13 @@ export class ApiService {
         return this.http.delete<void>(`${this.apiUrl}/users/${id}`, { headers: this.getHeaders() });
     }
 
-    // Kept for backward compatibility if components use it, but mapped to updateUser
     updateUserRole(userId: string, role: string): Observable<UserResponse> {
         return this.updateUser(userId, { role });
-    }
-
-    toggleUserStatus(userId: string): Observable<UserResponse> {
-        // We need to fetch user designed to toggle, or just send a specific flag. 
-        // For simplicity, let's assume the component handles the toggle logic (getting current state)
-        // Or we can implement a specific toggle endpoint if backend supports it.
-        // My backend updateUser supports { enabled: boolean }.
-        // I will assume the caller will pass the new status. 
-        // But the previous signature was just ID.
-        // I'll leave it generating an error or ask to use updateUser.
-        // Better:
-        return this.http.put<UserResponse>(`${this.apiUrl}/users/${userId}`, { enabled: false }, { headers: this.getHeaders() }); // Logic needs state.
     }
 
     // --- Profile (AUTHENTICATED) ---
     getProfile(): Observable<UserResponse> {
         return this.http.get<UserResponse>(`${this.apiUrl}/profile`, { headers: this.getHeaders() });
-    }
-
-    updateProfile(data: UpdateProfileRequest): Observable<UserResponse> {
-        return this.http.put<UserResponse>(`${this.apiUrl}/profile`, data, { headers: this.getHeaders() });
     }
 
     updateFullName(data: UpdateFullNameRequest): Observable<UserResponse> {
@@ -152,12 +166,60 @@ export class ApiService {
         return this.http.post<{ message: string }>(`${this.apiUrl}/profile/change-password`, data, { headers: this.getHeaders() });
     }
 
-    // --- Admin: Sites (Restored) ---
+    // --- Organizations ---
+    createOrganization(data: OrganizationRequest): Observable<OrganizationResponse> {
+        return this.http.post<OrganizationResponse>(`${this.apiUrl}/organizations`, data, { headers: this.getHeaders() });
+    }
+
+    getMyOrganizations(): Observable<OrganizationResponse[]> {
+        return this.http.get<OrganizationResponse[]>(`${this.apiUrl}/organizations/my`, { headers: this.getHeaders() });
+    }
+
+    getAllOrganizations(): Observable<OrganizationResponse[]> {
+        return this.http.get<OrganizationResponse[]>(`${this.apiUrl}/organizations/all`, { headers: this.getHeaders() });
+    }
+
+    updateOrganizationStatus(organizationId: string, enabled: boolean): Observable<OrganizationResponse> {
+        return this.http.put<OrganizationResponse>(`${this.apiUrl}/organizations/${organizationId}/status`, null, {
+            headers: this.getHeaders(),
+            params: { enabled: String(enabled) }
+        });
+    }
+
+    getOrganizationMembers(orgId: string): Observable<OrganizationMemberResponse[]> {
+        return this.http.get<OrganizationMemberResponse[]>(`${this.apiUrl}/organizations/${orgId}/members`, { headers: this.getHeaders() });
+    }
+
+    inviteMember(orgId: string, data: InviteMemberRequest): Observable<OrganizationMemberResponse> {
+        return this.http.post<OrganizationMemberResponse>(`${this.apiUrl}/organizations/${orgId}/members/invite`, data, { headers: this.getHeaders() });
+    }
+
+    removeMember(orgId: string, userId: string): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/organizations/${orgId}/members/${userId}`, { headers: this.getHeaders() });
+    }
+
+    transferOwnership(orgId: string, data: TransferOwnershipRequest): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/organizations/${orgId}/transfer-ownership`, data, { headers: this.getHeaders() });
+    }
+
+    adminTransferOwnership(orgId: string, newOwnerId: string): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/organizations/${orgId}/admin/transfer-ownership?newOwnerId=${newOwnerId}`, {}, { headers: this.getHeaders() });
+    }
+
+    adminAssignOwner(orgId: string, newOwnerId: string): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/organizations/${orgId}/admin/assign-owner?newOwnerId=${newOwnerId}`, {}, { headers: this.getHeaders() });
+    }
+
+    // --- Admin: Sites ---
     getSites(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/admin/sites`, { headers: this.getHeaders() });
     }
 
-    createSite(site: { siteName: string, domain: string }): Observable<any> {
+    getSitesByOrganization(orgId: string): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/admin/sites/org/${orgId}`, { headers: this.getHeaders() });
+    }
+
+    createSite(site: { siteName: string, domain: string, organizationId: string }): Observable<any> {
         return this.http.post(`${this.apiUrl}/admin/sites`, site, { headers: this.getHeaders() });
     }
 
@@ -172,6 +234,18 @@ export class ApiService {
     // --- Logs ---
     getLogs(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/logs`, { headers: this.getHeaders() });
+    }
+
+    getLogsByOrganization(orgId: string): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/logs/org/${orgId}`, { headers: this.getHeaders() });
+    }
+
+    markLogAsAnomaly(logId: string): Observable<any> {
+        return this.http.put(`${this.apiUrl}/logs/${logId}/mark-suspicious`, {}, { headers: this.getHeaders() });
+    }
+
+    getLiveTailUrl(): string {
+        return `${this.apiUrl}/logs/stream`;
     }
 
     // --- Alerts ---

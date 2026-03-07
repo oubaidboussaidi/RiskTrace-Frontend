@@ -99,9 +99,9 @@ export class AuthService {
     }
 
     isAuthenticated(): boolean {
-        // Access token is in memory; also check localStorage for user info
-        // to handle the case where the app just loaded after a page refresh.
-        return !!(this.accessToken || localStorage.getItem('user'));
+        // With APP_INITIALIZER, the token is always preloaded from the httpOnly cookie
+        // before any route guard or component runs. So we strictly check in-memory token.
+        return !!this.accessToken;
     }
 
     getUserRole(): string | null {
@@ -111,5 +111,14 @@ export class AuthService {
 
     isAdmin(): boolean {
         return this.getUserRole() === 'ADMIN';
+    }
+
+    isPlatformAdmin(): boolean {
+        return this.getUserRole() === 'PLATFORM_ADMIN';
+    }
+
+    /** Check if user has a given role (case-insensitive) */
+    hasRole(role: string): boolean {
+        return this.getUserRole() === role.toUpperCase();
     }
 }
