@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { TopbarComponent } from '../../components/topbar/topbar.component';
+import { OrganizationService } from '../../services/organization.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -10,6 +11,17 @@ import { TopbarComponent } from '../../components/topbar/topbar.component';
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
+  isSidebarCollapsed: boolean = false;
 
+  constructor(private orgService: OrganizationService) { }
+
+  ngOnInit() {
+    // Load organizations when layout wrapper mounts (which happens after login)
+    this.orgService.loadMyOrganizations().subscribe();
+  }
+
+  onSidebarCollapsedChange(collapsed: boolean) {
+    this.isSidebarCollapsed = collapsed;
+  }
 }

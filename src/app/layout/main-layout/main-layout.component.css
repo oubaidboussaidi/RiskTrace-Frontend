@@ -16,6 +16,16 @@
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: visible;
+    /* lets toggle button overlap the right border */
+    z-index: 10;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+    align-items: center;
 }
 
 .main-wrapper {

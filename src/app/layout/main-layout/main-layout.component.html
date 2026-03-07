@@ -1,5 +1,6 @@
 <div id="app-root">
-    <app-sidebar class="sidebar"></app-sidebar>
+    <app-sidebar class="sidebar" (collapsedChange)="onSidebarCollapsedChange($event)"
+        [class.collapsed]="isSidebarCollapsed"></app-sidebar>
 
     <main class="main-wrapper">
         <app-topbar></app-topbar>
