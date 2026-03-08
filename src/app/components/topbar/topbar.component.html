@@ -1,6 +1,7 @@
 <div class="search-container">
     <i data-lucide="search" size="16"></i>
-    <input type="text" placeholder="Search for IPs, sessions, or endpoints..." (keydown)="onSearch($event)">
+    <input #searchInput type="text" placeholder="Search for IPs, sessions, or endpoints..."
+        (keydown)="onSearch($event)">
 
     <span class="cmd-k">⌘ K</span>
 </div>

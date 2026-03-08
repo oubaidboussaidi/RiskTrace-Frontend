@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
@@ -17,6 +17,16 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   currentUser: any = null;
   notifications: any[] = [];
   showNotifications = false;
+
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      this.searchInput.nativeElement.focus();
+    }
+  }
 
   constructor(
     public authService: AuthService,
