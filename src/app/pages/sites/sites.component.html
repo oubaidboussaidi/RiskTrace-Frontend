@@ -15,7 +15,7 @@
 
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-    <div class="card" *ngFor="let site of sites">
+    <div class="card" *ngFor="let site of paginatedSites">
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
             <div style="display: flex; gap: 12px; align-items: center;">
                 <div
@@ -70,6 +70,21 @@
         style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-muted);">
         <i data-lucide="globe" size="48" style="margin-bottom: 16px; opacity: 0.3;"></i>
         <p style="font-size: 16px;">No applications yet. Add your first site to get started.</p>
+    </div>
+</div>
+
+<div class="pagination-controls"
+    style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-top: 24px; border: 1px solid var(--border-color); background: var(--bg-elevated); border-radius: 8px;"
+    *ngIf="totalPages > 1">
+    <div style="font-size: 13px; color: var(--text-secondary);">
+        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, sites.length) }} of {{
+        sites.length }} applications
+    </div>
+    <div style="display: flex; gap: 6px;">
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+        <button class="pagination-btn" [ngClass]="currentPage === p ? 'active' : ''" *ngFor="let p of getPages()"
+            (click)="goToPage(p)">{{ p }}</button>
+        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
     </div>
 </div>
 
@@ -128,7 +143,7 @@
 
         <button class="btn btn-primary" style="width: 100%;" (click)="copyScript(selectedSite)">
             <i data-lucide="copy" size="16"></i>
-            {{ selectedSite ? 'Copy Full Tracker Script (with your API key)' : 'Copy Tracker Script Template' }}
+            {{ selectedSite ? 'Copy Tracker Snippet (with your API key)' : 'Copy Tracker Snippet Template' }}
         </button>
     </div>
 </div>
