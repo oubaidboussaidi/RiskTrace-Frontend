@@ -3,9 +3,19 @@
         <h1 style="font-size: 24px; font-weight: 700;">Log Explorer</h1>
         <p style="color: var(--text-secondary);">Filter and analyze raw application events.</p>
     </div>
-    <div style="display: flex; gap: 12px;">
-        <button class="btn btn-secondary"><i data-lucide="download" size="16"></i> Export</button>
-        <button class="btn btn-primary">Live Tail</button>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <div class="action-menu-container">
+            <button class="btn btn-secondary" (click)="toggleExportMenu($event)"><i data-lucide="download"
+                    size="16"></i> Export <i data-lucide="chevron-down" size="14"></i></button>
+            <div class="action-menu" [class.show]="isExportMenuOpen" style="right: auto; left: 0; min-width: 140px;">
+                <button (click)="exportLogs('csv')"><i data-lucide="file-spreadsheet" size="14"></i> Export CSV</button>
+                <button (click)="exportLogs('json')"><i data-lucide="file-json" size="14"></i> Export JSON</button>
+            </div>
+        </div>
+        <button class="btn" [ngClass]="liveTailActive ? 'btn-danger' : 'btn-primary'" (click)="toggleLiveTail()">
+            <i [attr.data-lucide]="liveTailActive ? 'square' : 'play'" size="16"></i> {{liveTailActive ? 'Stop Live
+            Tail' : 'Live Tail'}}
+        </button>
     </div>
 </div>
 
@@ -14,7 +24,8 @@
     <!-- Site Filter -->
     <div class="filter-dropdown">
         <span style="color: var(--text-secondary);">Site:</span>
-        <select [(ngModel)]="selectedSite" (change)="filterLogs()">
+        <span class="filter-value">{{selectedSite}}</span>
+        <select [(ngModel)]="selectedSite" (ngModelChange)="filterLogs()">
             <option *ngFor="let site of sites" [value]="site">{{site}}</option>
         </select>
         <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
@@ -23,7 +34,8 @@
     <!-- Status Filter -->
     <div class="filter-dropdown">
         <span style="color: var(--text-secondary);">Status:</span>
-        <select [(ngModel)]="selectedStatus" (change)="filterLogs()">
+        <span class="filter-value">{{getStatusLabel(selectedStatus)}}</span>
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterLogs()">
             <option value="All Status">All Status</option>
             <option value="4xx, 5xx">Errors (4xx, 5xx)</option>
             <option value="2xx">Success (2xx)</option>
@@ -34,7 +46,8 @@
     <!-- Method Filter -->
     <div class="filter-dropdown">
         <span style="color: var(--text-secondary);">Method:</span>
-        <select [(ngModel)]="selectedMethod" (change)="filterLogs()">
+        <span class="filter-value">{{selectedMethod}}</span>
+        <select [(ngModel)]="selectedMethod" (ngModelChange)="filterLogs()">
             <option value="All Methods">All Methods</option>
             <option value="GET">GET</option>
             <option value="POST">POST</option>
@@ -45,7 +58,7 @@
     </div>
 
     <div style="flex-grow: 1; position: relative;">
-        <input type="text" [(ngModel)]="searchQuery" (input)="filterLogs()"
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="filterLogs()"
             placeholder="Filter by keyword (e.g. 'injection', 'admin')..."
             style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); color: white; padding: 8px 12px; border-radius: 6px; font-size: 13px;">
     </div>
@@ -65,14 +78,32 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let log of logs">
+            <tr *ngFor="let log of paginatedLogs">
                 <td style="font-family: var(--font-mono); font-size: 11px;">{{log.timestamp}}</td>
                 <td>{{log.site}}</td>
                 <td><span [style.color]="log.methodColor">{{log.method}}</span></td>
                 <td style="font-family: var(--font-mono);">{{log.path}}</td>
                 <td>{{log.ip}}</td>
                 <td><span class="status-badge" [ngClass]="log.scoreClass">{{log.score}}</span></td>
-                <td><i data-lucide="more-horizontal" size="16" style="cursor: pointer;"></i></td>
+                <td>
+                    <div class="action-menu-container">
+                        <span class="action-icon" (click)="toggleActionMenu(log, $event)"
+                            style="display: inline-flex; align-items: center; justify-content: center;">
+                            <i data-lucide="more-horizontal" size="16"></i>
+                        </span>
+                        <div class="action-menu" [class.show]="activeLogMenu === log">
+                            <button (click)="viewLogDetails(log)"><i data-lucide="file-json" size="14"></i> View
+                                JSON</button>
+                            <button (click)="copyIp(log)"><i data-lucide="copy" size="14"></i> Copy IP</button>
+                            <button (click)="filterByIp(log)"><i data-lucide="filter" size="14"></i> Filter by
+                                IP</button>
+                            <button (click)="filterByPath(log)"><i data-lucide="filter" size="14"></i> Filter by
+                                Path</button>
+                            <button class="warning" (click)="markAsAnomaly(log)"><i data-lucide="flag" size="14"></i>
+                                Mark Suspicious</button>
+                        </div>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>
@@ -82,4 +113,34 @@
             No logs match your filter criteria.
         </div>
     </ng-template>
+
+    <div class="pagination-controls"
+        style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-top: 1px solid var(--border-color); background: var(--bg-elevated); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;"
+        *ngIf="totalPages > 1">
+        <div style="font-size: 13px; color: var(--text-secondary);">
+            Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, logs.length) }} of {{
+            logs.length }} entries
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+            <button class="pagination-btn" [ngClass]="currentPage === p ? 'active' : ''" *ngFor="let p of getPages()"
+                (click)="goToPage(p)">{{ p }}</button>
+            <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Overlay -->
+<div *ngIf="showLogModal" class="modal-overlay" (click)="closeLogModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="font-size: 18px; font-weight: 600;">Raw Log Data</h2>
+            <button class="btn-icon" (click)="closeLogModal()"><i data-lucide="x" size="20"></i></button>
+        </div>
+        <pre
+            style="background: var(--bg-dark); padding: 16px; border-radius: 6px; overflow-x: auto; color: #a5b4fc; font-family: var(--font-mono); font-size: 13px; margin:0;">{{ selectedLog | json }}</pre>
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+            <button class="btn btn-secondary" (click)="closeLogModal()">Close</button>
+        </div>
+    </div>
 </div>
