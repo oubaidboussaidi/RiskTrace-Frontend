@@ -1,0 +1,196 @@
+.filter-dropdown {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    transition: border-color 0.2s;
+    min-width: 140px;
+    cursor: pointer;
+}
+
+.filter-dropdown:hover {
+    border-color: var(--accent-primary);
+}
+
+.filter-dropdown select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+.filter-dropdown .filter-value {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    flex-grow: 1;
+    padding-right: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filter-dropdown select option {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    padding: 8px;
+}
+
+.filter-dropdown i {
+    position: absolute;
+    right: 8px;
+    pointer-events: none;
+    color: var(--text-secondary);
+}
+
+.filter-dropdown span {
+    white-space: nowrap;
+}
+
+.action-menu-container {
+    position: relative;
+    display: inline-block;
+}
+
+.action-icon {
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    padding: 4px;
+    border-radius: 4px;
+}
+
+.action-menu-container:hover .action-icon {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+}
+
+.action-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    min-width: 160px;
+    z-index: 100;
+    padding: 4px;
+}
+
+.action-menu.show {
+    display: flex;
+    flex-direction: column;
+}
+
+tr:nth-last-child(-n+3) .action-menu {
+    top: auto;
+    bottom: 100%;
+    margin-bottom: 4px;
+}
+
+.action-menu button {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.action-menu button:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.action-menu button.danger {
+    color: #f87171;
+}
+
+.action-menu button.danger:hover {
+    background: rgba(248, 113, 113, 0.1);
+    color: #ef4444;
+}
+
+.action-menu button.warning {
+    color: #fbbf24;
+}
+
+.action-menu button.warning:hover {
+    background: rgba(251, 191, 36, 0.1);
+    color: #f59e0b;
+}
+
+.btn-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.btn-danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    width: 600px;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
