@@ -6,6 +6,12 @@
     <button class="btn btn-primary"><i data-lucide="plus" size="18"></i> Add Rule</button>
 </div>
 
+<div class="card" *ngIf="alertRules.length === 0"
+    style="padding: 32px; text-align: center; color: var(--text-secondary);">
+    <i data-lucide="shield-off" size="32" style="margin-bottom: 12px; opacity: 0.4;"></i>
+    <p>No detection rules configured yet.</p>
+</div>
+
 <div class="card" *ngFor="let rule of alertRules" style="margin-bottom: 16px;">
     <div style="display: flex; justify-content: space-between; align-items: start;">
         <div style="flex: 1;">

@@ -61,6 +61,10 @@
                     </div>
                 </td>
             </tr>
+            <tr *ngIf="apiKeys.length === 0">
+                <td colspan="7" style="text-align: center; padding: 32px; color: var(--text-secondary);">No API keys
+                    found.</td>
+            </tr>
         </tbody>
     </table>
 </div>

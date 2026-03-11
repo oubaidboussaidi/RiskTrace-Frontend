@@ -12,12 +12,8 @@ declare var lucide: any;
   styleUrl: './alerts.component.css'
 })
 export class AlertsComponent implements OnInit, AfterViewInit {
-  // Mock rules for now as backend doesn't support dynamic rules yet
-  alertRules: any[] = [
-    { id: 1, name: 'High Anomaly Score', condition: 'Score > 0.8', action: 'Email Admin', enabled: true },
-    { id: 2, name: 'Repeated Failed Login', condition: '> 5 attempts / min', action: 'Block IP', enabled: true },
-    { id: 3, name: 'SQL Injection Pattern', condition: 'Regex Match', action: 'Log & Alert', enabled: false }
-  ];
+  // Alert rules will be fetched from backend once the rules endpoint is implemented.
+  alertRules: any[] = [];
 
   constructor() { }
 
