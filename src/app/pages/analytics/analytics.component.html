@@ -22,6 +22,9 @@
         <h3>Feature Importance</h3>
         <p style="color: var(--text-secondary); margin-bottom: 24px;">Weight of attributes in anomaly detection.</p>
         <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div *ngIf="featureImportance.length === 0"
+                style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 24px 0;">ML model not yet
+                integrated.</div>
             <div *ngFor="let f of featureImportance">
                 <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                     <span>{{f.feature}}</span><span>{{(f.importance * 100).toFixed(0)}}%</span>
