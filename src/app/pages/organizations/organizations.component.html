@@ -1,0 +1,92 @@
+<div class="orgs-page">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-left">
+            <h1 class="page-title">
+                <i data-lucide="building-2" size="24"></i>
+                Organizations
+            </h1>
+            <p class="page-subtitle">Manage your client organizations and workspaces</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-primary" id="btn-create-org" (click)="toggleCreateForm()">
+                <i data-lucide="plus" size="16"></i>
+                New Organization
+            </button>
+        </div>
+    </div>
+
+    <!-- Create Form -->
+    <div class="create-panel" *ngIf="showCreateForm">
+        <div class="create-panel-header">
+            <h3><i data-lucide="building-2" size="16"></i> Create Organization</h3>
+            <button class="btn-icon" (click)="toggleCreateForm()">
+                <i data-lucide="x" size="16"></i>
+            </button>
+        </div>
+        <div class="create-panel-body">
+            <div class="form-group">
+                <label class="form-label">Organization Name</label>
+                <input id="org-name-input" class="form-input" type="text" [(ngModel)]="newOrg.name"
+                    placeholder="e.g. Acme Corp" (keydown.enter)="createOrganization()" />
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-ghost" (click)="toggleCreateForm()">Cancel</button>
+                <button class="btn btn-primary" id="btn-confirm-create-org"
+                    (click)="createOrganization()">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-banner" *ngIf="errorMessage">
+        <i data-lucide="alert-circle" size="16"></i>
+        {{ errorMessage }}
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>Loading organizations…</p>
+    </div>
+
+    <!-- Organizations Grid -->
+    <div class="orgs-grid" *ngIf="!isLoading">
+        <div class="org-card" [class.active-org]="org.id === activeOrgId" *ngFor="let org of organizations">
+            <div class="org-avatar">{{ getInitials(org.name) }}</div>
+            <div class="org-info">
+                <h3 class="org-name">{{ org.name }}</h3>
+                <span class="org-meta">Created {{ org.createdAt | date:'mediumDate' }}</span>
+            </div>
+            <div class="org-badges">
+                <span class="badge badge-active" *ngIf="org.id === activeOrgId">Active</span>
+            </div>
+            <div class="org-actions">
+                <button class="btn btn-sm btn-ghost" [disabled]="org.id === activeOrgId" (click)="switchOrg(org)"
+                    title="Switch to this organization">
+                    <i data-lucide="arrow-right-circle" size="14"></i>
+                    Switch
+                </button>
+                <a class="btn btn-sm btn-outline" [routerLink]="['/team']" [queryParams]="{orgId: org.id}">
+                    <i data-lucide="users" size="14"></i>
+                    Team
+                </a>
+                <a class="btn btn-sm btn-outline" [routerLink]="['/sites']" [queryParams]="{orgId: org.id}">
+                    <i data-lucide="globe" size="14"></i>
+                    Sites
+                </a>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="organizations.length === 0">
+            <i data-lucide="building-2" size="48"></i>
+            <h3>No organizations yet</h3>
+            <p>Create your first organization to get started</p>
+            <button class="btn btn-primary" (click)="toggleCreateForm()">
+                <i data-lucide="plus" size="16"></i>
+                Create Organization
+            </button>
+        </div>
+    </div>
+</div>
