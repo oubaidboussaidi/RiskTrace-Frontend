@@ -21,6 +21,9 @@ export class ResetPasswordComponent implements OnInit {
     error = '';
     message = '';
     isTokenError = false;
+    
+    showPassword = false;
+    showConfirmPassword = false;
 
     // Password strength
     get passwordStrength(): number {

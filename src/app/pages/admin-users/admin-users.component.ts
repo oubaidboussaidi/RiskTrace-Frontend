@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, UserResponse, OrganizationResponse, OrganizationMemberResponse } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, firstValueFrom } from 'rxjs';
 
 declare var lucide: any;
 
@@ -31,6 +31,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
 
     searchTerm = '';
     roleFilter = '';
+    ownerFilter = ''; // '' = all | 'owner' = org owners only | 'non-owner' = non-owners only
 
     // Platform roles
     readonly roles = ['USER', 'ADMIN'];
@@ -45,6 +46,9 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
     platformUserSearch: { [orgId: string]: string } = {};
     platformUserResults: { [orgId: string]: UserResponse[] } = {};
     isSearchingUsers: { [orgId: string]: boolean } = {};
+
+    // ── Org ownership tracking ────────────────────────────────
+    userOwnedOrgs: { [userId: string]: string[] } = {};
 
     constructor(
         private apiService: ApiService,
@@ -64,6 +68,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
                 this.users = users || [];
                 this.applyFilter();
                 this.isLoading = false;
+                this.loadOrgOwnerships();
                 setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
             },
             error: (err) => {
@@ -73,6 +78,35 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
         });
     }
 
+    /** Fetch all orgs + members to build a userId → orgName[] map */
+    private async loadOrgOwnerships() {
+        try {
+            const orgs = await firstValueFrom(this.apiService.getAllOrganizations());
+            const map: { [userId: string]: string[] } = {};
+            for (const org of orgs || []) {
+                const members = await firstValueFrom(this.apiService.getOrganizationMembers(org.id));
+                for (const m of members || []) {
+                    if (m.role === 'OWNER') {
+                        if (!map[m.userId]) map[m.userId] = [];
+                        map[m.userId].push(org.name);
+                    }
+                }
+            }
+            this.userOwnedOrgs = map;
+            this.applyFilter(); // re-apply now that ownership data is loaded
+        } catch (e) {
+            console.error('Failed to load org ownerships:', e);
+        }
+    }
+
+    getOwnedOrgNames(userId: string): string[] {
+        return this.userOwnedOrgs[userId] || [];
+    }
+
+    isSelf(user: UserResponse): boolean {
+        return user.id === this.authService.currentUserValue?.id;
+    }
+
     filterUsers() { this.applyFilter(); }
 
     private applyFilter() {
@@ -80,7 +114,11 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
         this.filteredUsers = this.users.filter(u => {
             const matchesTerm = u.fullName.toLowerCase().includes(term) || u.email.toLowerCase().includes(term);
             const matchesRole = this.roleFilter ? u.role === this.roleFilter : true;
-            return matchesTerm && matchesRole;
+            const isOwner = this.getOwnedOrgNames(u.id).length > 0;
+            const matchesOwner = this.ownerFilter === 'owner' ? isOwner
+                               : this.ownerFilter === 'non-owner' ? !isOwner
+                               : true;
+            return matchesTerm && matchesRole && matchesOwner;
         });
 
         this.currentPage = 1; // Reset to page 1 on filter

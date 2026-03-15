@@ -10,15 +10,33 @@
 
         <!-- Title -->
         <h1 style="margin-bottom: 8px; color: var(--text-primary);">
-            {{ isForgotMode ? 'Reset Password' : isRegisterMode ? 'Create Account' : 'Welcome Back' }}
+            {{ isMfaMode ? 'Two-Factor Authentication' : isForgotMode ? 'Reset Password' : isRegisterMode ? 'Create Account' : 'Welcome Back' }}
         </h1>
         <p style="color: var(--text-secondary); margin-bottom: 32px;">
-            {{ isForgotMode ? 'Enter your email to receive a reset link' :
+            {{ isMfaMode ? 'Enter the 6-digit code from your authenticator app' : isForgotMode ? 'Enter your email to receive a reset link' :
             isRegisterMode ? 'Register to access the SOC' : 'Enter your credentials to access the SOC' }}
         </p>
 
+        <!-- ======================= MFA FORM ======================= -->
+        <div *ngIf="isMfaMode">
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
+                    Verification Code
+                </label>
+                <input type="text" [(ngModel)]="mfaCode" (keyup.enter)="submit()" maxlength="6"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box; text-align: center; letter-spacing: 8px; font-size: 20px; font-weight: 700;"
+                    placeholder="000000">
+            </div>
+            <div style="text-align: left; margin-bottom: 20px;">
+                <a href="javascript:void(0)" (click)="isMfaMode = false"
+                    style="font-size: 12px; color: var(--accent-primary); text-decoration: none;">
+                    ← Back to Login
+                </a>
+            </div>
+        </div>
+
         <!-- ======================= FORGOT PASSWORD FORM ======================= -->
-        <div *ngIf="isForgotMode">
+        <div *ngIf="isForgotMode && !isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
                     Email Address
@@ -30,7 +48,7 @@
         </div>
 
         <!-- ======================= REGISTER FORM ======================= -->
-        <div *ngIf="isRegisterMode && !isForgotMode">
+        <div *ngIf="isRegisterMode && !isForgotMode && !isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Full
                     Name</label>
@@ -48,22 +66,36 @@
             <div style="text-align: left; margin-bottom: 20px;">
                 <label
                     style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Password</label>
-                <input type="password" [(ngModel)]="password"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
-                    placeholder="Min. 8 characters">
+                <div style="position: relative;">
+                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
+                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                        placeholder="Min. 8 characters">
+                    <button type="button" (click)="showPassword = !showPassword"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
+                        <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                    </button>
+                </div>
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
                 <label
                     style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Confirm
                     Password</label>
-                <input type="password" [(ngModel)]="confirmPassword" (keyup.enter)="submit()"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
-                    placeholder="••••••••">
+                <div style="position: relative;">
+                    <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" (keyup.enter)="submit()"
+                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                        placeholder="••••••••">
+                    <button type="button" (click)="showConfirmPassword = !showConfirmPassword"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
+                        <svg *ngIf="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg *ngIf="showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- ======================= LOGIN FORM ======================= -->
-        <div *ngIf="!isRegisterMode && !isForgotMode">
+        <div *ngIf="!isRegisterMode && !isForgotMode && !isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Email
                     Address</label>
@@ -74,9 +106,16 @@
             <div style="text-align: left; margin-bottom: 8px;">
                 <label
                     style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Password</label>
-                <input type="password" [(ngModel)]="password" (keyup.enter)="submit()"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
-                    placeholder="••••••••">
+                <div style="position: relative;">
+                    <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" (keyup.enter)="submit()"
+                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                        placeholder="••••••••">
+                    <button type="button" (click)="showPassword = !showPassword"
+                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
+                        <svg *ngIf="!showPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <svg *ngIf="showPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                    </button>
+                </div>
             </div>
             <!-- Forgot password link -->
             <div style="text-align: right; margin-bottom: 20px;">
@@ -109,15 +148,15 @@
         <!-- ======================= SUBMIT BUTTON ======================= -->
         <button class="btn btn-primary" style="width: 100%;" (click)="submit()" [disabled]="loading">
             <span *ngIf="!loading">
-                {{ isForgotMode ? 'Send Reset Link' : isRegisterMode ? 'Create Account' : 'Sign In to Dashboard' }}
+                {{ isMfaMode ? 'Verify Code' : isForgotMode ? 'Send Reset Link' : isRegisterMode ? 'Create Account' : 'Sign In to Dashboard' }}
             </span>
             <span *ngIf="loading">
-                {{ isForgotMode ? 'Sending...' : isRegisterMode ? 'Creating Account...' : 'Signing In...' }}
+                {{ isMfaMode ? 'Verifying...' : isForgotMode ? 'Sending...' : isRegisterMode ? 'Creating Account...' : 'Signing In...' }}
             </span>
         </button>
 
         <!-- ======================= FOOTER LINKS ======================= -->
-        <div style="margin-top: 24px; font-size: 12px; color: var(--text-muted);">
+        <div *ngIf="!isMfaMode" style="margin-top: 24px; font-size: 12px; color: var(--text-muted);">
             <span *ngIf="!isForgotMode">
                 {{ isRegisterMode ? 'Already have an account?' : "Don't have an account?" }}
                 <a href="javascript:void(0)" (click)="toggleMode()"

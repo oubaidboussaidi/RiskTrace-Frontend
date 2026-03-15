@@ -9,8 +9,24 @@ export interface UserResponse {
     email: string;
     role: string;
     enabled: boolean;
+    isTwoFactorEnabled: boolean;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface Setup2FaResponse {
+    secret: string;
+    qrCodeImage: string;
+}
+
+export interface Enable2FaRequest {
+    secret: string;
+    code: string;
+}
+
+export interface Verify2FARequest {
+    mfaToken: string;
+    code: string;
 }
 
 export interface AuthResponse {
@@ -19,6 +35,8 @@ export interface AuthResponse {
     email: string;
     fullName: string;
     id: string;
+    mfaRequired?: boolean;
+    mfaToken?: string;
 }
 
 export interface UpdateProfileRequest {
@@ -132,6 +150,10 @@ export class ApiService {
         return this.http.post<{ message: string }>(`${this.apiUrl}/auth/reset-password`, { token, newPassword });
     }
 
+    verify2fa(request: Verify2FARequest): Observable<AuthResponse> {
+        return this.http.post<AuthResponse>(`${this.apiUrl}/auth/verify-2fa`, request, { withCredentials: true });
+    }
+
     // --- Users (ADMIN) ---
     getUsers(): Observable<UserResponse[]> {
         return this.http.get<UserResponse[]>(`${this.apiUrl}/users`, { headers: this.getHeaders() });
@@ -164,6 +186,18 @@ export class ApiService {
 
     changePassword(data: ChangePasswordRequest): Observable<{ message: string }> {
         return this.http.post<{ message: string }>(`${this.apiUrl}/profile/change-password`, data, { headers: this.getHeaders() });
+    }
+
+    setup2fa(): Observable<Setup2FaResponse> {
+        return this.http.get<Setup2FaResponse>(`${this.apiUrl}/profile/2fa/setup`, { headers: this.getHeaders() });
+    }
+
+    enable2fa(data: Enable2FaRequest): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.apiUrl}/profile/2fa/enable`, data, { headers: this.getHeaders() });
+    }
+
+    disable2fa(currentPassword: string): Observable<{ message: string }> {
+        return this.http.post<{ message: string }>(`${this.apiUrl}/profile/2fa/disable`, { currentPassword }, { headers: this.getHeaders() });
     }
 
     // --- Organizations ---

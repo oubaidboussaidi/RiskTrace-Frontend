@@ -56,9 +56,27 @@ export class AuthService {
     login(email: string, password: string): Observable<AuthResponse> {
         return this.apiService.login({ email, password }).pipe(
             tap(response => {
+                if (response.mfaRequired) return;
+
                 // Store access token in memory
                 this.accessToken = response.token;
                 // Store only non-sensitive user profile in localStorage
+                const user: StoredUser = {
+                    id: response.id,
+                    email: response.email,
+                    fullName: response.fullName,
+                    role: response.role
+                };
+                localStorage.setItem('user', JSON.stringify(user));
+                this.currentUserSubject.next(user);
+            })
+        );
+    }
+
+    verify2fa(mfaToken: string, code: string): Observable<AuthResponse> {
+        return this.apiService.verify2fa({ mfaToken, code }).pipe(
+            tap(response => {
+                this.accessToken = response.token;
                 const user: StoredUser = {
                     id: response.id,
                     email: response.email,

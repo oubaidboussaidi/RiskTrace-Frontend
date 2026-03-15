@@ -24,6 +24,12 @@ export class LoginComponent {
   successMessage = '';
   showResendButton = false;
   resendEmail = '';
+  isMfaMode = false;
+  mfaCode = '';
+  mfaToken = '';
+  
+  showPassword = false;
+  showConfirmPassword = false;
 
   constructor(
     private router: Router,
@@ -57,6 +63,8 @@ export class LoginComponent {
     this.name = '';
     this.password = '';
     this.confirmPassword = '';
+    this.showPassword = false;
+    this.showConfirmPassword = false;
   }
 
   login() {
@@ -70,7 +78,14 @@ export class LoginComponent {
     this.showResendButton = false;
 
     this.authService.login(this.email, this.password).subscribe({
-      next: () => {
+      next: (res) => {
+        if (res.mfaRequired) {
+          this.isMfaMode = true;
+          this.mfaToken = res.mfaToken || '';
+          this.loading = false;
+          this.error = '';
+          return;
+        }
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
         this.router.navigate([returnUrl]);
       },
@@ -84,6 +99,27 @@ export class LoginComponent {
         } else {
           this.error = err.error?.error || 'Invalid credentials';
         }
+      }
+    });
+  }
+
+  verifyMfa() {
+    if (!this.mfaCode || this.mfaCode.length !== 6) {
+      this.error = 'Please enter a valid 6-digit code';
+      return;
+    }
+
+    this.error = '';
+    this.loading = true;
+
+    this.authService.verify2fa(this.mfaToken, this.mfaCode).subscribe({
+      next: () => {
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
+        this.router.navigate([returnUrl]);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = err.error?.error || 'Invalid verification code';
       }
     });
   }
@@ -170,7 +206,9 @@ export class LoginComponent {
 
   submit() {
     if (this.loading) return;
-    if (this.isForgotMode) {
+    if (this.isMfaMode) {
+      this.verifyMfa();
+    } else if (this.isForgotMode) {
       this.forgotPassword();
     } else if (this.isRegisterMode) {
       this.register();

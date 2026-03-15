@@ -27,6 +27,19 @@ export class SettingsComponent implements OnInit, AfterViewInit {
     confirmPassword: ''
   };
   showPasswordForm = false;
+  
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+  showDisablePassword = false;
+
+  // 2FA Fields
+  isTwoFactorEnabled = false;
+  show2faSetup = false;
+  setupData: any = null;
+  mfaCode = '';
+  showDisable2fa = false;
+  disablePassword = '';
 
   constructor(
     private authService: AuthService,
@@ -37,6 +50,13 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.currentUser = this.authService.currentUserValue;
     this.fullName = this.currentUser?.fullName ?? '';
+    this.fetchProfile();
+  }
+
+  fetchProfile() {
+    this.apiService.getProfile().subscribe(user => {
+      this.isTwoFactorEnabled = user.isTwoFactorEnabled;
+    });
   }
 
   ngAfterViewInit() {
@@ -85,6 +105,58 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   logout() {
     // authService.logout() already navigates to /auth/login
     this.authService.logout();
+  }
+
+  initiate2faSetup() {
+    this.apiService.setup2fa().subscribe({
+      next: (data) => {
+        this.setupData = data;
+        this.show2faSetup = true;
+      },
+      error: () => alert('Failed to initiate 2FA setup.')
+    });
+  }
+
+  enable2fa() {
+    if (!this.mfaCode || this.mfaCode.length !== 6) {
+      alert('Please enter a 6-digit code.');
+      return;
+    }
+
+    this.apiService.enable2fa({
+      secret: this.setupData.secret,
+      code: this.mfaCode
+    }).subscribe({
+      next: () => {
+        alert('2FA enabled successfully!');
+        this.isTwoFactorEnabled = true;
+        this.show2faSetup = false;
+        this.setupData = null;
+        this.mfaCode = '';
+      },
+      error: (err) => alert(err.error?.error || 'Failed to enable 2FA. Verify your code.')
+    });
+  }
+
+  initiate2faDisable() {
+    this.showDisable2fa = true;
+  }
+
+  disable2fa() {
+    if (!this.disablePassword) {
+      alert('Please enter your password to confirm.');
+      return;
+    }
+
+    this.apiService.disable2fa(this.disablePassword).subscribe({
+      next: () => {
+        alert('2FA disabled successfully.');
+        this.isTwoFactorEnabled = false;
+        this.showDisable2fa = false;
+        this.disablePassword = '';
+      },
+      error: (err) => alert(err.error?.error || 'Failed to disable 2FA. Check your password.')
+    });
   }
 
   deleteAccount() {

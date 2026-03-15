@@ -26,6 +26,11 @@
                 <option value="">All Roles</option>
                 <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
             </select>
+            <select class="role-filter" [(ngModel)]="ownerFilter" (change)="filterUsers()">
+                <option value="">All Users</option>
+                <option value="owner">Org Owners</option>
+                <option value="non-owner">Non-Owners</option>
+            </select>
             <button class="btn btn-primary" (click)="loadUsers()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -55,18 +60,35 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of paginatedUsers">
+                <tr *ngFor="let user of paginatedUsers"
+                    [class.is-owner-row]="getOwnedOrgNames(user.id).length > 0"
+                    [class.self-row]="isSelf(user)">
                     <td>
                         <div class="user-cell">
-                            <div class="avatar" [style.background]="user.enabled ? '#6366f1' : '#334155'">
-                                {{ getInitials(user.fullName) }}
+                            <div class="avatar-wrapper">
+                                <div class="avatar" [style.background]="user.enabled ? '#6366f1' : '#334155'">
+                                    {{ getInitials(user.fullName) }}
+                                </div>
                             </div>
-                            <span class="user-name">{{ user.fullName }}</span>
+                            <div class="user-name-group">
+                                <div class="user-name-line">
+                                    <span class="user-name">{{ user.fullName }}</span>
+                                    <span class="you-badge" *ngIf="isSelf(user)">You</span>
+                                </div>
+                                <!-- Subtle org ownership tags -->
+                                <div class="owner-badges" *ngIf="getOwnedOrgNames(user.id).length > 0">
+                                    <span class="owner-badge" *ngFor="let orgName of getOwnedOrgNames(user.id)" [title]="'Owner of ' + orgName">
+                                        <span class="owner-dot"></span>{{ orgName }}
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                     </td>
                     <td class="text-muted">{{ user.email }}</td>
                     <td>
-                        <select class="role-select" [(ngModel)]="user.role" (ngModelChange)="changeRole(user, $event)">
+                        <select class="role-select" [ngModel]="user.role" (ngModelChange)="changeRole(user, $event)"
+                            [disabled]="isSelf(user)"
+                            [title]="isSelf(user) ? 'You cannot change your own role' : ''">
                             <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
                         </select>
                     </td>
@@ -80,7 +102,9 @@
                         <div class="action-buttons">
                             <button class="btn btn-sm"
                                 [ngClass]="user.enabled ? 'btn-danger-ghost' : 'btn-success-ghost'"
-                                [disabled]="user.id === authService.currentUserValue?.id" (click)="toggleStatus(user)">
+                                [disabled]="isSelf(user)"
+                                [title]="isSelf(user) ? 'You cannot modify your own account here' : (user.enabled ? 'Disable user' : 'Enable user')"
+                                (click)="toggleStatus(user)">
                                 <!-- user-x icon (disable) -->
                                 <svg *ngIf="user.enabled" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -101,7 +125,8 @@
                                 {{ user.enabled ? 'Disable' : 'Enable' }}
                             </button>
                             <button class="btn btn-sm btn-danger-ghost"
-                                [disabled]="user.id === authService.currentUserValue?.id" title="Delete user"
+                                [disabled]="isSelf(user) || user.role === 'ADMIN'"
+                                [title]="isSelf(user) ? 'You cannot delete your own account here' : user.role === 'ADMIN' ? 'Cannot delete admin users' : 'Delete user'"
                                 (click)="deleteUser(user)">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

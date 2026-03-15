@@ -13,7 +13,7 @@
     padding: 24px 0 0 0;
     position: relative;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
+    overflow: visible;
     /* prevent the sidebar itself from scrolling */
 }
 
@@ -85,6 +85,12 @@
 /* Rotate the chevron when collapsed */
 .sidebar-content.collapsed .sidebar-toggle {
     transform: rotate(180deg);
+    right: -13px;
+    top: 24px;
+}
+
+.sidebar-content.collapsed .sidebar-toggle:hover {
+    transform: rotate(180deg) scale(1.1);
 }
 
 /* ===========================
@@ -101,6 +107,7 @@
     display: flex;
     justify-content: center;
     border-bottom: none;
+    overflow: visible;
 }
 
 .logo-area {
