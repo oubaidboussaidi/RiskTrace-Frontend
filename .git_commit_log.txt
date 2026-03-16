@@ -3,3 +3,4 @@
 /* Frontend Change at 2026-03-15 17:23:53 : feat(logs): implement real-time log viewer component */
 /* Frontend Change at 2026-03-15 19:20:20 : feat(settings): add 2FA toggle button */
 /* Frontend Change at 2026-03-16 14:38:42 : feat(logs): implement real-time log viewer component */
+/* Frontend Change at 2026-03-16 15:57:55 : fix(layout): fix sidebar responsive overflow */
