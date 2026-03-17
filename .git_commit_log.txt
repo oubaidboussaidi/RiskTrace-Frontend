@@ -8,3 +8,4 @@
 /* Frontend Change at 2026-03-17 13:19:23 : fix(form): add validation for user registration fields */
 /* Frontend Change at 2026-03-17 09:20:54 : perf(angular): optimize change detection for large lists */
 /* Frontend Change at 2026-03-17 14:24:14 : fix(form): add validation for user registration fields */
+/* Frontend Change at 2026-03-17 11:27:05 : refactor(interceptor): add error handling for api calls */
