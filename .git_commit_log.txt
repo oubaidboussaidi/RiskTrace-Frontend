@@ -6,3 +6,4 @@
 /* Frontend Change at 2026-03-16 15:57:55 : fix(layout): fix sidebar responsive overflow */
 /* Frontend Change at 2026-03-16 12:13:13 : feat(assets): add new SVG icons for site management */
 /* Frontend Change at 2026-03-17 13:19:23 : fix(form): add validation for user registration fields */
+/* Frontend Change at 2026-03-17 09:20:54 : perf(angular): optimize change detection for large lists */
