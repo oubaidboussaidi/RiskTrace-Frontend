@@ -14,3 +14,4 @@
 /* Frontend Change at 2026-03-18 09:34:13 : chore: update frontend package-lock.json */
 /* Frontend Change at 2026-03-18 16:31:08 : perf(angular): optimize change detection for large lists */
 /* Frontend Change at 2026-03-18 10:48:35 : feat(auth): enhance login page UI styling */
+/* Frontend Change at 2026-03-18 19:28:17 : feat(settings): add 2FA toggle button */
