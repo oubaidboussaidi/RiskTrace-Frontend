@@ -23,3 +23,4 @@
 /* Frontend Change at 2026-03-19 15:35:28 : refactor(interceptor): add error handling for api calls */
 /* Frontend Change at 2026-03-20 17:56:53 : feat(assets): add new SVG icons for site management */
 /* Frontend Change at 2026-03-20 10:44:34 : docs: update README with frontend setup instructions */
+/* Frontend Change at 2026-03-20 12:17:27 : feat(logs): implement real-time log viewer component */
