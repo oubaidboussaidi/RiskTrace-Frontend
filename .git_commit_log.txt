@@ -35,3 +35,4 @@
 /* Frontend Change at 2026-03-22 12:44:40 : feat(alerts): implement interactive alert notification toast */
 /* Frontend Change at 2026-03-23 19:31:08 : feat(settings): add 2FA toggle button */
 /* Frontend Change at 2026-03-23 20:39:19 : feat(logs): implement real-time log viewer component */
+/* Frontend Change at 2026-03-23 10:46:58 : feat(assets): add new SVG icons for site management */
