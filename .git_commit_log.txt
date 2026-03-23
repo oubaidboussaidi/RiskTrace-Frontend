@@ -37,3 +37,4 @@
 /* Frontend Change at 2026-03-23 20:39:19 : feat(logs): implement real-time log viewer component */
 /* Frontend Change at 2026-03-23 10:46:58 : feat(assets): add new SVG icons for site management */
 /* Frontend Change at 2026-03-23 18:25:12 : fix(form): add validation for user registration fields */
+/* Frontend Change at 2026-03-23 12:28:30 : refactor(ui): extract reusable table component for stats */
