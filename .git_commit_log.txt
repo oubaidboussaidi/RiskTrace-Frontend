@@ -44,3 +44,4 @@
 /* Frontend Change at 2026-03-24 18:36:32 : refactor(interceptor): add error handling for api calls */
 /* Frontend Change at 2026-03-24 16:48:47 : feat(charts): add visualization for site traffic logs */
 /* Frontend Change at 2026-03-25 17:12:29 : feat(alerts): implement interactive alert notification toast */
+/* Frontend Change at 2026-03-25 09:45:13 : fix(layout): fix sidebar responsive overflow */
