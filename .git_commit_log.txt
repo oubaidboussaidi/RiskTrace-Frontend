@@ -49,3 +49,4 @@
 /* Frontend Change at 2026-03-25 15:57:15 : fix(form): add validation for user registration fields */
 /* Frontend Change at 2026-03-26 16:05:13 : feat(charts): add visualization for site traffic logs */
 /* Frontend Change at 2026-03-27 13:25:32 : feat(assets): add new SVG icons for site management */
+/* Frontend Change at 2026-03-28 16:20:01 : docs: update README with frontend setup instructions */
