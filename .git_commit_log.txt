@@ -50,3 +50,4 @@
 /* Frontend Change at 2026-03-26 16:05:13 : feat(charts): add visualization for site traffic logs */
 /* Frontend Change at 2026-03-27 13:25:32 : feat(assets): add new SVG icons for site management */
 /* Frontend Change at 2026-03-28 16:20:01 : docs: update README with frontend setup instructions */
+/* Frontend Change at 2026-03-28 14:15:14 : fix(dashboard): resolve data loading spinner issue */
