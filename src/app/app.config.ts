@@ -1,11 +1,28 @@
 import { ApplicationConfig, provideZoneChangeDetection, APP_INITIALIZER } from '@angular/core';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { jwtInterceptorFn } from './interceptors/jwt.interceptor';
 import { AuthService } from './services/auth.service';
 import { ApiService } from './services/api.service';
+
+import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+
+/** Custom loader that always fetches fresh JSON (no-cache headers) */
+class NoCacheTranslateLoader implements TranslateLoader {
+  constructor(private http: HttpClient) {}
+  getTranslation(lang: string): Observable<any> {
+    return this.http.get(`/assets/i18n/${lang}.json?t=${new Date().getTime()}`, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
+    });
+  }
+}
 
 /**
  * On every page load/refresh, silently attempt to get a fresh access token
@@ -41,6 +58,14 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([jwtInterceptorFn])),
+    provideTranslateService({
+      defaultLanguage: 'en',
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) => new NoCacheTranslateLoader(http),
+        deps: [HttpClient]
+      }
+    }),
     {
       provide: APP_INITIALIZER,
       useFactory: (authService: AuthService, apiService: ApiService) =>
