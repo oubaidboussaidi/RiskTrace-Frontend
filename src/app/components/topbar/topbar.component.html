@@ -1,6 +1,6 @@
 <div class="search-container">
     <i data-lucide="search" size="16"></i>
-    <input #searchInput type="text" placeholder="Search for IPs, sessions, or endpoints..."
+    <input #searchInput type="text" [placeholder]="'TOPBAR.SEARCH_PLACEHOLDER' | translate"
         (keydown)="onSearch($event)">
 
     <span class="cmd-k">⌘ K</span>
@@ -9,18 +9,20 @@
 <div class="topbar-actions">
     <div class="status-indicator">
         <div class="status-dot"></div>
-        ML Engine: Online
+        {{ 'TOPBAR.ML_ENGINE_ONLINE' | translate }}
     </div>
-    <div style="position: relative;">
+
+    <!-- Notifications Bell -->
+    <div style="position: relative; display: flex; align-items: center;">
         <i data-lucide="bell" size="20" class="action-icon" (click)="toggleNotifications()"
             style="cursor: pointer;"></i>
         <div *ngIf="notifications.length > 0"
-            style="position: absolute; top: -5px; right: -5px; width: 8px; height: 8px; background: red; border-radius: 50%;">
+            style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; background: var(--sev-critical); border-radius: 50%; border: 2px solid var(--bg-elevated);">
         </div>
 
         <div *ngIf="showNotifications" class="dropdown-menu"
-            style="position: absolute; top: 100%; right: 0; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; width: 300px; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-            <div style="padding: 12px; font-weight: 600; border-bottom: 1px solid var(--border-color);">Notifications
+            style="position: absolute; top: 100%; right: 0; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 8px; width: 300px; z-index: 1000; box-shadow: var(--shadow); margin-top: 12px;">
+            <div style="padding: 12px; font-weight: 600; border-bottom: 1px solid var(--border-color);">{{ 'TOPBAR.NOTIFICATIONS' | translate }}
             </div>
             <div *ngFor="let n of notifications"
                 style="padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer;"
@@ -30,8 +32,53 @@
             </div>
             <div *ngIf="notifications.length === 0"
                 style="padding: 16px; text-align: center; color: var(--text-secondary); font-size: 13px;">
-                No active alerts via ML Engine.
+                {{ 'TOPBAR.NO_ALERTS' | translate }}
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Settings Button -->
+    <div class="settings-btn-wrap">
+        <button class="action-icon settings-btn" (click)="toggleSettings()" [class.active]="showSettings" title="Preferences">
+            <i data-lucide="settings-2" size="18"></i>
+        </button>
+
+        <!-- Settings Popover -->
+        <div *ngIf="showSettings" class="settings-popover">
+            <div class="settings-popover-header">
+                <i data-lucide="sliders-horizontal" size="13"></i>
+                <span>Preferences</span>
+            </div>
+
+            <!-- Appearance -->
+            <div class="settings-section">
+                <div class="settings-label">Appearance</div>
+                <div class="settings-row">
+                    <div class="settings-row-left">
+                        <i *ngIf="themeService.isDarkMode()" data-lucide="moon" size="14"></i>
+                        <i *ngIf="!themeService.isDarkMode()" data-lucide="sun" size="14"></i>
+                        <span>{{ themeService.isDarkMode() ? 'Dark mode' : 'Light mode' }}</span>
+                    </div>
+                    <button class="theme-toggle" (click)="toggleTheme()" [class.is-dark]="themeService.isDarkMode()">
+                        <span class="theme-toggle-knob"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <!-- Language -->
+            <div class="settings-section">
+                <div class="settings-label">Language</div>
+                <div class="lang-options">
+                    <button class="lang-option" [class.active]="currentLang === 'en'" (click)="languageService.setLanguage('en')">
+                        English
+                    </button>
+                    <button class="lang-option" [class.active]="currentLang === 'fr'" (click)="languageService.setLanguage('fr')">
+                        Français
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

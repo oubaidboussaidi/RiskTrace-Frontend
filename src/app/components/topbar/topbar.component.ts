@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { RouterModule, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
+import { ThemeService } from '../../services/theme.service';
 
 declare var lucide: any;
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.css'
 })
@@ -17,6 +20,9 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   currentUser: any = null;
   notifications: any[] = [];
   showNotifications = false;
+  showSettings = false;
+
+  get currentLang() { return this.languageService.currentLang; }
 
   @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
@@ -26,12 +32,29 @@ export class TopbarComponent implements OnInit, AfterViewInit {
       event.preventDefault();
       this.searchInput.nativeElement.focus();
     }
+    if (event.key === 'Escape') {
+      this.showSettings = false;
+      this.showNotifications = false;
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.settings-btn-wrap')) {
+      this.showSettings = false;
+    }
+    if (!target.closest('[data-lucide="bell"]') && !target.closest('.dropdown-menu')) {
+      this.showNotifications = false;
+    }
   }
 
   constructor(
     public authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private router: Router,
+    public languageService: LanguageService,
+    public themeService: ThemeService
   ) { }
 
 
@@ -48,6 +71,18 @@ export class TopbarComponent implements OnInit, AfterViewInit {
 
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;
+    this.showSettings = false;
+    if (this.showNotifications) {
+      setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 0);
+    }
+  }
+
+  toggleSettings() {
+    this.showSettings = !this.showSettings;
+    this.showNotifications = false;
+    if (this.showSettings) {
+      setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 0);
+    }
   }
 
   onSearch(event: any) {
@@ -62,6 +97,22 @@ export class TopbarComponent implements OnInit, AfterViewInit {
     if (typeof lucide !== 'undefined') {
       lucide.createIcons();
     }
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+    setTimeout(() => {
+      // Clean up any existing theme icons to prevent duplication
+      const container = document.querySelector('.settings-row-left');
+      if (container) {
+        const existingSvgs = container.querySelectorAll('svg');
+        existingSvgs.forEach(svg => svg.remove());
+      }
+
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+    }, 50);
   }
 
   logout() {
