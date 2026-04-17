@@ -12,7 +12,7 @@ import { OrganizationService } from '../../services/organization.service';
   styleUrl: './main-layout.component.css'
 })
 export class MainLayoutComponent implements OnInit {
-  isSidebarCollapsed: boolean = false;
+  isSidebarCollapsed: boolean = true;
 
   constructor(private orgService: OrganizationService) { }
 

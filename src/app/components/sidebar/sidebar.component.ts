@@ -9,10 +9,12 @@ import { EventEmitter, Output } from '@angular/core';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, TranslateModule],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
@@ -25,7 +27,23 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   private userSub?: Subscription;
 
   @Output() collapsedChange = new EventEmitter<boolean>();
-  isCollapsed: boolean = false;
+  isCollapsed: boolean = true;
+
+  onMouseEnter() {
+    if (this.isCollapsed) {
+      this.isCollapsed = false;
+      this.collapsedChange.emit(this.isCollapsed);
+      setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 50);
+    }
+  }
+
+  onMouseLeave() {
+    if (!this.isCollapsed) {
+      this.isCollapsed = true;
+      this.collapsedChange.emit(this.isCollapsed);
+      setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 50);
+    }
+  }
 
   constructor(
     public authService: AuthService,
@@ -82,11 +100,6 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
     if (typeof lucide !== 'undefined') lucide.createIcons();
   }
 
-  toggleSidebar() {
-    this.isCollapsed = !this.isCollapsed;
-    this.collapsedChange.emit(this.isCollapsed);
-    setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 0);
-  }
 
   getOrgInitials(name: string): string {
     if (!name || name === 'Select Org...') return 'O';

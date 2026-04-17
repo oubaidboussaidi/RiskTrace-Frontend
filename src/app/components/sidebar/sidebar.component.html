@@ -1,8 +1,4 @@
-<div class="sidebar-content" [class.collapsed]="isCollapsed">
-
-    <button class="sidebar-toggle" (click)="toggleSidebar()" title="Toggle Sidebar">
-        <i data-lucide="chevron-left" size="14"></i>
-    </button>
+<div class="sidebar-content" [class.collapsed]="isCollapsed" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
 
     <div class="app-header">
         <div class="logo-area">
@@ -27,49 +23,49 @@
 
         <!-- General -->
         <div class="nav-group">
-            <div class="nav-label">General</div>
-            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" title="Overview">
+            <div class="nav-label">{{ 'SIDEBAR.GENERAL' | translate }}</div>
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.OVERVIEW' | translate">
                 <i data-lucide="layout-dashboard" size="18"></i>
-                <span class="nav-text">Overview</span>
+                <span class="nav-text">{{ 'SIDEBAR.OVERVIEW' | translate }}</span>
             </a>
-            <a routerLink="/incidents" routerLinkActive="active" class="nav-item" title="Incidents">
+            <a routerLink="/incidents" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.INCIDENTS' | translate">
                 <i data-lucide="shield-alert" size="18"></i>
-                <span class="nav-text">Incidents</span>
+                <span class="nav-text">{{ 'SIDEBAR.INCIDENTS' | translate }}</span>
                 <span class="incident-badge" *ngIf="incidentCount > 0">{{incidentCount}}</span>
             </a>
         </div>
 
         <!-- Investigation -->
         <div class="nav-group">
-            <div class="nav-label">Investigation</div>
-            <a routerLink="/logs" routerLinkActive="active" class="nav-item" title="Log Explorer">
+            <div class="nav-label">{{ 'SIDEBAR.INVESTIGATION' | translate }}</div>
+            <a routerLink="/logs" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.LOG_EXPLORER' | translate">
                 <i data-lucide="file-search" size="18"></i>
-                <span class="nav-text">Log Explorer</span>
+                <span class="nav-text">{{ 'SIDEBAR.LOG_EXPLORER' | translate }}</span>
             </a>
-            <a routerLink="/analytics" routerLinkActive="active" class="nav-item" title="ML Analytics">
+            <a routerLink="/analytics" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ML_ANALYTICS' | translate">
                 <i data-lucide="bar-chart-3" size="18"></i>
-                <span class="nav-text">ML Analytics</span>
+                <span class="nav-text">{{ 'SIDEBAR.ML_ANALYTICS' | translate }}</span>
             </a>
         </div>
 
         <!-- Management -->
         <div class="nav-group">
-            <div class="nav-label">Management</div>
-            <a routerLink="/organizations" routerLinkActive="active" class="nav-item" title="Organizations">
+            <div class="nav-label">{{ 'SIDEBAR.MANAGEMENT' | translate }}</div>
+            <a routerLink="/organizations" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ORGANIZATIONS' | translate">
                 <i data-lucide="building-2" size="18"></i>
-                <span class="nav-text">Organizations</span>
+                <span class="nav-text">{{ 'SIDEBAR.ORGANIZATIONS' | translate }}</span>
             </a>
-            <a routerLink="/sites" routerLinkActive="active" class="nav-item" title="Applications">
+            <a routerLink="/sites" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.APPLICATIONS' | translate">
                 <i data-lucide="globe" size="18"></i>
-                <span class="nav-text">Applications</span>
+                <span class="nav-text">{{ 'SIDEBAR.APPLICATIONS' | translate }}</span>
             </a>
-            <a routerLink="/alerts" routerLinkActive="active" class="nav-item" title="Alert Center">
+            <a routerLink="/alerts" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ALERT_CENTER' | translate">
                 <i data-lucide="bell-ring" size="18"></i>
-                <span class="nav-text">Alert Center</span>
+                <span class="nav-text">{{ 'SIDEBAR.ALERT_CENTER' | translate }}</span>
             </a>
-            <a routerLink="/team" routerLinkActive="active" class="nav-item" title="Team &amp; Roles">
+            <a routerLink="/team" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.TEAM_ROLES' | translate">
                 <i data-lucide="users" size="18"></i>
-                <span class="nav-text">Team &amp; Roles</span>
+                <span class="nav-text">{{ 'SIDEBAR.TEAM_ROLES' | translate }}</span>
             </a>
         </div>
 
@@ -78,9 +74,9 @@
 
             <!-- Toggle trigger -->
             <div class="nav-item admin-toggle" (click)="toggleAdmin($event)" [class.admin-active]="adminExpanded"
-                title="Admin Panel">
+                [title]="'SIDEBAR.ADMIN_PANEL' | translate">
                 <i data-lucide="shield-check" size="18"></i>
-                <span class="nav-text">Admin Panel</span>
+                <span class="nav-text">{{ 'SIDEBAR.ADMIN_PANEL' | translate }}</span>
                 <svg class="chevron nav-text" [class.chevron-open]="adminExpanded" xmlns="http://www.w3.org/2000/svg"
                     width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round">
@@ -90,18 +86,18 @@
 
             <!-- Sub-items (slide in/out) -->
             <div class="admin-submenu" [class.open]="adminExpanded">
-                <a routerLink="/admin/users" routerLinkActive="active" class="nav-item sub-item" title="Global Users">
+                <a routerLink="/admin/users" routerLinkActive="active" class="nav-item sub-item" [title]="'SIDEBAR.GLOBAL_USERS' | translate">
                     <i data-lucide="users-2" size="16"></i>
-                    <span class="nav-text">Global Users</span>
+                    <span class="nav-text">{{ 'SIDEBAR.GLOBAL_USERS' | translate }}</span>
                 </a>
                 <a routerLink="/admin/organizations" routerLinkActive="active" class="nav-item sub-item"
-                    title="Global Orgs">
+                    [title]="'SIDEBAR.GLOBAL_ORGS' | translate">
                     <i data-lucide="building" size="16"></i>
-                    <span class="nav-text">Global Orgs</span>
+                    <span class="nav-text">{{ 'SIDEBAR.GLOBAL_ORGS' | translate }}</span>
                 </a>
-                <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item sub-item" title="Global Logs">
+                <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item sub-item" [title]="'SIDEBAR.GLOBAL_LOGS' | translate">
                     <i data-lucide="file-search" size="16"></i>
-                    <span class="nav-text">Global Logs</span>
+                    <span class="nav-text">{{ 'SIDEBAR.GLOBAL_LOGS' | translate }}</span>
                 </a>
             </div>
 
@@ -113,8 +109,8 @@
     <div class="user-profile" (click)="navigateToSettings()">
         <div class="avatar">{{ currentUser?.fullName?.charAt(0)?.toUpperCase() || 'U' }}</div>
         <div class="user-info">
-            <div class="user-name">{{ currentUser?.fullName || currentUser?.email || 'User' }}</div>
-            <div class="user-role">{{ currentUser?.role || 'User' }}</div>
+            <div class="user-name">{{ currentUser?.fullName || currentUser?.email || ('COMMON.USER' | translate) }}</div>
+            <div class="user-role">{{ (currentUser?.role?.toLowerCase() === 'admin' ? ('ADMIN_USERS.ROLE_ADMIN' | translate) : ('ADMIN_USERS.ROLE_ANALYST' | translate)) || ('COMMON.USER' | translate) }}</div>
         </div>
         <button class="profile-logout-btn" (click)="$event.stopPropagation(); logout()" title="Logout">
             <i data-lucide="log-out" size="16"></i>
