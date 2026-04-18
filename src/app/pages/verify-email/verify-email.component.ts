@@ -6,10 +6,12 @@ import { ApiService } from '../../services/api.service';
 
 type VerifyState = 'loading' | 'success' | 'error';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-verify-email',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './verify-email.component.html',
     styleUrl: './verify-email.component.css'
 })
