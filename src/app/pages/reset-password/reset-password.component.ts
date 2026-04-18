@@ -6,10 +6,12 @@ import { ApiService } from '../../services/api.service';
 
 type ResetState = 'form' | 'loading' | 'success' | 'error';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-reset-password',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './reset-password.component.html',
     styleUrl: './reset-password.component.css'
 })
