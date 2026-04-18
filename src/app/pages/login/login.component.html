@@ -10,27 +10,27 @@
 
         <!-- Title -->
         <h1 style="margin-bottom: 8px; color: var(--text-primary);">
-            {{ isMfaMode ? 'Two-Factor Authentication' : isForgotMode ? 'Reset Password' : isRegisterMode ? 'Create Account' : 'Welcome Back' }}
+            {{ isMfaMode ? ('LOGIN.MFA_TITLE' | translate) : isForgotMode ? ('LOGIN.RESET_PASSWORD' | translate) : isRegisterMode ? ('LOGIN.CREATE_ACCOUNT' | translate) : ('LOGIN.WELCOME_BACK' | translate) }}
         </h1>
         <p style="color: var(--text-secondary); margin-bottom: 32px;">
-            {{ isMfaMode ? 'Enter the 6-digit code from your authenticator app' : isForgotMode ? 'Enter your email to receive a reset link' :
-            isRegisterMode ? 'Register to access the SOC' : 'Enter your credentials to access the SOC' }}
+            {{ isMfaMode ? ('LOGIN.MFA_DESC' | translate) : isForgotMode ? ('LOGIN.FORGOT_DESC' | translate) :
+            isRegisterMode ? ('LOGIN.REGISTER_DESC' | translate) : ('LOGIN.SIGNIN_DESC' | translate) }}
         </p>
 
         <!-- ======================= MFA FORM ======================= -->
         <div *ngIf="isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
-                    Verification Code
+                    {{ 'LOGIN.VERIFICATION_CODE' | translate }}
                 </label>
                 <input type="text" [(ngModel)]="mfaCode" (keyup.enter)="submit()" maxlength="6"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box; text-align: center; letter-spacing: 8px; font-size: 20px; font-weight: 700;"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box; text-align: center; letter-spacing: 8px; font-size: 20px; font-weight: 700;"
                     placeholder="000000">
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
                 <a href="javascript:void(0)" (click)="isMfaMode = false"
                     style="font-size: 12px; color: var(--accent-primary); text-decoration: none;">
-                    ← Back to Login
+                    ← {{ 'LOGIN.BACK_TO_LOGIN' | translate }}
                 </a>
             </div>
         </div>
@@ -39,10 +39,10 @@
         <div *ngIf="isForgotMode && !isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
                 <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
-                    Email Address
+                    {{ 'LOGIN.EMAIL_LABEL' | translate }}
                 </label>
                 <input type="email" [(ngModel)]="email" (keyup.enter)="submit()"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                     placeholder="user@example.com">
             </div>
         </div>
@@ -50,25 +50,27 @@
         <!-- ======================= REGISTER FORM ======================= -->
         <div *ngIf="isRegisterMode && !isForgotMode && !isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Full
-                    Name</label>
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
+                    {{ 'LOGIN.NAME_LABEL' | translate }}
+                </label>
                 <input type="text" [(ngModel)]="name"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                     placeholder="John Doe">
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Email
-                    Address</label>
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">
+                    {{ 'LOGIN.EMAIL_LABEL' | translate }}
+                </label>
                 <input type="email" [(ngModel)]="email"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                     placeholder="user@example.com">
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
                 <label
-                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Password</label>
+                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">{{ 'LOGIN.PASSWORD_LABEL' | translate }}</label>
                 <div style="position: relative;">
                     <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
-                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                         placeholder="Min. 8 characters">
                     <button type="button" (click)="showPassword = !showPassword"
                         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
@@ -79,11 +81,10 @@
             </div>
             <div style="text-align: left; margin-bottom: 20px;">
                 <label
-                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Confirm
-                    Password</label>
+                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">{{ 'LOGIN.CONFIRM_PASSWORD' | translate }}</label>
                 <div style="position: relative;">
                     <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" (keyup.enter)="submit()"
-                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                         placeholder="••••••••">
                     <button type="button" (click)="showConfirmPassword = !showConfirmPassword"
                         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
@@ -97,18 +98,17 @@
         <!-- ======================= LOGIN FORM ======================= -->
         <div *ngIf="!isRegisterMode && !isForgotMode && !isMfaMode">
             <div style="text-align: left; margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Email
-                    Address</label>
+                <label style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">{{ 'LOGIN.EMAIL_LABEL' | translate }}</label>
                 <input type="email" [(ngModel)]="email"
-                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                    style="width: 100%; padding: 12px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                     placeholder="user@example.com">
             </div>
             <div style="text-align: left; margin-bottom: 8px;">
                 <label
-                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">Password</label>
+                    style="display: block; margin-bottom: 8px; font-size: 12px; color: var(--text-secondary);">{{ 'LOGIN.PASSWORD_LABEL' | translate }}</label>
                 <div style="position: relative;">
                     <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" (keyup.enter)="submit()"
-                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: white; box-sizing: border-box;"
+                        style="width: 100%; padding: 12px; padding-right: 40px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: var(--radius-md); color: var(--text-primary); box-sizing: border-box;"
                         placeholder="••••••••">
                     <button type="button" (click)="showPassword = !showPassword"
                         style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
@@ -121,7 +121,7 @@
             <div style="text-align: right; margin-bottom: 20px;">
                 <a href="javascript:void(0)" (click)="showForgotPassword()"
                     style="font-size: 12px; color: var(--accent-primary); text-decoration: none;">
-                    Forgot password?
+                    {{ 'LOGIN.FORGOT_PASSWORD_LINK' | translate }}
                 </a>
             </div>
         </div>
@@ -129,45 +129,57 @@
         <!-- ======================= SUCCESS MESSAGE ======================= -->
         <p *ngIf="successMessage"
             style="color: var(--sev-info); font-size: 14px; margin-bottom: 16px; text-align: left; background: rgba(56, 189, 248, 0.1); padding: 12px; border-radius: 6px; line-height: 1.5;">
-            {{successMessage}}
+            {{ successMessage | translate }}
         </p>
 
         <!-- ======================= ERROR MESSAGE ======================= -->
         <p *ngIf="error"
             style="color: var(--sev-critical); font-size: 14px; margin-bottom: 8px; text-align: left; background: rgba(239, 68, 68, 0.1); padding: 12px; border-radius: 6px; line-height: 1.5;">
-            {{error}}
+            {{ error | translate }}
         </p>
 
         <!-- Resend Verification Button (shown after ACCOUNT_NOT_VERIFIED) -->
         <button *ngIf="showResendButton" class="btn btn-secondary"
             style="width: 100%; margin-bottom: 16px; justify-content: center;" (click)="resendVerification()"
             [disabled]="loading">
-            📧 Resend Verification Email
+            {{ 'LOGIN.RESEND_VERIFICATION' | translate }}
         </button>
 
+        <!-- Account Locked Extra Info -->
+        <div *ngIf="isLockedMode" 
+            style="color: var(--text-muted); font-size: 12px; margin-bottom: 20px; padding: 12px; border: 1px dashed var(--border-color); border-radius: var(--radius-md); text-align: left;">
+            <div style="display: flex; align-items: start; gap: 10px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sev-critical)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-alert"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.5 3.8 17 5 19 5a1 1 0 0 1 1 1z"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                <span>{{ 'LOGIN.SECURITY_NOTICE' | translate }}</span>
+            </div>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 12px; border-width: 1px;" (click)="showForgotPassword()">
+                {{ 'LOGIN.RESET_PASSWORD' | translate }}
+            </button>
+        </div>
+
         <!-- ======================= SUBMIT BUTTON ======================= -->
-        <button class="btn btn-primary" style="width: 100%;" (click)="submit()" [disabled]="loading">
+        <button class="btn btn-primary" style="width: 100%;" (click)="submit()" [disabled]="loading || (isLockedMode && !isForgotMode)">
             <span *ngIf="!loading">
-                {{ isMfaMode ? 'Verify Code' : isForgotMode ? 'Send Reset Link' : isRegisterMode ? 'Create Account' : 'Sign In to Dashboard' }}
+                {{ isMfaMode ? ('LOGIN.VERIFY_CODE' | translate) : isForgotMode ? ('LOGIN.SEND_RESET_LINK' | translate) : isRegisterMode ? ('LOGIN.REGISTER_BTN' | translate) : ('LOGIN.SIGNIN_BTN' | translate) }}
             </span>
             <span *ngIf="loading">
-                {{ isMfaMode ? 'Verifying...' : isForgotMode ? 'Sending...' : isRegisterMode ? 'Creating Account...' : 'Signing In...' }}
+                {{ isMfaMode ? ('LOGIN.VERIFYING' | translate) : isForgotMode ? ('LOGIN.SENDING' | translate) : isRegisterMode ? ('LOGIN.CREATING_ACCOUNT' | translate) : ('LOGIN.SIGNING_IN' | translate) }}
             </span>
         </button>
 
         <!-- ======================= FOOTER LINKS ======================= -->
         <div *ngIf="!isMfaMode" style="margin-top: 24px; font-size: 12px; color: var(--text-muted);">
             <span *ngIf="!isForgotMode">
-                {{ isRegisterMode ? 'Already have an account?' : "Don't have an account?" }}
+                {{ isRegisterMode ? ('LOGIN.HAVE_ACCOUNT' | translate) : ("LOGIN.NO_ACCOUNT" | translate) }}
                 <a href="javascript:void(0)" (click)="toggleMode()"
                     style="color: var(--accent-primary); text-decoration: none; font-weight: 500; margin-left: 4px;">
-                    {{ isRegisterMode ? 'Sign In' : 'Register' }}
+                    {{ isRegisterMode ? ('LOGIN.SIGNIN' | translate) : ('LOGIN.REGISTER' | translate) }}
                 </a>
             </span>
             <span *ngIf="isForgotMode">
                 <a href="javascript:void(0)" (click)="backToLogin()"
                     style="color: var(--accent-primary); text-decoration: none; font-weight: 500;">
-                    ← Back to Sign In
+                    ← {{ 'LOGIN.BACK_TO_SIGNIN' | translate }}
                 </a>
             </span>
         </div>

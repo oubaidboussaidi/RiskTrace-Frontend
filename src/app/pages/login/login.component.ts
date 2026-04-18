@@ -4,11 +4,12 @@ import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, TranslateModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -27,6 +28,7 @@ export class LoginComponent {
   isMfaMode = false;
   mfaCode = '';
   mfaToken = '';
+  isLockedMode = false;
   
   showPassword = false;
   showConfirmPassword = false;
@@ -35,7 +37,8 @@ export class LoginComponent {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private translate: TranslateService
   ) { }
 
   toggleMode() {
@@ -60,6 +63,7 @@ export class LoginComponent {
     this.error = '';
     this.successMessage = '';
     this.showResendButton = false;
+    this.isLockedMode = false;
     this.name = '';
     this.password = '';
     this.confirmPassword = '';
@@ -69,7 +73,7 @@ export class LoginComponent {
 
   login() {
     if (!this.email || !this.password) {
-      this.error = 'Please fill in all fields';
+      this.error = 'ERR_FILL_ALL';
       return;
     }
 
@@ -93,11 +97,14 @@ export class LoginComponent {
         this.loading = false;
         const code = err.error?.code;
         if (code === 'ACCOUNT_NOT_VERIFIED') {
-          this.error = 'Your account is not verified. Please check your email inbox.';
+          this.error = 'ERR_NOT_VERIFIED';
           this.showResendButton = true;
           this.resendEmail = this.email;
+        } else if (code === 'ACCOUNT_LOCKED') {
+          this.isLockedMode = true;
+          this.error = err.error?.error || 'ERR_LOCKED';
         } else {
-          this.error = err.error?.error || 'Invalid credentials';
+          this.error = err.error?.error || 'ERR_INVALID_CREDENTIALS';
         }
       }
     });
@@ -105,7 +112,7 @@ export class LoginComponent {
 
   verifyMfa() {
     if (!this.mfaCode || this.mfaCode.length !== 6) {
-      this.error = 'Please enter a valid 6-digit code';
+      this.error = 'ERR_INVALID_MFA';
       return;
     }
 
@@ -119,24 +126,24 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading = false;
-        this.error = err.error?.error || 'Invalid verification code';
+        this.error = err.error?.error || 'ERR_INVALID_MFA';
       }
     });
   }
 
   register() {
     if (!this.name || !this.email || !this.password || !this.confirmPassword) {
-      this.error = 'Please fill in all fields';
+      this.error = 'ERR_FILL_ALL';
       return;
     }
 
     if (this.password !== this.confirmPassword) {
-      this.error = 'Passwords do not match';
+      this.error = 'ERR_MISMATCH';
       return;
     }
 
     if (this.password.length < 8) {
-      this.error = 'Password must be at least 8 characters';
+      this.error = 'ERR_PASSWORD_SHORT';
       return;
     }
 
@@ -147,7 +154,7 @@ export class LoginComponent {
       next: () => {
         this.loading = false;
         this.isRegisterMode = false;
-        this.successMessage = '✅ Account created! Please check your email to verify your account before logging in.';
+        this.successMessage = 'MSG_ACCOUNT_CREATED';
         this.password = '';
         this.confirmPassword = '';
       },
@@ -156,12 +163,11 @@ export class LoginComponent {
         const code = err.error?.code;
         if (code === 'EMAIL_UNVERIFIED_PENDING') {
           this.isRegisterMode = false;
-          this.successMessage = '📧 A verification email has already been sent to this address. Please check your inbox or spam folder.';
-          this.showResendButton = true;
+          this.successMessage = 'MSG_VERIFICATION_SENT_ALREADY';
           this.resendEmail = this.email;
           this.error = '';
         } else {
-          this.error = err.error?.error || 'Registration failed. Email may already exist.';
+          this.error = err.error?.error || 'ERR_REGISTRATION_FAILED';
         }
       }
     });
@@ -169,7 +175,7 @@ export class LoginComponent {
 
   forgotPassword() {
     if (!this.email) {
-      this.error = 'Please enter your email address';
+      this.error = 'ERR_EMAIL_REQUIRED';
       return;
     }
 
@@ -183,7 +189,7 @@ export class LoginComponent {
       },
       error: () => {
         this.loading = false;
-        this.successMessage = '📧 If that email exists, a password reset link has been sent.';
+        this.successMessage = 'MSG_RESET_LINK_SENT';
       }
     });
   }
@@ -199,7 +205,7 @@ export class LoginComponent {
       },
       error: () => {
         this.loading = false;
-        this.error = 'Failed to resend verification email. Please try again.';
+        this.error = 'ERR_RESEND_FAILED';
       }
     });
   }
