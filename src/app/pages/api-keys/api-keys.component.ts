@@ -4,10 +4,12 @@ import { DataService } from '../../services/data.service';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-api-keys',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './api-keys.component.html',
   styleUrl: './api-keys.component.css'
 })
@@ -37,5 +39,9 @@ export class ApiKeysComponent implements OnInit, AfterViewInit {
   revokeKey(keyId: string) {
     const key = this.apiKeys.find(k => k.id === keyId);
     if (key) key.status = 'Revoked';
+  }
+
+  generateKey() {
+    alert('Key generation would happen here.');
   }
 }
