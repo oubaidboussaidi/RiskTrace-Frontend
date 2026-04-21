@@ -1,16 +1,17 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
     <div>
-        <h1 style="font-size: 24px; font-weight: 700;">Threat Overview</h1>
-        <p style="color: var(--text-secondary);">Real-time behavioral analysis for all registered sites.</p>
+        <h1 style="font-size: 24px; font-weight: 700;">{{ 'DASHBOARD.TITLE' | translate }}</h1>
+        <p style="color: var(--text-secondary);">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
     </div>
-    <div class="btn btn-secondary">Last 24 Hours <i data-lucide="chevron-down" size="16" style="margin-left: 8px;"></i>
+    <div class="btn btn-secondary">
+        {{ 'DASHBOARD.RANGE_24H' | translate }} <i data-lucide="chevron-down" size="16" style="margin-left: 8px;"></i>
     </div>
 </div>
 
 <div class="grid-cols-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
     <div class="card kpi-card" *ngFor="let kpi of kpis" style="display: flex; flex-direction: column; gap: 8px;">
         <div style="display: flex; justify-content: space-between; align-items: start;">
-            <span class="kpi-label" style="font-size: 13px; color: var(--text-secondary);">{{kpi.label}}</span>
+            <span class="kpi-label" style="font-size: 13px; color: var(--text-secondary);">{{ kpi.label | translate }}</span>
             <i [attr.data-lucide]="kpi.icon" size="16" style="color: var(--text-secondary); opacity: 0.7;"></i>
         </div>
         <span class="kpi-value"
@@ -19,7 +20,7 @@
             <span [style.color]="kpi.trend === 'up' ? 'var(--sev-success)' : 'var(--sev-critical)'">
                 {{kpi.trend === 'up' ? '↑' : '↓'}} 12%
             </span>
-            <span style="color: var(--text-muted);">vs last week</span>
+            <span style="color: var(--text-muted);">{{ 'DASHBOARD.KPI.VS_LAST_WEEK' | translate }}</span>
         </div>
     </div>
 </div>
@@ -28,17 +29,17 @@
 <div class="dashboard-grid">
     <div class="card" style="height: 350px; display: flex; flex-direction: column;">
         <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
-            <h3 style="font-size: 14px;">Anomaly Trend over Time</h3>
+            <h3 style="font-size: 14px;">{{ 'DASHBOARD.CHART.ANOMALY_TREND' | translate }}</h3>
             <div style="display: flex; gap: 12px;">
                 <span
                     style="display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-secondary);">
                     <div style="width: 8px; height: 8px; border-radius: 2px; background: var(--accent-primary);"></div>
-                    Normal
+                    {{ 'DASHBOARD.CHART.NORMAL' | translate }}
                 </span>
                 <span
                     style="display: flex; align-items: center; gap: 6px; font-size: 10px; color: var(--text-secondary);">
                     <div style="width: 8px; height: 8px; border-radius: 2px; background: var(--sev-critical);"></div>
-                    Anomalous
+                    {{ 'DASHBOARD.CHART.ANOMALOUS' | translate }}
                 </span>
             </div>
         </div>
@@ -84,7 +85,7 @@
     </div>
 
     <div class="card" style="height: 350px;">
-        <h3 style="font-size: 14px; margin-bottom: 20px;">Top Risky Sites</h3>
+        <h3 style="font-size: 14px; margin-bottom: 20px;">{{ 'DASHBOARD.RISKY_SITES.TITLE' | translate }}</h3>
         <div style="display: flex; flex-direction: column; gap: 12px; max-height: 250px; overflow-y: auto;">
             <div *ngFor="let entity of riskyEntities"
                 style="display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg-elevated); border-radius: 8px;">
@@ -92,16 +93,16 @@
                     <i data-lucide="globe" size="18" style="color: var(--accent-primary);"></i>
                     <div>
                         <div style="font-size: 13px; font-weight: 600;">{{entity.name}}</div>
-                        <div style="font-size: 11px; color: var(--text-secondary);">{{entity.count}} Anomalies</div>
+                        <div style="font-size: 11px; color: var(--text-secondary);">{{entity.count}} {{ 'DASHBOARD.RISKY_SITES.ANOMALIES' | translate }}</div>
                     </div>
                 </div>
                 <span style="font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px;"
                     [ngClass]="{'status-alert': entity.risk === 'HIGH', 'status-warning': entity.risk === 'MEDIUM', 'status-success': entity.risk === 'LOW'}">
-                    {{entity.risk}}
+                    {{ ('INCIDENTS.SEVERITY.' + entity.risk) | translate }}
                 </span>
             </div>
             <div *ngIf="riskyEntities.length === 0"
-                style="text-align: center; color: var(--text-muted); font-size: 13px;">No risks detected recently.</div>
+                style="text-align: center; color: var(--text-muted); font-size: 13px;">{{ 'DASHBOARD.RISKY_SITES.NO_RISKS' | translate }}</div>
         </div>
     </div>
 </div>

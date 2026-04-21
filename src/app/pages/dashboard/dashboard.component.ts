@@ -4,21 +4,23 @@ import { ApiService } from '../../services/api.service';
 import { forkJoin } from 'rxjs';
 
 
+import { TranslateModule } from '@ngx-translate/core';
+
 declare var lucide: any;
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
   kpis: any[] = [
-    { label: 'Total Logs', value: '0', change: '0', icon: 'activity', trend: 'up' },
-    { label: 'Active Sites', value: '0', change: '0', icon: 'globe', trend: 'up' },
-    { label: 'Anomalies', value: '0', change: '0', icon: 'alert-triangle', trend: 'down' },
-    { label: 'Critical Alerts', value: '0', change: '0', icon: 'shield-alert', trend: 'up' }
+    { label: 'DASHBOARD.KPI.TOTAL_LOGS', value: '0', change: '0', icon: 'activity', trend: 'up' },
+    { label: 'DASHBOARD.KPI.ACTIVE_SITES', value: '0', change: '0', icon: 'globe', trend: 'up' },
+    { label: 'DASHBOARD.KPI.ANOMALIES', value: '0', change: '0', icon: 'alert-triangle', trend: 'down' },
+    { label: 'DASHBOARD.KPI.CRITICAL_ALERTS', value: '0', change: '0', icon: 'shield-alert', trend: 'up' }
   ];
   riskyEntities: any[] = [];
 
