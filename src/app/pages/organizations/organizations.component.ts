@@ -8,10 +8,12 @@ import { AuthService } from '../../services/auth.service';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-organizations',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterLink],
+    imports: [CommonModule, FormsModule, RouterLink, TranslateModule],
     templateUrl: './organizations.component.html',
     styleUrl: './organizations.component.css'
 })

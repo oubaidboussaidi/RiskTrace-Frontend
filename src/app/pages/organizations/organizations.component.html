@@ -4,14 +4,14 @@
         <div class="header-left">
             <h1 class="page-title">
                 <i data-lucide="building-2" size="24"></i>
-                Organizations
+                {{ 'ORGS.TITLE' | translate }}
             </h1>
-            <p class="page-subtitle">Manage your client organizations and workspaces</p>
+            <p class="page-subtitle">{{ 'ORGS.SUBTITLE' | translate }}</p>
         </div>
         <div class="header-actions">
             <button class="btn btn-primary" id="btn-create-org" (click)="toggleCreateForm()">
                 <i data-lucide="plus" size="16"></i>
-                New Organization
+                {{ 'ORGS.CREATE_BTN' | translate }}
             </button>
         </div>
     </div>
@@ -19,21 +19,21 @@
     <!-- Create Form -->
     <div class="create-panel" *ngIf="showCreateForm">
         <div class="create-panel-header">
-            <h3><i data-lucide="building-2" size="16"></i> Create Organization</h3>
+            <h3><i data-lucide="building-2" size="16"></i> {{ 'ORGS.CREATE_TITLE' | translate }}</h3>
             <button class="btn-icon" (click)="toggleCreateForm()">
                 <i data-lucide="x" size="16"></i>
             </button>
         </div>
         <div class="create-panel-body">
             <div class="form-group">
-                <label class="form-label">Organization Name</label>
+                <label class="form-label">{{ 'ORGS.NAME_LABEL' | translate }}</label>
                 <input id="org-name-input" class="form-input" type="text" [(ngModel)]="newOrg.name"
                     placeholder="e.g. Acme Corp" (keydown.enter)="createOrganization()" />
             </div>
             <div class="form-actions">
-                <button class="btn btn-ghost" (click)="toggleCreateForm()">Cancel</button>
+                <button class="btn btn-ghost" (click)="toggleCreateForm()">{{ 'COMMON.CANCEL' | translate }}</button>
                 <button class="btn btn-primary" id="btn-confirm-create-org"
-                    (click)="createOrganization()">Create</button>
+                    (click)="createOrganization()">{{ 'COMMON.CREATE' | translate }}</button>
             </div>
         </div>
     </div>
@@ -47,7 +47,7 @@
     <!-- Loading State -->
     <div class="loading-state" *ngIf="isLoading">
         <div class="spinner"></div>
-        <p>Loading organizations…</p>
+        <p>{{ 'ORGS.LOADING' | translate }}</p>
     </div>
 
     <!-- Organizations Grid -->
@@ -56,24 +56,24 @@
             <div class="org-avatar">{{ getInitials(org.name) }}</div>
             <div class="org-info">
                 <h3 class="org-name">{{ org.name }}</h3>
-                <span class="org-meta">Created {{ org.createdAt | date:'mediumDate' }}</span>
+                <span class="org-meta">{{ 'COMMON.CREATED' | translate }} {{ org.createdAt | date:'mediumDate' }}</span>
             </div>
             <div class="org-badges">
-                <span class="badge badge-active" *ngIf="org.id === activeOrgId">Active</span>
+                <span class="badge badge-active" *ngIf="org.id === activeOrgId">{{ 'ALERTS_RULES.ENABLED' | translate }}</span>
             </div>
             <div class="org-actions">
                 <button class="btn btn-sm btn-ghost" [disabled]="org.id === activeOrgId" (click)="switchOrg(org)"
                     title="Switch to this organization">
                     <i data-lucide="arrow-right-circle" size="14"></i>
-                    Switch
+                    {{ 'ORGS.SWITCH_BTN' | translate }}
                 </button>
                 <a class="btn btn-sm btn-outline" [routerLink]="['/team']" [queryParams]="{orgId: org.id}">
                     <i data-lucide="users" size="14"></i>
-                    Team
+                    {{ 'ORGS.TEAM_BTN' | translate }}
                 </a>
                 <a class="btn btn-sm btn-outline" [routerLink]="['/sites']" [queryParams]="{orgId: org.id}">
                     <i data-lucide="globe" size="14"></i>
-                    Sites
+                    {{ 'ORGS.SITES_BTN' | translate }}
                 </a>
             </div>
         </div>
@@ -81,11 +81,11 @@
         <!-- Empty State -->
         <div class="empty-state" *ngIf="organizations.length === 0">
             <i data-lucide="building-2" size="48"></i>
-            <h3>No organizations yet</h3>
-            <p>Create your first organization to get started</p>
+            <h3>{{ 'ORGS.NO_ORGS' | translate }}</h3>
+            <p>{{ 'ORGS.CREATE_FIRST' | translate }}</p>
             <button class="btn btn-primary" (click)="toggleCreateForm()">
                 <i data-lucide="plus" size="16"></i>
-                Create Organization
+                {{ 'ORGS.CREATE_BTN' | translate }}
             </button>
         </div>
     </div>
