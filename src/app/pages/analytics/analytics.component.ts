@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-analytics',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.css'
 })

@@ -1,8 +1,8 @@
-<h1 style="margin-bottom: 32px;">ML Analytics & Model Health</h1>
+<h1 style="margin-bottom: 32px;">{{ 'ANALYTICS.TITLE' | translate }}</h1>
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
     <div class="card">
-        <h3>Detection Confidence Score</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 24px;">Model accuracy based on SOC manual overrides.</p>
+        <h3>{{ 'ANALYTICS.CONFIDENCE_TITLE' | translate }}</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px;">{{ 'ANALYTICS.CONFIDENCE_DESC' | translate }}</p>
         <div style="height: 200px; display: flex; align-items: flex-end; gap: 4px;">
             <div style="flex: 1; height: 90%; background: var(--sev-low); opacity: 0.6; border-radius: 2px;"></div>
             <div style="flex: 1; height: 92%; background: var(--sev-low); opacity: 0.6; border-radius: 2px;"></div>
@@ -13,18 +13,17 @@
         </div>
         <div
             style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 11px; color: var(--text-muted);">
-            <span>30 days ago</span>
-            <span>Confidence: 94.2%</span>
-            <span>Today</span>
+            <span>{{ 'ANALYTICS.DAYS_AGO' | translate }}</span>
+            <span>{{ 'ANALYTICS.CONFIDENCE' | translate }} 94.2%</span>
+            <span>{{ 'ANALYTICS.TODAY' | translate }}</span>
         </div>
     </div>
     <div class="card">
-        <h3>Feature Importance</h3>
-        <p style="color: var(--text-secondary); margin-bottom: 24px;">Weight of attributes in anomaly detection.</p>
+        <h3>{{ 'ANALYTICS.FEATURE_TITLE' | translate }}</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 24px;">{{ 'ANALYTICS.FEATURE_DESC' | translate }}</p>
         <div style="display: flex; flex-direction: column; gap: 12px;">
             <div *ngIf="featureImportance.length === 0"
-                style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 24px 0;">ML model not yet
-                integrated.</div>
+                style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 24px 0;">{{ 'ANALYTICS.NOT_INTEGRATED' | translate }}</div>
             <div *ngFor="let f of featureImportance">
                 <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
                     <span>{{f.feature}}</span><span>{{(f.importance * 100).toFixed(0)}}%</span>
