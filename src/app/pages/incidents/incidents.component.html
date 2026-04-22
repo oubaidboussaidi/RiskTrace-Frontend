@@ -1,10 +1,10 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
     <div>
-        <h1 style="font-size: 24px; font-weight: 700;">Active Incidents</h1>
-        <p style="color: var(--text-secondary);">Investigate and resolve detected security threats.</p>
+        <h1 style="font-size: 24px; font-weight: 700;">{{ 'INCIDENTS.TITLE' | translate }}</h1>
+        <p style="color: var(--text-secondary);">{{ 'INCIDENTS.SUBTITLE' | translate }}</p>
     </div>
     <button class="btn btn-primary" (click)="toggleCreateForm()">
-        <i data-lucide="plus-circle" size="18"></i> Report Incident
+        <i data-lucide="plus-circle" size="18"></i> {{ 'INCIDENTS.REPORT_BTN' | translate }}
     </button>
 </div>
 
@@ -13,19 +13,19 @@
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <div>
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
-                <span class="status-badge" [ngClass]="incident.severityClass">{{incident.severity}}</span>
+                <span class="status-badge" [ngClass]="incident.severityClass">{{ ('INCIDENTS.SEVERITY.' + incident.severity) | translate }}</span>
                 <span style="font-weight: 600; font-size: 15px;">{{incident.title}}</span>
             </div>
             <div style="color: var(--text-secondary); font-size: 12px;">{{incident.details}}</div>
         </div>
         <div style="display: flex; gap: 24px; align-items: center;">
             <div style="text-align: right;">
-                <div style="font-size: 11px; color: var(--text-muted);">Assigned To</div>
-                <div style="font-size: 13px;">{{incident.assignee}}</div>
+                <div style="font-size: 11px; color: var(--text-muted);">{{ 'INCIDENTS.ASSIGNED_TO' | translate }}</div>
+                <div style="font-size: 13px;">{{incident.assignee === 'Unassigned' ? ('INCIDENTS.UNASSIGNED' | translate) : incident.assignee}}</div>
             </div>
             <button class="btn" [ngClass]="incident.assignee === 'Unassigned' ? 'btn-secondary' : 'btn-primary'"
                 (click)="updateStatus(incident)">
-                {{incident.assignee === 'Unassigned' ? 'Assign Me' : 'Resolve'}}
+                {{incident.assignee === 'Unassigned' ? ('INCIDENTS.ACTION.ASSIGN_ME' | translate) : ('INCIDENTS.ACTION.RESOLVE' | translate)}}
             </button>
 
         </div>
@@ -35,44 +35,44 @@
 <!-- Create Incident Modal -->
 <div class="modal-overlay" *ngIf="showCreateForm" (click)="showCreateForm = false">
     <div class="modal-content" (click)="$event.stopPropagation()">
-        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 24px;">Report Security Incident</h2>
+        <h2 style="font-size: 20px; font-weight: 700; margin-bottom: 24px;">{{ 'INCIDENTS.MODAL.TITLE' | translate }}</h2>
 
         <div class="form-group">
-            <label>Incident Type</label>
+            <label>{{ 'INCIDENTS.MODAL.TYPE' | translate }}</label>
             <select [(ngModel)]="newIncident.type"
                 style="width: 100%; padding: 8px; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-primary); border-radius: 6px;">
-                <option value="SUSPICIOUS_ACTIVITY">Suspicious Activity</option>
-                <option value="UNAUTHORIZED_ACCESS">Unauthorized Access</option>
-                <option value="DATA_LEAK">Data Leak</option>
-                <option value="MALWARE_DETECTED">Malware Detected</option>
+                <option value="SUSPICIOUS_ACTIVITY">{{ 'INCIDENTS.TYPES.SUSPICIOUS_ACTIVITY' | translate }}</option>
+                <option value="UNAUTHORIZED_ACCESS">{{ 'INCIDENTS.TYPES.UNAUTHORIZED_ACCESS' | translate }}</option>
+                <option value="DATA_LEAK">{{ 'INCIDENTS.TYPES.DATA_LEAK' | translate }}</option>
+                <option value="MALWARE_DETECTED">{{ 'INCIDENTS.TYPES.MALWARE_DETECTED' | translate }}</option>
             </select>
         </div>
 
         <div class="form-group" style="margin-top: 16px;">
-            <label>Severity Level</label>
+            <label>{{ 'INCIDENTS.MODAL.SEVERITY' | translate }}</label>
             <select [(ngModel)]="newIncident.severity"
                 style="width: 100%; padding: 8px; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-primary); border-radius: 6px;">
-                <option value="LOW">Low</option>
-                <option value="MEDIUM">Medium</option>
-                <option value="HIGH">High</option>
-                <option value="CRITICAL">Critical</option>
+                <option value="LOW">{{ 'INCIDENTS.SEVERITY.LOW' | translate }}</option>
+                <option value="MEDIUM">{{ 'INCIDENTS.SEVERITY.MEDIUM' | translate }}</option>
+                <option value="HIGH">{{ 'INCIDENTS.SEVERITY.HIGH' | translate }}</option>
+                <option value="CRITICAL">{{ 'INCIDENTS.SEVERITY.CRITICAL' | translate }}</option>
             </select>
         </div>
 
         <div class="form-group" style="margin-top: 16px;">
-            <label>Description</label>
-            <textarea [(ngModel)]="newIncident.description" rows="3" placeholder="Describe the incident..."
+            <label>{{ 'INCIDENTS.MODAL.DESCRIPTION' | translate }}</label>
+            <textarea [(ngModel)]="newIncident.description" rows="3" [placeholder]="'INCIDENTS.MODAL.DESC_PLACEHOLDER' | translate"
                 style="width: 100%; padding: 8px; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-primary); border-radius: 6px;"></textarea>
         </div>
 
         <div class="form-group" style="margin-top: 16px;">
-            <label>Target Path (Optional)</label>
+            <label>{{ 'INCIDENTS.MODAL.TARGET_PATH' | translate }}</label>
             <input type="text" [(ngModel)]="newIncident.targetPath" placeholder="/api/endpoint">
         </div>
 
         <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
-            <button class="btn btn-secondary" (click)="showCreateForm = false">Cancel</button>
-            <button class="btn btn-primary" (click)="createIncident()">Submit Report</button>
+            <button class="btn btn-secondary" (click)="showCreateForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button class="btn btn-primary" (click)="createIncident()">{{ 'COMMON.SUBMIT' | translate }}</button>
         </div>
     </div>
 </div>
