@@ -10,10 +10,12 @@ import { forkJoin } from 'rxjs';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-logs',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './logs.component.html',
   styleUrl: './logs.component.css'
 })
@@ -33,6 +35,7 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedSite: string = 'All Sites';
   selectedStatus: string = 'All Status';
   selectedMethod: string = 'All Methods';
+  selectedSession: string = 'All Sessions';
   searchQuery: string = '';
 
   selectedLog: any = null;
@@ -136,22 +139,24 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filterLogs() {
     this.logs = this.allLogs.filter(log => {
-      const matchSite = this.selectedSite === 'All Sites' || log.site === this.selectedSite;
-      const matchStatus = this.selectedStatus === 'All Status' || this.checkStatus(log.status, this.selectedStatus);
-      const matchMethod = this.selectedMethod === 'All Methods' || log.method === this.selectedMethod;
+      const matchSite    = this.selectedSite    === 'All Sites'    || log.site      === this.selectedSite;
+      const matchStatus  = this.selectedStatus  === 'All Status'  || this.checkStatus(log.status, this.selectedStatus);
+      const matchMethod  = this.selectedMethod  === 'All Methods'  || log.method    === this.selectedMethod;
+      const matchSession = this.selectedSession === 'All Sessions' || log.sessionId === this.selectedSession;
 
       const searchStr = this.searchQuery ? this.searchQuery.toLowerCase() : '';
       const matchSearch = !searchStr ||
-        (log.path && log.path.toLowerCase().includes(searchStr)) ||
-        (log.ip && log.ip.toLowerCase().includes(searchStr)) ||
-        (log.site && log.site.toLowerCase().includes(searchStr)) ||
-        (log.status && log.status.toLowerCase().includes(searchStr)) ||
-        (log.method && log.method.toLowerCase().includes(searchStr));
+        (log.path      && log.path.toLowerCase().includes(searchStr)) ||
+        (log.ip        && log.ip.toLowerCase().includes(searchStr)) ||
+        (log.site      && log.site.toLowerCase().includes(searchStr)) ||
+        (log.status    && log.status.toLowerCase().includes(searchStr)) ||
+        (log.method    && log.method.toLowerCase().includes(searchStr)) ||
+        (log.sessionId && log.sessionId.toLowerCase().includes(searchStr));
 
-      return matchSite && matchStatus && matchMethod && matchSearch;
+      return matchSite && matchStatus && matchMethod && matchSession && matchSearch;
     });
 
-    this.currentPage = 1; // Reset to page 1 on filter
+    this.currentPage = 1;
     setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 50);
   }
 
@@ -198,9 +203,9 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getStatusLabel(status: string): string {
-    if (status === '4xx, 5xx') return 'Errors (4xx, 5xx)';
-    if (status === '2xx') return 'Success (2xx)';
-    return 'All Status';
+    if (status === '4xx, 5xx') return 'LOGS.ERRORS';
+    if (status === '2xx') return 'LOGS.SUCCESS';
+    return 'LOGS.ALL_STATUS';
   }
 
   // Row Actions
@@ -245,6 +250,11 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filterByPath(log: any) {
     this.searchQuery = log.path;
+    this.filterLogs();
+  }
+
+  filterBySession(log: any) {
+    this.selectedSession = log.sessionId;
     this.filterLogs();
   }
 
