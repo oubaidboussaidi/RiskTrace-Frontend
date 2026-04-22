@@ -4,10 +4,12 @@ import { FormsModule } from '@angular/forms';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-alerts',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './alerts.component.html',
   styleUrl: './alerts.component.css'
 })

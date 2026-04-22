@@ -1,71 +1,56 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
     <div>
-        <h1 style="font-size: 24px; font-weight: 700;">Detection Rules</h1>
-        <p style="color: var(--text-secondary);">Configure automated rules to create incidents from anomalies.</p>
+        <h1 style="font-size: 24px; font-weight: 700;">{{ 'ALERTS_RULES.TITLE' | translate }}</h1>
+        <p style="color: var(--text-secondary);">{{ 'ALERTS_RULES.SUBTITLE' | translate }}</p>
     </div>
-    <button class="btn btn-primary"><i data-lucide="plus" size="18"></i> Add Rule</button>
+    <button class="btn btn-primary" [disabled]="true" style="opacity: 0.6; cursor: not-allowed;" title="Rules coming soon in next update">
+        <i data-lucide="plus" size="18"></i> {{ 'ALERTS_RULES.ADD_RULE' | translate }}
+    </button>
 </div>
 
-<div class="card" *ngIf="alertRules.length === 0"
-    style="padding: 32px; text-align: center; color: var(--text-secondary);">
-    <i data-lucide="shield-off" size="32" style="margin-bottom: 12px; opacity: 0.4;"></i>
-    <p>No detection rules configured yet.</p>
-</div>
+<div class="rules-container">
+    <div *ngIf="alertRules.length === 0" style="text-align: center; padding: 64px 0; color: var(--text-muted); border: 1px dashed var(--border-color); border-radius: 12px; background: rgba(255,255,255,0.02);">
+        <i data-lucide="shield-alert" size="48" style="opacity: 0.2; margin-bottom: 16px;"></i>
+        <h3 style="font-size: 16px;">{{ 'ALERTS_RULES.NO_RULES' | translate }}</h3>
+        <p style="font-size: 13px;">{{ 'ALERTS_RULES.SUBTITLE' | translate }}</p>
+    </div>
 
-<div class="card" *ngFor="let rule of alertRules" style="margin-bottom: 16px;">
-    <div style="display: flex; justify-content: space-between; align-items: start;">
-        <div style="flex: 1;">
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
-                <h3 style="font-size: 16px; font-weight: 600;">{{rule.name}}</h3>
-                <span class="status-badge" [ngClass]="{
-                'badge-critical': rule.severity === 'Critical',
-                'badge-high': rule.severity === 'High',
-                'badge-medium': rule.severity === 'Medium'
-              }">{{rule.severity}}</span>
-                <span class="status-badge badge-low" *ngIf="rule.enabled">Enabled</span>
-                <span class="status-badge" style="background: rgba(255,255,255,0.05); color: var(--text-muted);"
-                    *ngIf="!rule.enabled">Disabled</span>
-            </div>
-            <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">{{rule.description}}</p>
-
-            <div style="display: flex; gap: 24px; align-items: center;">
-                <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
-                    <span style="color: var(--text-muted);">Condition:</span>
-                    <span style="color: var(--text-primary); font-weight: 600;">{{rule.condition}}</span>
-                </div>
-                <!-- Action binding -->
-
-                <div style="display: flex; gap: 8px; align-items: center; font-size: 12px;">
-                    <span style="color: var(--text-muted);">Automatic Action:</span>
-                    <span
-                        style="display: flex; align-items: center; gap: 4px; color: var(--accent-primary); font-weight: 600;">
-                        <i data-lucide="shield-alert" size="12"></i> {{rule.action}}
+    <div class="card rule-card" *ngFor="let rule of alertRules" style="margin-bottom: 16px; border-left: 4px solid var(--accent-primary);">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <span class="status-badge" [ngClass]="rule.enabled ? 'status-success' : 'status-muted'">
+                        {{ rule.enabled ? ('ALERTS_RULES.ENABLED' | translate) : ('ALERTS_RULES.DISABLED' | translate) }}
                     </span>
-
+                    <h3 style="font-size:16px; margin:0;">{{rule.name}}</h3>
+                </div>
+                <div style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">{{rule.description}}</div>
+                
+                <div style="display: flex; gap: 24px; align-items: center;">
+                    <div style="font-size: 12px; color: var(--text-muted);">
+                        <span style="font-weight: 600; color: var(--text-secondary);">{{ 'ALERTS_RULES.CONDITION' | translate }}</span> {{rule.condition}}
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted);">
+                        <span style="font-weight: 600; color: var(--text-secondary);">{{ 'ALERTS_RULES.AUTO_ACTION' | translate }}</span> {{rule.action}}
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div style="display: flex; gap: 12px; align-items: center;">
-            <label class="switch">
-                <input type="checkbox" [checked]="rule.enabled" (change)="toggleRule(rule)">
-                <span class="slider round"></span>
-            </label>
-            <button class="btn btn-secondary" style="padding: 8px 12px;">
-                <i data-lucide="settings" size="16"></i>
-            </button>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <button class="btn btn-secondary btn-sm" (click)="toggleRule(rule)">
+                    {{ rule.enabled ? ('COMMON.DISABLE' | translate) : ('COMMON.ENABLE' | translate) }}
+                </button>
+                <button class="btn-icon-only text-danger" title="Delete Rule">
+                    <i data-lucide="trash-2" size="16"></i>
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="card" style="margin-top: 24px; background: rgba(255, 77, 77, 0.05); border-color: var(--sev-critical);">
-    <div style="display: flex; align-items: start; gap: 12px;">
-        <i data-lucide="alert-triangle" size="20" style="color: var(--sev-critical); margin-top: 2px;"></i>
-        <div>
-            <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--sev-critical);">Internal
-                Routing Only</h3>
-            <p style="font-size: 13px; color: var(--text-secondary);">For this project scope, triggers only generate
-                internal dashboard incidents. External integrations (Slack/Email) are currenty out of scope.</p>
+    <!-- Info Banner -->
+    <div class="info-banner" style="margin-top: 32px; display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(56, 189, 248, 0.05); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; color: var(--accent-primary);">
+        <i data-lucide="info" size="20"></i>
+        <div style="font-size: 13px;">
+            <strong>{{ 'ALERTS_RULES.INTERNAL_NOTICE' | translate }}:</strong> {{ 'ALERTS_RULES.INTERNAL_DESC' | translate }}
         </div>
     </div>
 </div>
