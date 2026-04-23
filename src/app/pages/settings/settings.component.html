@@ -1,12 +1,12 @@
 <div style="max-width: 800px; margin: 0 auto;">
-    <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">Account Settings</h1>
-    <p style="color: var(--text-secondary); margin-bottom: 32px;">Manage your profile and system preferences.</p>
+    <h1 style="font-size: 24px; font-weight: 700; margin-bottom: 8px;">{{ 'SETTINGS.TITLE' | translate }}</h1>
+    <p style="color: var(--text-secondary); margin-bottom: 32px;">{{ 'SETTINGS.SUBTITLE' | translate }}</p>
 
     <!-- Profile Section -->
     <div class="card" style="margin-bottom: 24px;">
         <h3
             style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-            Profile Information</h3>
+            {{ 'SETTINGS.PROFILE_TITLE' | translate }}</h3>
 
         <div style="display: flex; gap: 24px; align-items: start;">
             <div
@@ -15,24 +15,24 @@
             </div>
             <div style="flex: 1;">
                 <div class="form-group">
-                    <label>Full Name</label>
+                    <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
                     <input type="text" [(ngModel)]="fullName">
                 </div>
                 <div class="form-group">
-                    <label>Project Role</label>
+                    <label>{{ 'SETTINGS.ROLE' | translate }}</label>
                     <input type="text"
-                        [value]="(currentUser?.role?.toLowerCase() === 'admin' ? 'Admin' : 'Analyst') || 'User'"
+                        [value]="(currentUser?.role?.toLowerCase() === 'admin' ? ('ADMIN_USERS.ROLE_ADMIN' | translate) : ('ADMIN_USERS.ROLE_ANALYST' | translate)) || ('COMMON.USER' | translate)"
                         disabled style="opacity: 0.6; cursor: not-allowed;">
                 </div>
                 <div class="form-group">
-                    <label>Email Address</label>
+                    <label>{{ 'SETTINGS.EMAIL' | translate }}</label>
                     <input type="email" [value]="currentUser?.email ?? ''" disabled
                         style="opacity: 0.6; cursor: not-allowed;">
                 </div>
             </div>
         </div>
         <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
-            <button class="btn btn-primary" (click)="saveProfile()">Save Changes</button>
+            <button class="btn btn-primary" (click)="saveProfile()">{{ 'COMMON.SAVE' | translate }}</button>
         </div>
     </div>
 
@@ -40,54 +40,54 @@
     <div class="card" style="margin-bottom: 24px;">
         <h3
             style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-            Security</h3>
+            {{ 'SETTINGS.SECURITY' | translate }}</h3>
         <div style="display: flex; flex-direction: column; gap: 12px;">
             <button class="btn btn-secondary" style="width: 100%; justify-content: space-between;"
                 (click)="togglePasswordForm()">
-                Change Password <i data-lucide="chevron-right" size="16"></i>
+                {{ 'SETTINGS.CHANGE_PASSWORD' | translate }} <i data-lucide="chevron-right" size="16"></i>
             </button>
 
             <div *ngIf="showPasswordForm"
                 style="padding: 16px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px;">
                 <div class="form-group">
-                    <label>Current Password</label>
+                    <label>{{ 'SETTINGS.CURRENT_PASSWORD' | translate }}</label>
                     <div style="position: relative;">
                         <input [type]="showOldPassword ? 'text' : 'password'" [(ngModel)]="passwordData.oldPassword"
                             style="width: 100%; padding-right: 40px;">
                         <button type="button" (click)="showOldPassword = !showOldPassword"
                             style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
                             <svg *ngIf="!showOldPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <svg *ngIf="showOldPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                            <svg *ngIf="showOldPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>New Password</label>
+                    <label>{{ 'SETTINGS.NEW_PASSWORD' | translate }}</label>
                     <div style="position: relative;">
                         <input [type]="showNewPassword ? 'text' : 'password'" [(ngModel)]="passwordData.newPassword"
                             style="width: 100%; padding-right: 40px;">
                         <button type="button" (click)="showNewPassword = !showNewPassword"
                             style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
                             <svg *ngIf="!showNewPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <svg *ngIf="showNewPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                            <svg *ngIf="showNewPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Confirm Password</label>
+                    <label>{{ 'SETTINGS.CONFIRM_PASSWORD' | translate }}</label>
                     <div style="position: relative;">
                         <input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="passwordData.confirmPassword"
                             style="width: 100%; padding-right: 40px;">
                         <button type="button" (click)="showConfirmPassword = !showConfirmPassword"
                             style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
                             <svg *ngIf="!showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <svg *ngIf="showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                            <svg *ngIf="showConfirmPassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                         </button>
                     </div>
                 </div>
                 <div style="margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px;">
-                    <button class="btn btn-secondary" (click)="showPasswordForm = false">Cancel</button>
-                    <button class="btn btn-primary" (click)="changePassword()">Update Password</button>
+                    <button class="btn btn-secondary" (click)="showPasswordForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
+                    <button class="btn btn-primary" (click)="changePassword()">{{ 'SETTINGS.UPDATE_PASSWORD' | translate }}</button>
                 </div>
             </div>
 
@@ -95,23 +95,22 @@
                 style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--border-color);">
 
                 <div>
-                    <div style="font-size: 14px; font-weight: 500;">Two-Factor Authentication</div>
-                    <div style="font-size: 12px; color: var(--text-secondary);">Protect your account with an extra
-                        security layer.</div>
+                    <div style="font-size: 14px; font-weight: 500;">{{ 'SETTINGS.TFA.TITLE' | translate }}</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);">{{ 'SETTINGS.TFA.DESC' | translate }}</div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span [style.color]="isTwoFactorEnabled ? 'var(--sev-low)' : 'var(--text-secondary)'"
                         style="font-size: 12px; font-weight: 600;">
-                        {{ isTwoFactorEnabled ? 'Enabled' : 'Disabled' }}
+                        {{ isTwoFactorEnabled ? ('SETTINGS.TFA.ENABLED' | translate) : ('SETTINGS.TFA.DISABLED' | translate) }}
                     </span>
                     <button *ngIf="!isTwoFactorEnabled" class="btn btn-primary" style="padding: 4px 12px; font-size: 12px;"
                         (click)="initiate2faSetup()">
-                        Enable
+                        {{ 'COMMON.ENABLE' | translate }}
                     </button>
                     <button *ngIf="isTwoFactorEnabled" class="btn btn-secondary"
                         style="padding: 4px 12px; font-size: 12px; border-color: var(--sev-critical); color: var(--sev-critical);"
                         (click)="initiate2faDisable()">
-                        Disable
+                        {{ 'COMMON.DISABLE' | translate }}
                     </button>
                 </div>
             </div>
@@ -119,11 +118,10 @@
             <!-- 2FA Setup Form -->
             <div *ngIf="show2faSetup && setupData"
                 style="padding: 16px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--accent-primary); margin-top: 12px;">
-                <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--accent-primary);">Setup Two-Factor
-                    Authentication</h4>
+                <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--accent-primary);">{{ 'SETTINGS.TFA.SETUP_TITLE' | translate }}</h4>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">
-                    1. Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.)<br>
-                    2. Enter the 6-digit code generated by the app.
+                    {{ 'SETTINGS.TFA.STEP1' | translate }}<br>
+                    {{ 'SETTINGS.TFA.STEP2' | translate }}
                 </p>
 
                 <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
@@ -132,44 +130,43 @@
                     </div>
                     <div style="flex: 1;">
                         <div class="form-group">
-                            <label>Verification Code</label>
+                            <label>{{ 'LOGIN.VERIFICATION_CODE' | translate }}</label>
                             <input type="text" [(ngModel)]="mfaCode" placeholder="000000" maxlength="6">
                         </div>
                         <div style="margin-top: 12px; display: flex; gap: 8px;">
-                            <button class="btn btn-secondary" (click)="show2faSetup = false">Cancel</button>
-                            <button class="btn btn-primary" (click)="enable2fa()">Verify & Enable</button>
+                            <button class="btn btn-secondary" (click)="show2faSetup = false">{{ 'COMMON.CANCEL' | translate }}</button>
+                            <button class="btn btn-primary" (click)="enable2fa()">{{ 'SETTINGS.TFA.VERIFY_ENABLE' | translate }}</button>
                         </div>
                     </div>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); word-break: break-all;">
-                    Manual Key: <code>{{setupData.secret}}</code>
+                    {{ 'SETTINGS.TFA.MANUAL_KEY' | translate }} <code>{{setupData.secret}}</code>
                 </div>
             </div>
 
             <!-- 2FA Disable Form -->
             <div *ngIf="showDisable2fa"
                 style="padding: 16px; background: var(--bg-dark); border-radius: 8px; border: 1px solid var(--sev-critical); margin-top: 12px;">
-                <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--sev-critical);">Disable Two-Factor
-                    Authentication</h4>
+                <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--sev-critical);">{{ 'SETTINGS.TFA.DISABLE_TITLE' | translate }}</h4>
                 <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;">
-                    Enter your current password to confirm disabling 2FA.
+                    {{ 'SETTINGS.TFA.DISABLE_DESC' | translate }}
                 </p>
                 <div class="form-group">
-                    <label>Confirm Password</label>
+                    <label>{{ 'COMMON.CONFIRM' | translate }} {{ 'COMMON.PASSWORD' | translate }}</label>
                     <div style="position: relative;">
                         <input [type]="showDisablePassword ? 'text' : 'password'" [(ngModel)]="disablePassword"
                             style="width: 100%; padding-right: 40px;">
                         <button type="button" (click)="showDisablePassword = !showDisablePassword"
                             style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px;">
                             <svg *ngIf="!showDisablePassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z"/><circle cx="12" cy="12" r="3"/></svg>
-                            <svg *ngIf="showDisablePassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+                            <svg *ngIf="showDisablePassword" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-off"><path d="M9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
                         </button>
                     </div>
                 </div>
                 <div style="margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px;">
-                    <button class="btn btn-secondary" (click)="showDisable2fa = false">Cancel</button>
+                    <button class="btn btn-secondary" (click)="showDisable2fa = false">{{ 'COMMON.CANCEL' | translate }}</button>
                     <button class="btn" style="background: var(--sev-critical); color: white;"
-                        (click)="disable2fa()">Disable 2FA</button>
+                        (click)="disable2fa()">{{ 'SETTINGS.TFA.DISABLE_BTN' | translate }}</button>
                 </div>
             </div>
         </div>
@@ -179,9 +176,9 @@
     <div class="card" style="margin-bottom: 24px;">
         <h3
             style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-            Session Management</h3>
+            {{ 'SETTINGS.SESSION_MGMT' | translate }}</h3>
         <button class="btn btn-secondary" (click)="logout()" style="width: 100%; justify-content: center;">
-            <i data-lucide="log-out" size="16"></i> Logout
+            <i data-lucide="log-out" size="16"></i> {{ 'SETTINGS.LOGOUT' | translate }}
         </button>
     </div>
 
@@ -189,17 +186,17 @@
     <div class="card"
         style="margin-bottom: 24px; border-color: var(--sev-critical); background: rgba(255, 77, 77, 0.05);">
         <h3
-            style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--sev-critical); padding-bottom: 12px; color: var(--sev-critical);">
-            Danger Zone</h3>
+            style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; color: var(--sev-critical);">
+            {{ 'COMMON.DANGER_ZONE' | translate }}</h3>
         <div style="margin-bottom: 12px;">
-            <div style="font-size: 14px; font-weight: 500; margin-bottom: 4px;">Delete Account</div>
+            <div style="font-size: 14px; font-weight: 500; margin-bottom: 4px;">{{ 'SETTINGS.DELETE_BTN' | translate }}</div>
             <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">
-                Once you delete your account, there is no going back. Please be certain.
+                {{ 'SETTINGS.DELETE_DESC' | translate }}
             </div>
         </div>
         <button class="btn" (click)="deleteAccount()"
             style="background: var(--sev-critical); color: white; border-color: var(--sev-critical); width: 100%; justify-content: center;">
-            <i data-lucide="trash-2" size="16"></i> Delete My Account
+            <i data-lucide="trash-2" size="16"></i> {{ 'SETTINGS.DELETE_BTN' | translate }}
         </button>
     </div>
 
@@ -207,11 +204,9 @@
         <div style="display: flex; align-items: start; gap: 12px;">
             <i data-lucide="info" size="20" style="color: var(--accent-primary); margin-top: 2px;"></i>
             <div>
-                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--accent-primary);">System
-                    Architecture</h3>
+                <h3 style="font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--accent-primary);">{{ 'COMMON.SYSTEM_ARCHITECTURE' | translate }}</h3>
                 <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
-                    RiskTrace is built using Angular 18, Spring Boot, and MongoDB. The anomaly detection engine is
-                    powered by Python ML microservices using Isolation Forest algorithms.
+                    {{ 'SETTINGS.ARCH_DESC' | translate }}
                 </p>
             </div>
         </div>

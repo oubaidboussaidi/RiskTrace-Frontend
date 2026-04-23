@@ -7,10 +7,12 @@ import { ApiService } from '../../services/api.service';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
 })
