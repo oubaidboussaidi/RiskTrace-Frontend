@@ -57,31 +57,31 @@
 }
 
 .btn-primary:hover {
-    background: #4f46e5;
+    filter: brightness(1.1);
 }
 
 .btn-ghost {
     background: transparent;
-    color: #94a3b8;
+    color: var(--text-secondary);
 }
 
 .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #f1f5f9;
+    background: var(--bg-hover);
+    color: var(--text-primary);
 }
 
 .btn-danger {
-    background: #ef4444;
+    background: var(--sev-critical);
     color: white;
 }
 
 .btn-danger:hover {
-    background: #dc2626;
+    filter: brightness(0.9);
 }
 
 .btn-danger-ghost {
     background: transparent;
-    color: #f87171;
+    color: var(--sev-high);
 }
 
 .btn-danger-ghost:hover:not(:disabled) {
@@ -102,7 +102,7 @@
 .btn-icon {
     background: transparent;
     border: none;
-    color: #94a3b8;
+    color: var(--text-secondary);
     cursor: pointer;
     padding: 0.25rem;
     display: flex;
@@ -110,7 +110,7 @@
 }
 
 .btn-icon:hover {
-    color: #f1f5f9;
+    color: var(--text-primary);
 }
 
 /* ── Panels ─────────────────────────────────── */
@@ -131,8 +131,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.875rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    color: #f1f5f9;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
     font-weight: 600;
     font-size: 0.9rem;
 }
@@ -165,7 +165,7 @@
 
 .form-label {
     display: block;
-    color: #94a3b8;
+    color: var(--text-secondary);
     font-size: 0.8rem;
     margin-bottom: 0.4rem;
     font-weight: 500;
@@ -220,13 +220,13 @@
 
 .table-header {
     padding: 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .table-title {
     font-weight: 600;
     font-size: 1rem;
-    color: #f1f5f9;
+    color: var(--text-primary);
 }
 
 table {
@@ -241,17 +241,17 @@ td {
 }
 
 th {
-    color: #64748b;
+    color: var(--text-secondary);
     font-weight: 500;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 td {
     font-size: 0.875rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 tr:last-child td {
@@ -259,7 +259,7 @@ tr:last-child td {
 }
 
 tr:hover td {
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--bg-hover);
 }
 
 .member-cell {
@@ -272,7 +272,7 @@ tr:hover td {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    background: var(--bg-dark);
+    background: var(--accent-primary);
     color: white;
     display: flex;
     align-items: center;
@@ -287,13 +287,13 @@ tr:hover td {
 }
 
 .text-muted {
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .empty-cell {
     text-align: center;
     padding: 2rem;
-    color: #64748b;
+    color: var(--text-muted);
     font-style: italic;
 }
 
@@ -319,8 +319,8 @@ tr:hover td {
 }
 
 .badge-default {
-    background: rgba(255, 255, 255, 0.1);
-    color: #cbd5e1;
+    background: var(--bg-hover);
+    color: var(--text-secondary);
 }
 
 /* ── Info & Empty States ─────────────────────── */
@@ -332,7 +332,7 @@ tr:hover td {
     border: 1px solid rgba(99, 102, 241, 0.2);
     padding: 1rem 1.25rem;
     border-radius: 12px;
-    color: #cbd5e1;
+    color: var(--text-secondary);
     font-size: 0.85rem;
 }
 
@@ -342,7 +342,7 @@ tr:hover td {
 }
 
 .info-card strong {
-    color: #f1f5f9;
+    color: var(--text-primary);
     margin-right: 0.5rem;
 }
 
@@ -351,22 +351,22 @@ tr:hover td {
     flex-direction: column;
     align-items: center;
     padding: 4rem 2rem;
-    color: #475569;
+    color: var(--text-muted);
     gap: 0.75rem;
     text-align: center;
-    background: #1a2235;
-    border: 1px dashed rgba(255, 255, 255, 0.1);
+    background: var(--bg-elevated);
+    border: 1px dashed var(--border-color);
     border-radius: 14px;
 }
 
 .empty-state h3 {
-    color: #64748b;
+    color: var(--text-secondary);
     font-size: 1.1rem;
     margin: 0;
 }
 
 .empty-state p {
-    color: #475569;
+    color: var(--text-muted);
     font-size: 0.875rem;
     margin: 0 0 0.5rem;
 }

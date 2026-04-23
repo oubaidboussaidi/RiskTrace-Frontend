@@ -10,16 +10,16 @@
                     <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
                     <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                 </svg>
-                Team Management
+                {{ 'TEAM.TITLE' | translate }}
             </h1>
-            <p class="page-subtitle" *ngIf="currentOrgId">Managing members for this organization</p>
+            <p class="page-subtitle" *ngIf="currentOrgId">{{ 'TEAM.SUBTITLE_MANAGING' | translate }}</p>
             <p class="page-subtitle" *ngIf="!currentOrgId" style="color:#f87171;">
-                No organization selected — go to <a routerLink="/organizations">Organizations</a> first.
+                {{ 'TEAM.SUBTITLE_NO_ORG' | translate }}
             </p>
         </div>
         <!-- Allow Platform Admin OR Org Owner to see management actions -->
         <div class="header-actions"
-            *ngIf="currentOrgId && (isCurrentUserOwner || authService.isPlatformAdmin() || authService.isAdmin())">
+            *ngIf="currentOrgId && (isCurrentUserOwner || authService.isPlatformAdmin())">
             <button class="btn btn-ghost" id="btn-transfer-ownership" (click)="showTransferForm = !showTransferForm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -29,7 +29,7 @@
                     <line x1="15" y1="15" x2="21" y2="21" />
                     <line x1="4" y1="4" x2="9" y2="9" />
                 </svg>
-                Transfer Ownership
+                {{ 'TEAM.TRANSFER_BTN' | translate }}
             </button>
             <button class="btn btn-primary" id="btn-invite-member" (click)="showInviteForm = !showInviteForm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -39,7 +39,7 @@
                     <line x1="19" y1="8" x2="19" y2="14" />
                     <line x1="16" y1="11" x2="22" y2="11" />
                 </svg>
-                Invite Member
+                {{ 'TEAM.INVITE_BTN' | translate }}
             </button>
         </div>
     </div>
@@ -47,7 +47,7 @@
     <!-- ── Invite Form ── -->
     <div class="panel" *ngIf="showInviteForm && currentOrgId">
         <div class="panel-header">
-            <h3>Invite Member</h3>
+            <h3>{{ 'TEAM.MODAL_INVITE.TITLE' | translate }}</h3>
             <button class="btn-icon" (click)="showInviteForm = false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -59,21 +59,21 @@
         <div class="panel-body">
             <div class="form-row">
                 <div class="form-group">
-                    <label class="form-label">Email Address</label>
+                    <label class="form-label">{{ 'TEAM.MODAL_INVITE.EMAIL' | translate }}</label>
                     <input id="invite-email" class="form-input" type="email" [(ngModel)]="inviteForm.email"
                         placeholder="member@example.com" />
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Role</label>
+                    <label class="form-label">{{ 'TEAM.TABLE.ROLE' | translate }}</label>
                     <select id="invite-role" class="form-select" [(ngModel)]="inviteForm.role">
                         <option *ngFor="let r of orgRoles" [value]="r">{{ r }}</option>
                     </select>
                 </div>
             </div>
             <div class="form-actions">
-                <button class="btn btn-ghost" (click)="showInviteForm = false">Cancel</button>
+                <button class="btn btn-ghost" (click)="showInviteForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
                 <button class="btn btn-primary" id="btn-confirm-invite" (click)="inviteMember()">
-                    Send Invite
+                    {{ 'TEAM.MODAL_INVITE.SEND' | translate }}
                 </button>
             </div>
         </div>
@@ -82,7 +82,7 @@
     <!-- ── Transfer Ownership Form ── -->
     <div class="panel panel-warning" *ngIf="showTransferForm && currentOrgId">
         <div class="panel-header">
-            <h3>Transfer Ownership</h3>
+            <h3>{{ 'TEAM.MODAL_TRANSFER.TITLE' | translate }}</h3>
             <button class="btn-icon" (click)="showTransferForm = false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -101,21 +101,21 @@
                     <line x1="12" y1="9" x2="12" y2="13" />
                     <line x1="12" y1="17" x2="12.01" y2="17" />
                 </svg>
-                Transferring ownership is irreversible. You will become an Analyst.
+                {{ 'TEAM.MODAL_TRANSFER.WARNING' | translate }}
             </p>
             <div class="form-group">
-                <label class="form-label">New Owner</label>
+                <label class="form-label">{{ 'TEAM.MODAL_TRANSFER.NEW_OWNER' | translate }}</label>
                 <select id="transfer-target" class="form-select" [(ngModel)]="transferForm.newOwnerUserId">
-                    <option value="">Select a member…</option>
+                    <option value="">{{ 'TEAM.MODAL_TRANSFER.SELECT_PLACEHOLDER' | translate }}</option>
                     <option *ngFor="let m of candidatesForOwnerTransfer" [value]="m.userId">
                         {{ m.fullName || m.email }} ({{ m.role }})
                     </option>
                 </select>
             </div>
             <div class="form-actions">
-                <button class="btn btn-ghost" (click)="showTransferForm = false">Cancel</button>
+                <button class="btn btn-ghost" (click)="showTransferForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
                 <button class="btn btn-danger" id="btn-confirm-transfer" (click)="transferOwnership()">
-                    Confirm Transfer
+                    {{ 'TEAM.TRANSFER_BTN' | translate }}
                 </button>
             </div>
         </div>
@@ -130,7 +130,7 @@
             <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
-        <h3>No Organization Selected</h3>
+        <h3>{{ 'TEAM.SUBTITLE_NO_ORG' | translate }}</h3>
         <p>Select an organization from the Organizations page to manage its team.</p>
         <a routerLink="/organizations" class="btn btn-primary">
             Go to Organizations
@@ -140,16 +140,16 @@
     <!-- ── Members Table ── -->
     <div class="table-card" *ngIf="currentOrgId">
         <div class="table-header">
-            <span class="table-title">Members ({{ teamMembers.length }})</span>
+            <span class="table-title">{{ 'TEAM.TABLE.MEMBERS' | translate }} ({{ teamMembers.length }})</span>
         </div>
         <table>
             <thead>
                 <tr>
-                    <th>Member</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Joined</th>
-                    <th>Actions</th>
+                    <th>{{ 'TEAM.TABLE.MEMBER' | translate }}</th>
+                    <th>{{ 'TEAM.TABLE.EMAIL' | translate }}</th>
+                    <th>{{ 'TEAM.TABLE.ROLE' | translate }}</th>
+                    <th>{{ 'TEAM.TABLE.JOINED' | translate }}</th>
+                    <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -167,8 +167,8 @@
                     <td class="text-muted">{{ member.createdAt | date:'mediumDate' }}</td>
                     <td>
                         <!-- Allow Platform Admin OR Org Owner to remove members -->
-                        <button *ngIf="isCurrentUserOwner || authService.isPlatformAdmin() || authService.isAdmin()"
-                            class="btn btn-sm btn-danger-ghost" [disabled]="member.userId === currentUserId"
+                        <button *ngIf="isCurrentUserOwner || authService.isPlatformAdmin()"
+                            class="btn btn-sm btn-danger-ghost" [disabled]="member.userId === currentUserId || member.role === 'OWNER'"
                             [title]="member.userId === currentUserId ? 'Cannot remove yourself' : 'Remove member'"
                             (click)="removeMember(member)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -182,7 +182,7 @@
                     </td>
                 </tr>
                 <tr *ngIf="teamMembers.length === 0">
-                    <td colspan="5" class="empty-cell">No members found.</td>
+                    <td colspan="5" class="empty-cell">{{ 'TEAM.TABLE.NO_MEMBERS' | translate }}</td>
                 </tr>
             </tbody>
         </table>
@@ -191,15 +191,14 @@
             style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-top: 1px solid var(--border-color); background: var(--bg-elevated); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;"
             *ngIf="totalPages > 1">
             <div style="font-size: 13px; color: var(--text-secondary);">
-                Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize,
-                teamMembers.length) }} of {{ teamMembers.length }} entries
+                {{ 'COMMON.SHOWING_ENTRIES_SIMPLE' | translate:{start: (currentPage - 1) * pageSize + 1, end: Math.min(currentPage * pageSize, teamMembers.length), total: teamMembers.length} }}
             </div>
             <div style="display: flex; gap: 6px;">
-                <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+                <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">{{ 'COMMON.PREVIOUS' | translate }}</button>
                 <button class="pagination-btn" [ngClass]="currentPage === p ? 'active' : ''"
                     *ngFor="let p of getPages()" (click)="goToPage(p)">{{ p }}</button>
                 <button class="pagination-btn" [disabled]="currentPage === totalPages"
-                    (click)="nextPage()">Next</button>
+                    (click)="nextPage()">{{ 'COMMON.NEXT' | translate }}</button>
             </div>
         </div>
     </div>
@@ -213,9 +212,9 @@
             <line x1="12" y1="8" x2="12.01" y2="8" />
         </svg>
         <div>
-            <strong>Org Roles:</strong>
-            <span class="role-badge badge-owner" style="margin-left:6px">OWNER</span> Full control &nbsp;·&nbsp;
-            <span class="role-badge badge-analyst">ANALYST</span> View & investigate
+            <strong>{{ 'TEAM.ROLES_INFO' | translate }}</strong>
+            <span class="role-badge badge-owner" style="margin-left:6px">OWNER</span> {{ 'TEAM.ROLES_DESC_OWNER' | translate }} &nbsp;·&nbsp;
+            <span class="role-badge badge-analyst">ANALYST</span> {{ 'TEAM.ROLES_DESC_ANALYST' | translate }}
         </div>
     </div>
 </div>

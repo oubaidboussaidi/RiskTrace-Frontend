@@ -8,10 +8,12 @@ import { AuthService } from '../../services/auth.service';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-team',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './team.component.html',
   styleUrl: './team.component.css'
 })
@@ -45,6 +47,7 @@ export class TeamComponent implements OnInit, AfterViewInit {
     // Support ?orgId= query param OR fall back to active org
     this.route.queryParams.subscribe(params => {
       const orgIdFromQuery = params['orgId'];
+      console.log('[Team] Init - userId:', this.currentUserId, 'orgIdFromQuery:', orgIdFromQuery);
       if (orgIdFromQuery) {
         this.currentOrgId = orgIdFromQuery;
         this.loadMembers();
@@ -52,6 +55,7 @@ export class TeamComponent implements OnInit, AfterViewInit {
         this.orgService.currentOrg$.subscribe(org => {
           if (org) {
             this.currentOrgId = org.id;
+            console.log('[Team] Active org changed:', org.id);
             this.loadMembers();
           }
         });
@@ -69,6 +73,8 @@ export class TeamComponent implements OnInit, AfterViewInit {
     this.apiService.getOrganizationMembers(this.currentOrgId).subscribe({
       next: (members) => {
         this.teamMembers = members || [];
+        console.log('[Team] Loaded members:', this.teamMembers);
+        console.log('[Team] My Role in Org:', this.currentUserOrgRole);
         this.currentPage = 1;
         this.refreshIcons();
       },
@@ -169,11 +175,13 @@ export class TeamComponent implements OnInit, AfterViewInit {
   }
 
   get candidatesForOwnerTransfer(): OrganizationMemberResponse[] {
-    return this.teamMembers.filter(m => m.userId !== this.currentUserId && m.role !== 'OWNER');
+    // Current user shouldn't be in the list, and we can transfer to anyone (even other owners if allowed, but usually analysts)
+    return this.teamMembers.filter(m => m.userId !== this.currentUserId);
   }
 
   get currentUserOrgRole(): string | null {
     const me = this.teamMembers.find(m => m.userId === this.currentUserId);
+    console.log('[Team] Finding role for:', this.currentUserId, 'Found:', me);
     return me ? me.role.toUpperCase() : null;
   }
 
