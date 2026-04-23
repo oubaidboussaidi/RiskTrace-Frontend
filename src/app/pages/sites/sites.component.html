@@ -1,14 +1,14 @@
 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
     <div>
-        <h1 style="font-size: 24px; font-weight: 700;">Applications &amp; Tracking</h1>
-        <p style="color: var(--text-secondary);">Monitor your sites and manage tracker API keys.</p>
+        <h1 style="font-size: 24px; font-weight: 700;">{{ 'SITES.TITLE' | translate }}</h1>
+        <p style="color: var(--text-secondary);">{{ 'SITES.SUBTITLE' | translate }}</p>
     </div>
     <div style="display: flex; gap: 12px;">
         <button class="btn btn-secondary" (click)="openHelp()">
-            <i data-lucide="help-circle" size="18"></i> How to Integrate
+            <i data-lucide="help-circle" size="18"></i> {{ 'SITES.HOW_TO_BTN' | translate }}
         </button>
         <button class="btn btn-primary" (click)="toggleCreateForm()">
-            <i data-lucide="plus" size="18"></i> Add Site
+            <i data-lucide="plus" size="18"></i> {{ 'SITES.ADD_SITE_BTN' | translate }}
         </button>
     </div>
 </div>
@@ -34,7 +34,7 @@
         <div
             style="background: var(--bg-dark); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
             <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
-                Tracker API Key
+                {{ 'SITES.API_KEY_LABEL' | translate }}
             </div>
             <div
                 style="font-family: var(--font-mono); font-size: 13px; display: flex; justify-content: space-between; align-items: center; word-break: break-all;">
@@ -50,12 +50,12 @@
         <div style="display: flex; gap: 8px;">
             <button class="btn btn-primary" style="flex: 1;" (click)="showIntegration(site)" title="How to Integrate">
                 <i data-lucide="code" size="16"></i>
-                Get Script
+                {{ 'SITES.GET_SCRIPT' | translate }}
             </button>
             <button class="btn btn-secondary" style="flex: 1;" (click)="regenerateKey(site.id)"
                 title="Regenerate API key">
                 <i data-lucide="refresh-cw" size="16"></i>
-                New Key
+                {{ 'SITES.NEW_KEY' | translate }}
             </button>
             <button class="btn btn-secondary"
                 style="padding-left: 14px; padding-right: 14px; color: var(--sev-critical); border-color: rgba(239,68,68,0.2);"
@@ -69,7 +69,7 @@
     <div *ngIf="sites.length === 0"
         style="grid-column: 1/-1; text-align: center; padding: 60px; color: var(--text-muted);">
         <i data-lucide="globe" size="48" style="margin-bottom: 16px; opacity: 0.3;"></i>
-        <p style="font-size: 16px;">No applications yet. Add your first site to get started.</p>
+        <p style="font-size: 16px;">{{ 'SITES.NO_SITES' | translate }}</p>
     </div>
 </div>
 
@@ -81,10 +81,10 @@
         sites.length }} applications
     </div>
     <div style="display: flex; gap: 6px;">
-        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+        <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">{{ 'COMMON.PREVIOUS' | translate }}</button>
         <button class="pagination-btn" [ngClass]="currentPage === p ? 'active' : ''" *ngFor="let p of getPages()"
             (click)="goToPage(p)">{{ p }}</button>
-        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+        <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">{{ 'COMMON.NEXT' | translate }}</button>
     </div>
 </div>
 
@@ -95,7 +95,7 @@
 
         <div class="modal-header">
             <span class="modal-title">
-                {{ selectedSite ? 'Integrate — ' + selectedSite.siteName : 'How to Integrate RiskTrace' }}
+                {{ selectedSite ? (('SITES.GET_SCRIPT' | translate) + ' — ' + selectedSite.siteName) : ('SITES.MODAL_HELP.TITLE' | translate) }}
             </span>
             <button class="modal-close" (click)="showHelp = false">
                 <i data-lucide="x" size="20"></i>
@@ -106,9 +106,9 @@
         <div class="step" style="margin-bottom: 24px;">
             <div class="step-number">1</div>
             <div class="step-content">
-                <h3>Add the script tag to your site</h3>
+                <h3>{{ 'SITES.MODAL_HELP.STEP1_TITLE' | translate }}</h3>
                 <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">
-                    Paste this just before the <code style="color: var(--accent-primary);">&lt;/body&gt;</code> tag:
+                    {{ 'SITES.MODAL_HELP.STEP1_DESC' | translate }}
                 </p>
                 <div class="code-block">
                     <code *ngIf="selectedSite">&lt;script src="http://localhost:8080/tracker.js"
@@ -122,10 +122,9 @@
         <div class="step" style="margin-bottom: 24px;">
             <div class="step-number">2</div>
             <div class="step-content">
-                <h3>Browse your application</h3>
+                <h3>{{ 'SITES.MODAL_HELP.STEP2_TITLE' | translate }}</h3>
                 <p style="color: var(--text-secondary); font-size: 13px;">
-                    The tracker automatically captures page loads, API requests, XHR calls, form submits, JS errors —
-                    and detects suspicious activity (>20 req/min).
+                    {{ 'SITES.MODAL_HELP.STEP2_DESC' | translate }}
                 </p>
             </div>
         </div>
@@ -133,17 +132,16 @@
         <div class="step" style="margin-bottom: 28px;">
             <div class="step-number">3</div>
             <div class="step-content">
-                <h3>Watch logs appear in real-time</h3>
+                <h3>{{ 'SITES.MODAL_HELP.STEP3_TITLE' | translate }}</h3>
                 <p style="color: var(--text-secondary); font-size: 13px;">
-                    Go to <strong>Log Explorer</strong> in your dashboard — logs are batched and sent every 5 seconds or
-                    when 10 events accumulate.
+                    {{ 'SITES.MODAL_HELP.STEP3_DESC' | translate }}
                 </p>
             </div>
         </div>
 
         <button class="btn btn-primary" style="width: 100%;" (click)="copyScript(selectedSite)">
             <i data-lucide="copy" size="16"></i>
-            {{ selectedSite ? 'Copy Tracker Snippet (with your API key)' : 'Copy Tracker Snippet Template' }}
+            {{ selectedSite ? ('SITES.MODAL_HELP.COPY_SNIPPET' | translate) : ('SITES.MODAL_HELP.COPY_SNIPPET' | translate) }}
         </button>
     </div>
 </div>
@@ -153,26 +151,26 @@
     <div class="modal-content" (click)="$event.stopPropagation()">
 
         <div class="modal-header">
-            <span class="modal-title">Add New Application</span>
+            <span class="modal-title">{{ 'SITES.MODAL_ADD.TITLE' | translate }}</span>
             <button class="modal-close" (click)="showCreateForm = false">
                 <i data-lucide="x" size="20"></i>
             </button>
         </div>
 
         <div class="form-group">
-            <label>Application Name</label>
+            <label>{{ 'SITES.MODAL_ADD.NAME' | translate }}</label>
             <input type="text" [(ngModel)]="newSite.siteName" placeholder="e.g. My E-Commerce Store" autofocus>
         </div>
 
         <div class="form-group">
-            <label>Domain / URL</label>
+            <label>{{ 'SITES.MODAL_ADD.DOMAIN' | translate }}</label>
             <input type="text" [(ngModel)]="newSite.domain" placeholder="e.g. store.example.com">
         </div>
 
         <div class="modal-actions">
-            <button class="btn btn-secondary" (click)="showCreateForm = false">Cancel</button>
+            <button class="btn btn-secondary" (click)="showCreateForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
             <button class="btn btn-primary" (click)="createSite()">
-                <i data-lucide="plus-circle" size="16"></i> Create &amp; Generate Key
+                <i data-lucide="plus-circle" size="16"></i> {{ 'COMMON.CREATE' | translate }}
             </button>
         </div>
 

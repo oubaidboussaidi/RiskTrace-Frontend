@@ -8,10 +8,12 @@ import { environment } from '../../../environments/environment';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-sites',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslateModule],
   templateUrl: './sites.component.html',
   styleUrl: './sites.component.css'
 })
