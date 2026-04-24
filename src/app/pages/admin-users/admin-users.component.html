@@ -8,9 +8,9 @@
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     <polyline points="9 11 11 13 15 9" />
                 </svg>
-                Platform User Management
+                {{ 'ADMIN_USERS.TITLE' | translate }}
             </h1>
-            <p class="page-subtitle">Manage all user accounts and platform roles globally.</p>
+            <p class="page-subtitle">{{ 'ADMIN_USERS.SUBTITLE' | translate }}</p>
         </div>
         <div class="header-actions">
             <div class="search-box">
@@ -19,17 +19,17 @@
                     <circle cx="11" cy="11" r="8" />
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input type="text" placeholder="Search by name or email..." [(ngModel)]="searchTerm"
+                <input type="text" [placeholder]="'ADMIN_USERS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchTerm"
                     (input)="filterUsers()" />
             </div>
             <select class="role-filter" [(ngModel)]="roleFilter" (change)="filterUsers()">
-                <option value="">All Roles</option>
+                <option value="">{{ 'ADMIN_USERS.FILTER_ALL_ROLES' | translate }}</option>
                 <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
             </select>
             <select class="role-filter" [(ngModel)]="ownerFilter" (change)="filterUsers()">
-                <option value="">All Users</option>
-                <option value="owner">Org Owners</option>
-                <option value="non-owner">Non-Owners</option>
+                <option value="">{{ 'ADMIN_USERS.FILTER_ALL_USERS' | translate }}</option>
+                <option value="owner">{{ 'ADMIN_USERS.FILTER_OWNERS' | translate }}</option>
+                <option value="non-owner">{{ 'ADMIN_USERS.FILTER_NON_OWNERS' | translate }}</option>
             </select>
             <button class="btn btn-primary" (click)="loadUsers()">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -38,7 +38,7 @@
                     <polyline points="1 20 1 14 7 14" />
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                 </svg>
-                Refresh
+                {{ 'ADMIN_USERS.REFRESH' | translate }}
             </button>
         </div>
     </div>
@@ -46,17 +46,17 @@
     <!-- ── Users Table ── -->
     <div class="table-card" *ngIf="!isLoading">
         <div class="table-header">
-            <span class="table-title">All Platform Users ({{ users.length }})</span>
+            <span class="table-title">{{ 'ADMIN_USERS.TITLE' | translate }} ({{ users.length }})</span>
         </div>
         <table>
             <thead>
                 <tr>
-                    <th>User</th>
-                    <th>Email</th>
-                    <th>Platform Role</th>
-                    <th>Joined</th>
-                    <th>Status</th>
-                    <th>Actions</th>
+                    <th>{{ 'ADMIN_USERS.TABLE.USER' | translate }}</th>
+                    <th>{{ 'ADMIN_USERS.TABLE.EMAIL' | translate }}</th>
+                    <th>{{ 'ADMIN_USERS.TABLE.ROLE' | translate }}</th>
+                    <th>{{ 'ADMIN_USERS.TABLE.JOINED' | translate }}</th>
+                    <th>{{ 'ADMIN_USERS.TABLE.STATUS' | translate }}</th>
+                    <th>{{ 'COMMON.ACTIONS' | translate }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -73,7 +73,7 @@
                             <div class="user-name-group">
                                 <div class="user-name-line">
                                     <span class="user-name">{{ user.fullName }}</span>
-                                    <span class="you-badge" *ngIf="isSelf(user)">You</span>
+                                    <span class="you-badge" *ngIf="isSelf(user)">{{ 'COMMON.YOU' | translate }}</span>
                                 </div>
                                 <!-- Subtle org ownership tags -->
                                 <div class="owner-badges" *ngIf="getOwnedOrgNames(user.id).length > 0">
@@ -95,7 +95,7 @@
                     <td class="text-muted">{{ user.createdAt | date:'mediumDate' }}</td>
                     <td>
                         <span class="status-badge" [ngClass]="user.enabled ? 'badge-ok' : 'badge-disabled'">
-                            {{ user.enabled ? 'Active' : 'Disabled' }}
+                            {{ user.enabled ? ('ALERTS_RULES.ENABLED' | translate) : ('ALERTS_RULES.DISABLED' | translate) }}
                         </span>
                     </td>
                     <td>
@@ -122,7 +122,7 @@
                                     <circle cx="9" cy="7" r="4"></circle>
                                     <polyline points="16 11 18 13 22 9"></polyline>
                                 </svg>
-                                {{ user.enabled ? 'Disable' : 'Enable' }}
+                                {{ user.enabled ? ('COMMON.DISABLE' | translate) : ('COMMON.ENABLE' | translate) }}
                             </button>
                             <button class="btn btn-sm btn-danger-ghost"
                                 [disabled]="isSelf(user) || user.role === 'ADMIN'"
@@ -143,7 +143,7 @@
                     </td>
                 </tr>
                 <tr *ngIf="filteredUsers.length === 0">
-                    <td colspan="6" class="empty-cell">No users found.</td>
+                    <td colspan="6" class="empty-cell">{{ 'COMMON.NO_DATA' | translate }}</td>
                 </tr>
             </tbody>
         </table>
@@ -156,11 +156,11 @@
                 filteredUsers.length) }} of {{ filteredUsers.length }} entries
             </div>
             <div style="display: flex; gap: 6px;">
-                <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+                <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">{{ 'COMMON.PREVIOUS' | translate }}</button>
                 <button class="pagination-btn" [ngClass]="currentPage === p ? 'active' : ''"
                     *ngFor="let p of getPages()" (click)="goToPage(p)">{{ p }}</button>
                 <button class="pagination-btn" [disabled]="currentPage === totalPages"
-                    (click)="nextPage()">Next</button>
+                    (click)="nextPage()">{{ 'COMMON.NEXT' | translate }}</button>
             </div>
         </div>
     </div>
@@ -174,9 +174,7 @@
     <div class="info-card warning">
         <i data-lucide="alert-triangle" size="20"></i>
         <div>
-            <strong>Careful!</strong>
-            Modifying platform roles affects user permissions across EVERY organization.
-            Deleting a user is permanent and will remove them from all shared workspaces.
+            <strong>{{ 'ADMIN_USERS.WARNING' | translate }}</strong>
         </div>
     </div>
 </div>
@@ -190,11 +188,9 @@
             <div class="modal-title-group">
                 <i data-lucide="shield-alert" size="20" class="modal-icon-warn"></i>
                 <div>
-                    <h2>Ownership Conflict</h2>
+                    <h2>{{ 'ADMIN_USERS.MODAL_OWNERSHIP.TITLE' | translate }}</h2>
                     <p class="modal-subtitle">
-                        <strong>{{ ownershipTargetUser?.fullName }}</strong> is the <em>sole owner</em> of the
-                        organizations below.
-                        Assign a new owner for each before deletion can proceed.
+                        {{ 'ADMIN_USERS.MODAL_OWNERSHIP.SUBTITLE' | translate:{name: ownershipTargetUser?.fullName} }}
                     </p>
                 </div>
             </div>
@@ -206,7 +202,7 @@
         <div class="modal-body">
             <div class="loading-state" *ngIf="isLoadingConflicts">
                 <div class="spinner"></div>
-                <p>Scanning organizations...</p>
+                <p>{{ 'ADMIN_USERS.MODAL_OWNERSHIP.FINDING_CONFLICTS' | translate }}</p>
             </div>
 
             <div *ngIf="!isLoadingConflicts">
@@ -214,12 +210,12 @@
                     <div class="conflict-org-name">
                         <i data-lucide="building" size="16"></i>
                         {{ conflict.org.name }}
-                        <span class="member-count">{{ conflict.members.length }} member(s)</span>
+                        <span class="member-count">{{ conflict.members.length }} {{ 'TEAM.TABLE.MEMBER' | translate }}(s)</span>
                     </div>
 
                     <!-- Option A: pick from existing members -->
                     <div *ngIf="getOtherMembers(conflict).length > 0">
-                        <p class="section-label">Assign from existing members:</p>
+                        <p class="section-label">{{ 'ADMIN_USERS.MODAL_OWNERSHIP.ASSIGN_EXISTING' | translate }}:</p>
                         <div class="member-pick-list">
                             <div class="member-pick-item" *ngFor="let mem of getOtherMembers(conflict)">
                                 <div class="avatar sm">{{ getInitials(mem.fullName || mem.email) }}</div>
@@ -229,7 +225,7 @@
                                 </div>
                                 <button class="btn btn-sm btn-primary"
                                     (click)="assignOwnerFromMember(conflict, mem.userId, mem.fullName)">
-                                    Make Owner
+                                    {{ 'ADMIN_USERS.MODAL_OWNERSHIP.SOLE_OWNER' | translate }}
                                 </button>
                             </div>
                         </div>
@@ -237,12 +233,13 @@
 
                     <!-- Option B: search platform users -->
                     <div class="platform-search-section">
-                        <p class="section-label">{{ getOtherMembers(conflict).length > 0 ? 'Or search the platform:' :
-                            'No other members — search the platform:' }}</p>
+                        <p class="section-label">{{ getOtherMembers(conflict).length > 0 ? ('ADMIN_USERS.MODAL_OWNERSHIP.SEARCH_GLOBAL' | translate) :
+                            ('ADMIN_USERS.MODAL_OWNERSHIP.NO_MEMBERS' | translate) }}</p>
                         <div class="search-row">
                             <div class="search-box">
                                 <i data-lucide="search" size="14"></i>
                                 <input type="text" placeholder="Search users by name or email..."
+                                    [placeholder]="'ADMIN_USERS.MODAL_OWNERSHIP.SEARCH_GLOBAL' | translate"
                                     [(ngModel)]="platformUserSearch[conflict.org.id]"
                                     (input)="searchPlatformUsers(conflict.org.id)" />
                             </div>
@@ -256,13 +253,13 @@
                                     <div class="text-xs text-muted">{{ u.email }}</div>
                                 </div>
                                 <button class="btn btn-sm btn-primary" (click)="assignOwnerFromPlatform(conflict, u)">
-                                    Assign as Owner
+                                    {{ 'ADMIN_USERS.MODAL_OWNERSHIP.SOLE_OWNER' | translate }}
                                 </button>
                             </div>
                         </div>
                         <div class="no-results text-muted text-xs"
                             *ngIf="(platformUserSearch[conflict.org.id] || '').length >= 2 && !(platformUserResults[conflict.org.id] || []).length">
-                            No users found.
+                            {{ 'ADMIN_USERS.MODAL_OWNERSHIP.NO_RESULTS' | translate }}
                         </div>
                     </div>
                 </div>
@@ -273,13 +270,13 @@
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
-                    All conflicts resolved. Deleting user...
+                    {{ 'ADMIN_USERS.MODAL_OWNERSHIP.FINDING_CONFLICTS' | translate }}
                 </div>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-ghost" (click)="closeOwnershipModal()">Cancel</button>
+            <button class="btn btn-ghost" (click)="closeOwnershipModal()">{{ 'COMMON.CANCEL' | translate }}</button>
         </div>
     </div>
 </div>

@@ -12,10 +12,12 @@ interface OrgOwnershipConflict {
     members: OrganizationMemberResponse[];
 }
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-admin-users',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './admin-users.component.html',
     styleUrl: './admin-users.component.css'
 })
