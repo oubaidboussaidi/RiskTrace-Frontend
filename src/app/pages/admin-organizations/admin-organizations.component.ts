@@ -5,10 +5,12 @@ import { ApiService, OrganizationResponse, OrganizationMemberResponse, UserRespo
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-admin-organizations',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './admin-organizations.component.html',
     styleUrl: './admin-organizations.component.css'
 })
@@ -79,6 +81,8 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
                         if (this.selectedOrg?.id === updated.id) {
                             this.selectedOrg = updated;
                         }
+                        // Re-render the lucide icons for the updated lock/lock-open state
+                        setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
                     }
                 },
                 error: (err) => alert(`Failed to ${action} organization: ` + (err.error?.error || err.error?.message || 'Error'))

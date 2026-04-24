@@ -2,45 +2,21 @@
     <div class="page-header">
         <div class="header-left">
             <h1 class="page-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="#818cf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    style="margin-right: 8px;">
-                    <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                    <line x1="9" y1="22" x2="9" y2="22" />
-                    <line x1="15" y1="22" x2="15" y2="22" />
-                    <line x1="12" y1="18" x2="12" y2="18" />
-                    <line x1="12" y1="14" x2="12" y2="14" />
-                    <line x1="12" y1="10" x2="12" y2="10" />
-                    <line x1="8" y1="18" x2="8" y2="18" />
-                    <line x1="8" y1="14" x2="8" y2="14" />
-                    <line x1="8" y1="10" x2="8" y2="10" />
-                    <line x1="16" y1="18" x2="16" y2="18" />
-                    <line x1="16" y1="14" x2="16" y2="14" />
-                    <line x1="16" y1="10" x2="16" y2="10" />
-                </svg>
-                Platform Organizations
+                <i data-lucide="building-2" size="22" style="margin-right: 8px; color: var(--accent-primary);"></i>
+                {{ 'ADMIN_ORGS.TITLE' | translate }}
             </h1>
-            <p class="page-subtitle">Oversee, suspend, or investigate all tenant organizations on the platform.</p>
+            <p class="page-subtitle">{{ 'ADMIN_ORGS.SUBTITLE' | translate }}</p>
         </div>
         <div class="header-actions">
             <!-- Search bar -->
             <div class="search-box">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="text" placeholder="Search orgs..." [(ngModel)]="searchTerm" (input)="filterOrganizations()"
+                <i data-lucide="search" size="14"></i>
+                <input type="text" [placeholder]="'ADMIN_ORGS.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchTerm" (input)="filterOrganizations()"
                     class="form-input" />
             </div>
             <button class="btn btn-primary" (click)="loadOrganizations()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="23 4 23 10 17 10" />
-                    <polyline points="1 20 1 14 7 14" />
-                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                </svg>
-                Refresh
+                <i data-lucide="refresh-cw" size="15"></i>
+                {{ 'ADMIN_USERS.REFRESH' | translate }}
             </button>
         </div>
     </div>
@@ -53,7 +29,7 @@
                 <div class="org-title-group">
                     <div class="org-name">{{ org.name }}</div>
                     <div class="org-status" [ngClass]="org.enabled ? 'text-ok' : 'text-danger'">
-                        {{ org.enabled ? 'Active' : 'Suspended' }}
+                        {{ org.enabled ? ('ALERTS_RULES.ENABLED' | translate) : ('TEAM.SUSPENDED' | translate) }}
                     </div>
                 </div>
             </div>
@@ -61,39 +37,24 @@
             <div class="org-stats">
                 <div class="stat">
                     <i data-lucide="users" size="14"></i>
-                    <span>{{ org.membersCount }} Members</span>
+                    <span>{{ org.membersCount }} {{ 'ADMIN_ORGS.TABLE.MEMBERS' | translate }}</span>
                 </div>
                 <div class="stat">
                     <i data-lucide="calendar" size="14"></i>
-                    <span>Created {{ org.createdAt | date:'mediumDate' }}</span>
+                    <span>{{ 'COMMON.CREATED' | translate }} {{ org.createdAt | date:'mediumDate' }}</span>
                 </div>
             </div>
 
             <div class="org-actions">
                 <button class="btn btn-ghost" (click)="viewDetails(org)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
-                        <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    Details
+                    <i data-lucide="users" size="14"></i>
+                    {{ 'ADMIN_ORGS.MANAGE' | translate }}
                 </button>
-                <button class="btn btn-sm" [ngClass]="org.enabled ? 'btn-danger-ghost' : 'btn-ghost'"
+                <button class="btn btn-sm" [ngClass]="org.enabled ? 'btn-danger-ghost' : 'btn-success-ghost'"
+                    [title]="org.enabled ? ('ADMIN_ORGS.SUSPEND_TOOLTIP' | translate) : ('ADMIN_ORGS.REACTIVATE_TOOLTIP' | translate)"
                     (click)="toggleStatus(org)">
-                    <svg *ngIf="org.enabled" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10" />
-                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-                    </svg>
-                    <svg *ngIf="!org.enabled" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                    </svg>
-                    {{ org.enabled ? 'Suspend' : 'Activate' }}
+                    <i [attr.data-lucide]="org.enabled ? 'lock' : 'lock-open'" size="14"></i>
+                    {{ org.enabled ? ('ADMIN_ORGS.SUSPEND' | translate) : ('ADMIN_ORGS.REACTIVATE' | translate) }}
                 </button>
             </div>
         </div>
@@ -102,142 +63,129 @@
     <!-- ── Detail View ── -->
     <div *ngIf="selectedOrg" class="detail-view">
         <button class="btn btn-ghost mb-2" (click)="closeDetails()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="19" y1="12" x2="5" y2="12" />
-                <polyline points="12 19 5 12 12 5" />
-            </svg>
-            Back to Organizations
+            <i data-lucide="arrow-left" size="15"></i>
+            {{ 'COMMON.BACK' | translate }} {{ 'SIDEBAR.ORGANIZATIONS' | translate }}
         </button>
 
         <div class="detail-header">
             <h2>{{ selectedOrg.name }}</h2>
             <span class="status-badge" [ngClass]="selectedOrg.enabled ? 'badge-ok' : 'badge-disabled'">
-                {{ selectedOrg.enabled ? 'Active' : 'Suspended' }}
+                {{ selectedOrg.enabled ? ('ALERTS_RULES.ENABLED' | translate) : ('TEAM.SUSPENDED' | translate) }}
             </span>
         </div>
 
+        <!-- ── Loading ── -->
+        <div class="loading-state" *ngIf="isLoadingDetails">
+            <div class="spinner"></div>
+            <p>{{ 'COMMON.LOADING' | translate }}</p>
+        </div>
+
         <div class="detail-grid" *ngIf="!isLoadingDetails">
-            <!-- Members Panel -->
+
+            <!-- ── Members Panel ── -->
             <div class="panel">
                 <div class="panel-header">
-                    <h3>Team Members ({{ orgMembers.length }})</h3>
+                    <h3>
+                        <i data-lucide="users" size="16"></i>
+                        {{ 'ADMIN_ORGS.TABLE.MEMBERS' | translate }} ({{ orgMembers.length }})
+                    </h3>
                 </div>
                 <div class="panel-body">
-                    <!-- Members table -->
-                    <div *ngIf="orgMembers.length > 0">
-                        <table class="simple-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Role</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let mem of orgMembers">
-                                    <td>
-                                        <div class="member-row">
-                                            <div class="avatar">{{ getInitials(mem.fullName || mem.email) }}</div>
-                                            <div>
-                                                <div class="fw-500">{{ mem.fullName }}</div>
-                                                <div class="text-xs text-muted">{{ mem.email }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div
-                                            style="display: flex; align-items: center; gap: 0.5rem; justify-content: space-between;">
-                                            <span class="role-badge">{{ mem.role }}</span>
-                                            <button class="btn btn-sm btn-ghost" *ngIf="mem.role !== 'OWNER'"
-                                                (click)="forceTransferOwnership(selectedOrg, mem.userId, mem.fullName)">
-                                                Make Owner
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="empty-list" *ngIf="orgMembers.length === 0">
-                        No members in this organization.
-                    </div>
+                    <table class="simple-table" *ngIf="orgMembers.length > 0; else noMembers">
+                        <thead>
+                            <tr>
+                                <th>{{ 'COMMON.NAME' | translate }}</th>
+                                <th>{{ 'COMMON.EMAIL' | translate }}</th>
+                                <th>{{ 'COMMON.ROLE' | translate }}</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let m of orgMembers">
+                                <td>
+                                    <div class="member-row">
+                                        <div class="avatar">{{ getInitials(m.fullName) }}</div>
+                                        <span>{{ m.fullName }}</span>
+                                    </div>
+                                </td>
+                                <td class="text-muted text-xs">{{ m.email }}</td>
+                                <td>
+                                    <span class="role-badge" [ngClass]="{'role-owner': m.role === 'OWNER'}">{{ m.role }}</span>
+                                </td>
+                                <td>
+                                    <button *ngIf="m.role !== 'OWNER'" class="btn btn-ghost btn-sm"
+                                        (click)="forceTransferOwnership(selectedOrg, m.userId, m.fullName)">
+                                        <i data-lucide="crown" size="12"></i>
+                                        {{ 'ADMIN_ORGS.MAKE_OWNER' | translate }}
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ng-template #noMembers>
+                        <p class="empty-list">{{ 'COMMON.NO_DATA' | translate }}</p>
+                    </ng-template>
 
-                    <!-- ── Assign Owner from Platform ── -->
+                    <!-- Assign Owner from Platform Users -->
                     <div class="assign-owner-section">
                         <div class="assign-owner-label">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="12" cy="8" r="4"></circle>
-                                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"></path>
-                            </svg>
-                            Assign owner from platform
+                            <i data-lucide="user-plus" size="13"></i>
+                            {{ 'ADMIN_ORGS.ASSIGN_OWNER' | translate }}
                         </div>
-                        <div class="search-box assign-search">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
-                            <input type="text" placeholder="Search users by name or email..."
-                                [(ngModel)]="ownerSearchTerm" (input)="searchOwnerCandidates()" />
+                        <div class="assign-search">
+                            <input type="text" class="form-input"
+                                [placeholder]="'ADMIN_USERS.MODAL_OWNERSHIP.SEARCH_GLOBAL' | translate"
+                                [(ngModel)]="ownerSearchTerm"
+                                (input)="searchOwnerCandidates()" />
                         </div>
                         <div class="owner-results" *ngIf="ownerSearchResults.length > 0">
                             <div class="owner-result-item" *ngFor="let u of ownerSearchResults">
                                 <div class="avatar sm">{{ getInitials(u.fullName) }}</div>
                                 <div class="flex-1">
-                                    <div class="fw-500">{{ u.fullName }}</div>
-                                    <div class="text-xs text-muted">{{ u.email }}</div>
+                                    <div class="fw-500 text-xs">{{ u.fullName }}</div>
+                                    <div class="text-muted text-xs">{{ u.email }}</div>
                                 </div>
-                                <button class="btn btn-sm btn-primary" (click)="assignOwner(u)">
-                                    Assign as Owner
+                                <button class="btn btn-ghost btn-sm" (click)="assignOwner(u)">
+                                    <i data-lucide="crown" size="12"></i>
+                                    {{ 'ADMIN_ORGS.ASSIGN' | translate }}
                                 </button>
                             </div>
                         </div>
-                        <div class="text-xs text-muted" style="margin-top: 0.4rem;"
-                            *ngIf="ownerSearchTerm.length >= 2 && ownerSearchResults.length === 0">
-                            No users found.
-                        </div>
                     </div>
                 </div>
             </div>
 
+            <!-- ── Sites Panel ── -->
             <div class="panel">
                 <div class="panel-header">
                     <h3>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            style="margin-right: 8px;">
-                            <circle cx="12" cy="12" r="10" />
-                            <line x1="2" y1="12" x2="22" y2="12" />
-                            <path
-                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-                        </svg>
-                        Hosted Sites ({{ orgSites.length }})
+                        <i data-lucide="globe" size="16"></i>
+                        {{ 'ADMIN_ORGS.TABLE.SITES' | translate }} ({{ orgSites.length }})
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <div class="empty-list" *ngIf="orgSites.length === 0">No sites attached to this organization.</div>
-                    <div class="site-list" *ngIf="orgSites.length > 0">
-                        <div class="site-item" *ngFor="let site of orgSites">
-                            <span class="site-name">{{ site.siteName }}</span>
-                            <a [href]="'http://' + site.domain" target="_blank" class="site-domain">{{ site.domain
-                                }}</a>
+                    <div class="site-list" *ngIf="orgSites.length > 0; else noSites">
+                        <div class="site-item" *ngFor="let s of orgSites">
+                            <div>
+                                <div class="site-name">{{ s.siteName }}</div>
+                                <a [href]="s.domain" target="_blank" class="site-domain">{{ s.domain }}</a>
+                            </div>
+                            <div class="text-muted text-xs">
+                                {{ 'COMMON.CREATED' | translate }} {{ s.createdAt | date:'mediumDate' }}
+                            </div>
                         </div>
                     </div>
+                    <ng-template #noSites>
+                        <p class="empty-list">{{ 'COMMON.NO_DATA' | translate }}</p>
+                    </ng-template>
                 </div>
             </div>
-        </div>
 
-        <div class="loading-state" *ngIf="isLoadingDetails">
-            <div class="spinner"></div>
-            <p>Loading details...</p>
         </div>
     </div>
 
     <div class="loading-state" *ngIf="isLoading && !selectedOrg">
         <div class="spinner"></div>
-        <p>Loading organizations...</p>
+        <p>{{ 'COMMON.LOADING' | translate }}</p>
     </div>
 </div>
