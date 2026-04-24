@@ -8,10 +8,12 @@ import { forkJoin } from 'rxjs';
 
 declare var lucide: any;
 
+import { TranslateModule } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-admin-logs',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslateModule],
     templateUrl: './admin-logs.component.html',
     styleUrl: './admin-logs.component.css'
 })
@@ -58,40 +60,49 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        forkJoin({
-            organizations: this.apiService.getAllOrganizations(),
-            sites: this.apiService.getSites(),
-            logs: this.apiService.getLogs()
-        }).subscribe({
-            next: ({ organizations, sites, logs }) => {
+        this.apiService.getAllOrganizations().subscribe({
+            next: (organizations) => {
                 const orgMap = new Map<string, string>();
                 (organizations || []).forEach((o: any) => {
                     orgMap.set(o.id, o.name || o.id);
                 });
                 this.orgMap = orgMap;
 
-                const siteMap = new Map<string, string>();
-                (sites || []).forEach((s: any) => {
-                    siteMap.set(s.id, s.siteName || s.domain || s.id);
+                // For each organization, fetch its sites to build a complete global site map
+                const siteRequests = (organizations || []).map(org => 
+                    this.apiService.getSitesByOrganization(org.id)
+                );
+
+                forkJoin({
+                    allSitesArrays: forkJoin(siteRequests.length > 0 ? siteRequests : [Promise.resolve([])]),
+                    logs: this.apiService.getLogs()
+                }).subscribe({
+                    next: ({ allSitesArrays, logs }) => {
+                        const siteMap = new Map<string, string>();
+                        const allSites = (allSitesArrays as any[]).flat();
+                        
+                        allSites.forEach((s: any) => {
+                            // Map site names, checking both siteName and name fields
+                            siteMap.set(s.id, s.siteName || s.name || s.domain || s.id);
+                        });
+                        this.siteMap = siteMap;
+
+                        this.allLogs = (logs || []).map(log => this.processLog(log, this.orgMap, this.siteMap));
+                        this.extractFilters();
+
+                        this.route.queryParams.subscribe(params => {
+                            if (params['search']) {
+                                this.searchQuery = params['search'];
+                            }
+                            this.filterLogs();
+                        });
+
+                        setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
+                    },
+                    error: (err) => console.error('Failed to load logs/sites', err)
                 });
-                this.siteMap = siteMap;
-
-                this.allLogs = (logs || []).map(log => this.processLog(log, this.orgMap, this.siteMap));
-                this.extractFilters();
-
-                // Check for query params
-                this.route.queryParams.subscribe(params => {
-                    if (params['search']) {
-                        this.searchQuery = params['search'];
-                    }
-                    this.filterLogs();
-                });
-
-                setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
             },
-            error: (err) => {
-                console.error('Failed to load global data', err);
-            }
+            error: (err) => console.error('Failed to load organizations', err)
         });
     }
 
@@ -228,9 +239,9 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     getStatusLabel(status: string): string {
-        if (status === '4xx, 5xx') return 'Errors (4xx, 5xx)';
-        if (status === '2xx') return 'Success (2xx)';
-        return 'All Status';
+        if (status === '4xx, 5xx') return 'LOGS.ERRORS';
+        if (status === '2xx') return 'LOGS.SUCCESS';
+        return 'LOGS.ALL_STATUS';
     }
 
     viewLogDetails(log: any) {
