@@ -233,3 +233,16 @@ td {
   font-weight: 700;
   letter-spacing: -0.5px;
 }
+
+/* Global App Logo Theme-Awareness */
+.app-logo {
+  display: block;
+  object-fit: contain;
+  /* Default: Dark Mode (Inverted) */
+  filter: invert(1) hue-rotate(180deg) brightness(1.5);
+  transition: filter 0.3s ease;
+}
+
+[data-theme='light'] .app-logo {
+  filter: none;
+}
