@@ -12,6 +12,7 @@ export interface UserResponse {
     isTwoFactorEnabled: boolean;
     createdAt: string;
     updatedAt: string;
+    profileImageUrl?: string | null;
 }
 
 export interface Setup2FaResponse {
@@ -69,6 +70,8 @@ export interface OrganizationResponse {
     createdBy: string;
     enabled: boolean;
     membersCount: number;
+    logoUrl?: string | null;
+    currentUserRole?: string | null;
 }
 
 export interface OrganizationMemberResponse {
@@ -205,6 +208,10 @@ export class ApiService {
         return this.http.post<OrganizationResponse>(`${this.apiUrl}/organizations`, data, { headers: this.getHeaders() });
     }
 
+    updateOrganization(organizationId: string, data: OrganizationRequest): Observable<OrganizationResponse> {
+        return this.http.put<OrganizationResponse>(`${this.apiUrl}/organizations/${organizationId}`, data, { headers: this.getHeaders() });
+    }
+
     getMyOrganizations(): Observable<OrganizationResponse[]> {
         return this.http.get<OrganizationResponse[]>(`${this.apiUrl}/organizations/my`, { headers: this.getHeaders() });
     }
@@ -282,6 +289,10 @@ export class ApiService {
         return `${this.apiUrl}/logs/stream`;
     }
 
+    getMlStatus(): Observable<{online: boolean}> {
+        return this.http.get<{online: boolean}>(`${this.apiUrl}/logs/ml-status`, { headers: this.getHeaders() });
+    }
+
     // --- Alerts ---
     createAlert(alert: any): Observable<any> {
         return this.http.post(`${this.apiUrl}/alerts`, alert, { headers: this.getHeaders() });
@@ -305,5 +316,9 @@ export class ApiService {
 
     updateAlertStatus(alertId: string, status: string): Observable<any> {
         return this.http.put(`${this.apiUrl}/alerts/${alertId}/status`, { status }, { headers: this.getHeaders() });
+    }
+
+    escalateAlert(alertId: string, request: { message: string, analystName: string }): Observable<any> {
+        return this.http.post(`${this.apiUrl}/alerts/${alertId}/escalate`, request, { headers: this.getHeaders() });
     }
 }
