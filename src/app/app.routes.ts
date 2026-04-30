@@ -8,7 +8,6 @@ import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { SitesComponent } from './pages/sites/sites.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SettingsComponent } from './pages/settings/settings.component';
-import { AlertsComponent } from './pages/alerts/alerts.component';
 import { ApiKeysComponent } from './pages/api-keys/api-keys.component';
 import { TeamComponent } from './pages/team/team.component';
 import { VerifyEmailComponent } from './pages/verify-email/verify-email.component';
@@ -37,7 +36,7 @@ export const routes: Routes = [
             { path: 'analytics', component: AnalyticsComponent },
             { path: 'sites', component: SitesComponent },
             { path: 'settings', component: SettingsComponent },
-            { path: 'alerts', component: AlertsComponent },
+            { path: 'admin/settings', component: SettingsComponent, canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
             { path: 'api-keys', component: ApiKeysComponent },
             { path: 'team', component: TeamComponent, canActivate: [AuthGuard] },
 

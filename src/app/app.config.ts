@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 class NoCacheTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
   getTranslation(lang: string): Observable<any> {
-    return this.http.get(`/assets/i18n/${lang}.json?t=${new Date().getTime()}`, {
+    return this.http.get(`/i18n/${lang}.json?t=${new Date().getTime()}`, {
       headers: {
         'Cache-Control': 'no-cache, no-store, must-revalidate',
         'Pragma': 'no-cache',
