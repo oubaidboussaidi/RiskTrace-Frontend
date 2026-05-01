@@ -70,6 +70,12 @@
     animation: breathing-glow 2.5s infinite ease-in-out;
 }
 
+.status-dot.offline {
+    background: #f85149;
+    box-shadow: none;
+    animation: none;
+}
+
 @keyframes breathing-glow {
     0% {
         box-shadow: 0 0 0 0 rgba(63, 185, 80, 0.7);
