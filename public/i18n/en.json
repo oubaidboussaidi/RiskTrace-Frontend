@@ -1,10 +1,12 @@
 {
   "TOPBAR": {
-    "SEARCH_PLACEHOLDER": "Search for IPs, sessions, or endpoints...",
+    "SEARCH_PLACEHOLDER": "Search events...",
     "ML_ENGINE_ONLINE": "ML Engine: Online",
     "ML_ENGINE_OFFLINE": "ML Engine: Offline",
     "NOTIFICATIONS": "Notifications",
-    "NO_ALERTS": "No active alerts via ML Engine."
+    "NO_ALERTS": "No active alerts via ML Engine.",
+    "NEW": "New",
+    "VIEW_ALL": "View all incidents"
   },
   "SIDEBAR": {
     "GENERAL": "General",
@@ -27,6 +29,7 @@
   "COMMON": {
     "SAVE": "Save Changes",
     "CANCEL": "Cancel",
+    "REMOVE": "Remove",
     "SUBMIT": "Submit",
     "DELETE": "Delete",
     "CREATE": "Create",
@@ -57,7 +60,17 @@
     "USER": "User",
     "YOU": "You",
     "PASSWORD": "Password",
-    "SHOWING_ENTRIES_SIMPLE": "Showing {{start}} to {{end}} of {{total}} entries"
+    "SHOWING_ENTRIES_SIMPLE": "Showing {{start}} to {{end}} of {{total}} entries",
+    "ERRORS": {
+      "GENERIC": "An error occurred.",
+      "FILL_ALL": "Please fill in all required fields."
+    },
+    "ALERTS": {
+      "SUCCESS": "Success",
+      "ERROR": "Error",
+      "WARNING": "Warning",
+      "CONFIRM": "Are you sure?"
+    }
   },
   "DASHBOARD": {
     "TITLE": "Threat Overview",
@@ -80,6 +93,11 @@
     "RECENT_ALERTS": {
       "TITLE": "Recent Alerts",
       "NO_ALERTS": "No alerts recorded yet."
+    },
+    "TIME_AGO": {
+      "MINS": "{{time}}m ago",
+      "HOURS": "{{time}}h ago",
+      "DAYS": "{{time}}d ago"
     },
     "RISKY_SITES": {
       "TITLE": "Top Risky Sites",
@@ -132,6 +150,13 @@
   "ERR_EMAIL_REQUIRED": "Email address is required.",
   "ERR_RESEND_FAILED": "Failed to resend verification email. Please try again later.",
   "ERR_REGISTRATION_FAILED": "Registration failed. Email may already exist or the server is unavailable.",
+  "ERR_ORG_NAME_EMPTY": "Organization name is required.",
+  "ERR_ORG_NAME_EXISTS": "An organization with this name already exists.",
+  "CONFIRM_ORG_CREATE": "Are you sure you want to create the organization \"{{name}}\"?",
+  "CONFIRM_ORG_UPDATE": "Are you sure you want to rename this organization to \"{{name}}\"?",
+  "ERR_SITE_NAME_EMPTY": "Application name is required.",
+  "ERR_SITE_DOMAIN_EMPTY": "Domain / URL is required.",
+  "CONFIRM_SITE_CREATE": "Are you sure you want to add \"{{name}}\" ({{domain}})?",
   "INCIDENTS": {
     "TITLE": "Active Incidents",
     "SUBTITLE": "Investigate and resolve detected security threats.",
@@ -140,13 +165,34 @@
     "ASSIGN_ME": "Assign Me",
     "RESOLVE": "Resolve",
     "UNASSIGNED": "Unassigned",
+    "FILTER_SITE": "Filter by Site",
+    "ALL_SITES": "All Sites",
+    "FILTER_SEVERITY": "Filter by Severity",
+    "ALL_SEVERITIES": "All Severities",
+    "FILTER_STATUS": "Filter by Status",
+    "STATUS_ALL": "All Statuses",
+    "STATUS_OPEN": "Open",
+    "STATUS_RESOLVED": "Resolved",
+    "STATUS_IGNORED": "Ignored",
+    "FILTER_SEARCH": "Search Query",
+    "SEARCH_PLACEHOLDER": "Search IP, Path, or Message...",
+    "SELECT_PAGE": "Select page",
+    "PAGE_SELECTED_MSG": "incidents selected on this page.",
+    "SELECT_ALL_MSG": "Select all {{count}} matching incidents",
+    "ALL_SELECTED_MSG": "All {{count}} matching incidents are selected.",
+    "CLEAR_SELECTION": "Clear selection",
+    "SELECTED": "Selected",
+    "VIEW_LOGS": "View Related Logs",
+    "IGNORE": "Ignore",
+    "MARK_RESOLVED": "Mark Resolved",
     "MODAL": {
       "TITLE": "Report Security Incident",
       "TYPE": "Incident Type",
       "SEVERITY": "Severity Level",
       "DESCRIPTION": "Description",
       "DESC_PLACEHOLDER": "Describe the incident...",
-      "TARGET_PATH": "Target Path (Optional)"
+      "TARGET_PATH": "Target Path (Optional)",
+      "SITE": "Site"
     },
     "TYPES": {
       "ANOMALY_DETECTED": "Anomaly Detected",
@@ -161,6 +207,17 @@
       "MEDIUM": "Medium",
       "HIGH": "High",
       "CRITICAL": "Critical"
+    },
+    "STATUS": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In Progress",
+      "RESOLVED": "Resolved",
+      "IGNORED": "Ignored"
+    },
+    "ALERTS": {
+      "BULK_CONFIRM": "Are you sure you want to mark {{count}} incidents as {{status}}?",
+      "UPDATE_FAILED": "Some updates failed. Please try again.",
+      "SINGLE_CONFIRM": "Are you sure you want to mark this incident as {{status}}?"
     }
   },
   "LOGS": {
@@ -202,18 +259,62 @@
       "FILTER_BY_PATH": "Filter by Path",
       "FILTER_BY_SESSION": "View Full Session",
       "MARK_SUSPICIOUS": "Mark Suspicious"
+    },
+    "ALERTS": {
+      "IP_COPIED": "IP address copied to clipboard!",
+      "MARKED_SUSPICIOUS": "Log from {{ip}} has been correctly marked as suspicious for ML feedback."
     }
   },
   "ANALYTICS": {
-    "TITLE": "ML Analytics & Model Health",
-    "CONFIDENCE_TITLE": "Detection Confidence Score",
-    "CONFIDENCE_DESC": "Model accuracy based on SOC manual overrides.",
-    "FEATURE_TITLE": "Feature Importance",
-    "FEATURE_DESC": "Weight of attributes in anomaly detection.",
-    "DAYS_AGO": "30 days ago",
-    "TODAY": "Today",
-    "CONFIDENCE": "Confidence:",
-    "NOT_INTEGRATED": "ML model not yet integrated."
+    "TITLE": "ML Analytics — Isolation Forest",
+    "SUBTITLE": "Real-time performance diagnostics of the anomaly detection model.",
+    "KPI": {
+      "ANALYZED": "Logs Analyzed",
+      "ANOMALY_RATE": "Anomaly Rate",
+      "CRITICAL": "Critical Threats",
+      "MODEL_STATUS": "Model Status",
+      "ONLINE_ISOLATION_FOREST": "Online (Isolation Forest)"
+    },
+    "CHART": {
+      "SCORE_DIST": "Score Distribution",
+      "HISTOGRAM": "Histogram",
+      "SCORE_DIST_DESC": "Distribution of anomaly scores across all logs. Bars in red (≥0.7) are flagged as anomalies by the model.",
+      "FEATURE_RADAR": "Feature Profile",
+      "DEVIATIONS": "Normal vs Anomaly",
+      "FEATURE_RADAR_DESC": "Comparison of key HTTP features between normal traffic and detected anomalies, computed from real log data.",
+      "SCATTER": "Real-time Detection",
+      "LIVE": "Live Scatter",
+      "SCATTER_DESC": "Each dot is a recent HTTP request plotted by its anomaly score over time. Points above the red line (0.7) are flagged."
+    },
+    "TABLE": {
+      "TITLE": "Highest Confidence Anomalies",
+      "SCORE": "Score",
+      "METHOD": "Method",
+      "PATH": "Path",
+      "IP": "IP Address",
+      "TIME": "Time",
+      "EMPTY": "No critical anomalies detected recently."
+    },
+    "CONFUSION": {
+      "TITLE": "Confusion Matrix",
+      "BADGE": "Model Validation",
+      "DESC": "Performance metrics from the initial model training and validation phase. Shows how well the Isolation Forest algorithm identified threats in the historical dataset before deployment.",
+      "PREDICTED_POS": "Predicted Anomaly",
+      "PREDICTED_NEG": "Predicted Normal",
+      "ACTUAL_POS": "Actual Threat",
+      "ACTUAL_NEG": "Actual Normal",
+      "TP_DESC": "Real threat, correctly flagged",
+      "FP_DESC": "False alarm, incorrectly flagged",
+      "FN_DESC": "Missed threat, incorrectly passed",
+      "TN_DESC": "Normal traffic, correctly passed",
+      "PRECISION": "Precision",
+      "PRECISION_HINT": "Of all anomalies flagged during testing, 92.5% were real threats.",
+      "RECALL": "Recall",
+      "RECALL_HINT": "Of all real threats in the dataset, the model successfully caught 97.0%.",
+      "F1": "F1 Score",
+      "F1_HINT": "Harmonic mean of precision and recall, showing strong overall accuracy.",
+      "NOTE": "These metrics represent the offline benchmark of the ML model against a labeled dataset to guarantee its reliability in production."
+    }
   },
   "SETTINGS": {
     "TITLE": "Account Settings",
@@ -246,7 +347,25 @@
     "LOGOUT": "Logout",
     "DELETE_DESC": "Once you delete your account, there is no going back. Please be certain.",
     "DELETE_BTN": "Delete My Account",
-    "ARCH_DESC": "RiskTrace is built using Angular 18, Spring Boot, and MongoDB. The anomaly detection engine is powered by Python ML microservices using Isolation Forest algorithms."
+    "ARCH_DESC": "RiskTrace is built using Angular 18, Spring Boot, and MongoDB. The anomaly detection engine is powered by Python ML microservices using Isolation Forest algorithms.",
+    "ALERTS": {
+      "PROFILE_UPDATED": "Profile updated successfully!",
+      "PROFILE_UPDATE_FAILED": "Failed to update profile.",
+      "PW_MISMATCH": "New passwords do not match",
+      "PW_CHANGED": "Password changed successfully",
+      "PW_CHANGE_FAILED": "Failed to change password. Please check your current password.",
+      "TFA_INIT_FAILED": "Failed to initiate 2FA setup.",
+      "TFA_ENTER_CODE": "Please enter a 6-digit code.",
+      "TFA_ENABLED": "2FA enabled successfully!",
+      "TFA_ENABLE_FAILED": "Failed to enable 2FA. Verify your code.",
+      "TFA_ENTER_PW": "Please enter your password to confirm.",
+      "TFA_DISABLED": "2FA disabled successfully.",
+      "TFA_DISABLE_FAILED": "Failed to disable 2FA. Check your password.",
+      "DEL_NOT_IMPL": "Account deletion is not implemented in this demo. In production, this would permanently delete your account.",
+      "DEL_CONFIRM": "Are you absolutely sure? This action cannot be undone.",
+      "DEL_PROMPT": "Type DELETE to confirm account deletion:",
+      "DEL_CANCEL": "Account deletion cancelled."
+    }
   },
   "ORGS": {
     "TITLE": "Organizations",
@@ -259,7 +378,14 @@
     "SITES_BTN": "Sites",
     "NO_ORGS": "No organizations yet",
     "CREATE_FIRST": "Create your first organization to get started",
-    "LOADING": "Loading organizations…"
+    "LOADING": "Loading organizations…",
+    "EDIT_BTN": "Edit Name",
+    "ALERTS": {
+      "CREATED": "Organization created successfully.",
+      "CREATE_FAILED": "Failed to create organization.",
+      "UPDATED": "Organization updated successfully.",
+      "UPDATE_FAILED": "Failed to update organization."
+    }
   },
   "TEAM": {
     "TITLE": "Team Management",
@@ -294,6 +420,17 @@
     "ROLES": {
       "OWNER": "OWNER",
       "ANALYST": "ANALYST"
+    },
+    "ALERTS": {
+      "LOAD_FAILED": "Failed to load team members.",
+      "NO_ORG": "No organization selected.",
+      "EMAIL_REQ": "Email is required.",
+      "INVITE_FAILED": "Failed to invite member: ",
+      "REMOVE_CONFIRM": "Remove {{name}} from this organization?",
+      "REMOVE_FAILED": "Failed to remove member: ",
+      "TRANSFER_REQ": "Select a member to transfer ownership to.",
+      "TRANSFER_SUCCESS": "Ownership transferred successfully.",
+      "TRANSFER_FAILED": "Failed to transfer ownership: "
     }
   },
   "SITES": {
@@ -322,6 +459,15 @@
       "STEP3_TITLE": "Watch logs appear in real-time",
       "STEP3_DESC": "Go to Log Explorer in your dashboard.",
       "COPY_SNIPPET": "Copy Tracker Snippet"
+    },
+    "ALERTS": {
+      "NO_ORG": "No organization selected.",
+      "FILL_ALL": "Please fill in all fields.",
+      "ADDED": "Application added successfully! You can now copy the tracking code.",
+      "ADD_FAILED": "Failed to create site.",
+      "DELETE_CONFIRM": "Delete \"{{name}}\"? This will invalidate its API key immediately.",
+      "DELETE_FAILED": "Failed to delete site.",
+      "REGEN_CONFIRM": "Are you sure? This will invalidate the old key immediately."
     }
   },
   "API_KEYS": {
@@ -337,6 +483,9 @@
       "STATUS": "Status",
       "REVOKE": "Revoke Key",
       "REVOKED": "Revoked"
+    },
+    "ALERTS": {
+      "GENERATE_NOT_IMPL": "Key generation would happen here."
     }
   },
   "ADMIN_USERS": {
@@ -368,6 +517,16 @@
       "ASSIGN_PLATFORM": "Assign to Platform User",
       "SEARCH_GLOBAL": "Search global users...",
       "NO_RESULTS": "No platform users found"
+    },
+    "ALERTS": {
+      "ROLE_CONFIRM": "Change role for {{name}} to {{role}}?",
+      "ROLE_FAILED": "Failed to change role: ",
+      "DEL_CONFIRM": "Delete {{name}}? This cannot be undone.",
+      "DEL_FAILED": "Failed to delete user: ",
+      "ACTION_FAILED": "Failed to {{action}} user: ",
+      "OWNER_CONFIRM_MEM": "Make {{name}} the new owner of \"{{org}}\"?",
+      "OWNER_CONFIRM_NON": "Make {{name}} the new owner of \"{{org}}\"? They will be added as a member if not already.",
+      "OWNER_FAILED": "Failed to assign owner: "
     }
   },
   "ALERTS_RULES": {
@@ -404,6 +563,10 @@
       "RESULT": "Result",
       "PATH": "Path",
       "IP": "IP Address"
+    },
+    "ALERTS": {
+      "IP_COPIED": "IP address copied to clipboard!",
+      "MARKED_SUSPICIOUS": "Log from {{ip}} has been correctly marked as suspicious for ML feedback."
     }
   },
   "ADMIN_ORGS": {
@@ -425,6 +588,13 @@
       "OWNER": "Owner",
       "MEMBERS": "Members",
       "SITES": "Sites"
+    },
+    "ALERTS": {
+      "ACTION_CONFIRM": "Are you sure you want to {{action}} {{name}}?",
+      "ACTION_FAILED": "Failed to {{action}} organization: ",
+      "ASSIGN_CONFIRM_NON": "Assign {{name}} as owner of \"{{org}}\"?\n\nIf they are not yet a member they will be added automatically. All current owners will be demoted to Analyst.",
+      "ASSIGN_CONFIRM_MEM": "Make {{name}} the new owner of \"{{org}}\"?\nAll current owners will be demoted to Analyst.",
+      "ASSIGN_FAILED": "Failed to assign owner: "
     }
   },
   "RESET_PW": {

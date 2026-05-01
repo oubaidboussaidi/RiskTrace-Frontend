@@ -1,10 +1,12 @@
 {
   "TOPBAR": {
-    "SEARCH_PLACEHOLDER": "Rechercher des IPs, sessions ou endpoints...",
-    "ML_ENGINE_ONLINE": "Moteur ML: En ligne",
-    "ML_ENGINE_OFFLINE": "Moteur ML: Hors ligne",
+    "SEARCH_PLACEHOLDER": "Rechercher des événements...",
+    "ML_ENGINE_ONLINE": "Moteur ML : En ligne",
+    "ML_ENGINE_OFFLINE": "Moteur ML : Hors ligne",
     "NOTIFICATIONS": "Notifications",
-    "NO_ALERTS": "Aucune alerte active via le moteur ML."
+    "NO_ALERTS": "Aucune alerte active via le moteur ML.",
+    "NEW": "Nouveau",
+    "VIEW_ALL": "Voir tous les incidents"
   },
   "SIDEBAR": {
     "GENERAL": "Général",
@@ -27,6 +29,7 @@
   "COMMON": {
     "SAVE": "Enregistrer les modifications",
     "CANCEL": "Annuler",
+    "REMOVE": "Supprimer",
     "SUBMIT": "Soumettre",
     "DELETE": "Supprimer",
     "CREATE": "Créer",
@@ -57,7 +60,17 @@
     "USER": "Utilisateur",
     "YOU": "Vous",
     "PASSWORD": "Mot de passe",
-    "SHOWING_ENTRIES_SIMPLE": "Affichage de {{start}} à {{end}} sur {{total}} entrées"
+    "SHOWING_ENTRIES_SIMPLE": "Affichage de {{start}} à {{end}} sur {{total}} entrées",
+    "ERRORS": {
+      "GENERIC": "Une erreur s'est produite.",
+      "FILL_ALL": "Veuillez remplir tous les champs obligatoires."
+    },
+    "ALERTS": {
+      "SUCCESS": "Succès",
+      "ERROR": "Erreur",
+      "WARNING": "Attention",
+      "CONFIRM": "Êtes-vous sûr ?"
+    }
   },
   "DASHBOARD": {
     "TITLE": "Aperçu des Menaces",
@@ -80,6 +93,11 @@
     "RECENT_ALERTS": {
       "TITLE": "Alertes Récentes",
       "NO_ALERTS": "Aucune alerte enregistrée."
+    },
+    "TIME_AGO": {
+      "MINS": "il y a {{time}}m",
+      "HOURS": "il y a {{time}}h",
+      "DAYS": "il y a {{time}}j"
     },
     "RISKY_SITES": {
       "TITLE": "Sites les plus Risqués",
@@ -132,6 +150,13 @@
   "ERR_EMAIL_REQUIRED": "L'adresse email est obligatoire.",
   "ERR_RESEND_FAILED": "Échec de l'envoi de l'email de vérification. Veuillez réessayer plus tard.",
   "ERR_REGISTRATION_FAILED": "Échec de l'inscription. L'email existe peut-être déjà ou le serveur est indisponible.",
+  "ERR_ORG_NAME_EMPTY": "Le nom de l'organisation est requis.",
+  "ERR_ORG_NAME_EXISTS": "Une organisation avec ce nom existe déjà.",
+  "CONFIRM_ORG_CREATE": "Êtes-vous sûr de vouloir créer l'organisation \"{{name}}\" ?",
+  "CONFIRM_ORG_UPDATE": "Êtes-vous sûr de vouloir renommer cette organisation en \"{{name}}\" ?",
+  "ERR_SITE_NAME_EMPTY": "Le nom de l'application est requis.",
+  "ERR_SITE_DOMAIN_EMPTY": "Le domaine / l'URL est requis.",
+  "CONFIRM_SITE_CREATE": "Êtes-vous sûr de vouloir ajouter \"{{name}}\" ({{domain}}) ?",
   "INCIDENTS": {
     "TITLE": "Incidents Actifs",
     "SUBTITLE": "Investiguer et résoudre les menaces de sécurité détectées.",
@@ -140,13 +165,34 @@
     "ASSIGN_ME": "M'assigner",
     "RESOLVE": "Résoudre",
     "UNASSIGNED": "Non assigné",
+    "FILTER_SITE": "Filtrer par Site",
+    "ALL_SITES": "Tous les Sites",
+    "FILTER_SEVERITY": "Filtrer par Sévérité",
+    "ALL_SEVERITIES": "Toutes les Sévérités",
+    "FILTER_STATUS": "Filtrer par Statut",
+    "STATUS_ALL": "Tous les Statuts",
+    "STATUS_OPEN": "Ouvert",
+    "STATUS_RESOLVED": "Résolu",
+    "STATUS_IGNORED": "Ignoré",
+    "FILTER_SEARCH": "Rechercher",
+    "SEARCH_PLACEHOLDER": "Chercher par IP, Chemin, ou Alerte...",
+    "SELECT_PAGE": "Sélectionner la page",
+    "PAGE_SELECTED_MSG": "incidents sélectionnés sur cette page.",
+    "SELECT_ALL_MSG": "Sélectionner les {{count}} correspondants",
+    "ALL_SELECTED_MSG": "Tous les {{count}} incidents sont sélectionnés.",
+    "CLEAR_SELECTION": "Vider la sélection",
+    "SELECTED": "Sélectionnés",
+    "VIEW_LOGS": "Voir les Logs Associés",
+    "IGNORE": "Ignorer",
+    "MARK_RESOLVED": "Marquer comme Résolu",
     "MODAL": {
       "TITLE": "Signaler un Incident de Sécurité",
       "TYPE": "Type d'Incident",
       "SEVERITY": "Niveau de Sévérité",
       "DESCRIPTION": "Description",
       "DESC_PLACEHOLDER": "Décrivez l'incident...",
-      "TARGET_PATH": "Chemin Cible (Optionnel)"
+      "TARGET_PATH": "Chemin Cible (Optionnel)",
+      "SITE": "Site"
     },
     "TYPES": {
       "ANOMALY_DETECTED": "Anomalie Détectée",
@@ -161,8 +207,20 @@
       "MEDIUM": "Moyen",
       "HIGH": "Élevé",
       "CRITICAL": "Critique"
+    },
+    "STATUS": {
+      "OPEN": "Ouvert",
+      "IN_PROGRESS": "En Cours",
+      "RESOLVED": "Résolu",
+      "IGNORED": "Ignoré"
+    },
+    "ALERTS": {
+      "BULK_CONFIRM": "Êtes-vous sûr de vouloir marquer {{count}} incidents comme {{status}} ?",
+      "UPDATE_FAILED": "Certaines mises à jour ont échoué. Veuillez réessayer.",
+      "SINGLE_CONFIRM": "Êtes-vous sûr de vouloir marquer cet incident comme {{status}} ?"
     }
   },
+  
   "LOGS": {
     "TITLE": "Explorateur de Logs",
     "SUBTITLE": "Filtrer et analyser les événements bruts de l'application.",
@@ -196,18 +254,62 @@
       "FILTER_BY_PATH": "Filtrer par Chemin",
       "FILTER_BY_SESSION": "Voir la Session Complète",
       "MARK_SUSPICIOUS": "Marquer comme Suspect"
+    },
+    "ALERTS": {
+      "IP_COPIED": "Adresse IP copiée dans le presse-papiers !",
+      "MARKED_SUSPICIOUS": "Le log de {{ip}} a été correctement marqué comme suspect pour le ML."
     }
   },
   "ANALYTICS": {
-    "TITLE": "Analytique ML & Santé du Modèle",
-    "CONFIDENCE_TITLE": "Score de Confiance de Détection",
-    "CONFIDENCE_DESC": "Précision du modèle basée sur les contournements manuels du SOC.",
-    "FEATURE_TITLE": "Importance des Fonctionnalités",
-    "FEATURE_DESC": "Poids des attributs dans la détection des anomalies.",
-    "DAYS_AGO": "il y a 30 jours",
-    "TODAY": "Aujourd'hui",
-    "CONFIDENCE": "Confiance :",
-    "NOT_INTEGRATED": "Modèle ML pas encore intégré."
+    "TITLE": "Analytique ML — Isolation Forest",
+    "SUBTITLE": "Diagnostics de performance en temps réel du modèle de détection d'anomalies.",
+    "KPI": {
+      "ANALYZED": "Logs Analysés",
+      "ANOMALY_RATE": "Taux d'Anomalies",
+      "CRITICAL": "Menaces Critiques",
+      "MODEL_STATUS": "Statut du Modèle",
+      "ONLINE_ISOLATION_FOREST": "En ligne (Isolation Forest)"
+    },
+    "CHART": {
+      "SCORE_DIST": "Distribution des Scores",
+      "HISTOGRAM": "Histogramme",
+      "SCORE_DIST_DESC": "Distribution des scores d'anomalie sur l'ensemble des logs. Les barres en rouge (≥0.7) sont signalées comme anomalies par le modèle.",
+      "FEATURE_RADAR": "Profil des Caractéristiques",
+      "DEVIATIONS": "Normal vs Anomalie",
+      "FEATURE_RADAR_DESC": "Comparaison des caractéristiques HTTP clés entre le trafic normal et les anomalies détectées, calculée à partir des données réelles.",
+      "SCATTER": "Détection en Temps Réel",
+      "LIVE": "Nuage de Points",
+      "SCATTER_DESC": "Chaque point représente une requête HTTP récente, tracée selon son score d'anomalie dans le temps. Les points au-dessus de la ligne rouge (0.7) sont signalés."
+    },
+    "TABLE": {
+      "TITLE": "Anomalies à Haute Confiance",
+      "SCORE": "Score",
+      "METHOD": "Méthode",
+      "PATH": "Chemin",
+      "IP": "Adresse IP",
+      "TIME": "Heure",
+      "EMPTY": "Aucune anomalie critique détectée récemment."
+    },
+    "CONFUSION": {
+      "TITLE": "Matrice de Confusion",
+      "BADGE": "Validation du Modèle",
+      "DESC": "Métriques de performance issues de la phase initiale d'entraînement et de validation du modèle. Indique la capacité de l'algorithme Isolation Forest à identifier les menaces dans le jeu de données historique avant le déploiement.",
+      "PREDICTED_POS": "Prédit Anomalie",
+      "PREDICTED_NEG": "Prédit Normal",
+      "ACTUAL_POS": "Réel Menace",
+      "ACTUAL_NEG": "Réel Normal",
+      "TP_DESC": "Vraie menace, correctement signalée",
+      "FP_DESC": "Fausse alarme, signalée à tort",
+      "FN_DESC": "Menace manquée, ignorée à tort",
+      "TN_DESC": "Trafic normal, correctement ignoré",
+      "PRECISION": "Précision",
+      "PRECISION_HINT": "Parmi toutes les anomalies signalées lors des tests, 92.5% étaient de vraies menaces.",
+      "RECALL": "Rappel",
+      "RECALL_HINT": "Parmi toutes les vraies menaces du jeu de données, le modèle a réussi à en détecter 97.0%.",
+      "F1": "Score F1",
+      "F1_HINT": "Moyenne harmonique de la précision et du rappel, indiquant une forte précision globale.",
+      "NOTE": "Ces métriques représentent l'évaluation hors ligne du modèle ML par rapport à un ensemble de données étiquetées pour garantir sa fiabilité en production."
+    }
   },
   "SETTINGS": {
     "TITLE": "Paramètres du Compte",
@@ -240,7 +342,25 @@
     "LOGOUT": "Déconnexion",
     "DELETE_DESC": "Une fois votre compte supprimé, il n'y a pas de retour en arrière. Veuillez en être certain.",
     "DELETE_BTN": "Supprimer mon compte",
-    "ARCH_DESC": "RiskTrace est construit avec Angular 18, Spring Boot et MongoDB. Le moteur de détection d'anomalies est alimenté par des microservices ML Python utilisant des algorithmes Isolation Forest."
+    "ARCH_DESC": "RiskTrace est construit avec Angular 18, Spring Boot et MongoDB. Le moteur de détection d'anomalies est alimenté par des microservices ML Python utilisant des algorithmes Isolation Forest.",
+    "ALERTS": {
+      "PROFILE_UPDATED": "Profil mis à jour avec succès !",
+      "PROFILE_UPDATE_FAILED": "Échec de la mise à jour du profil.",
+      "PW_MISMATCH": "Les nouveaux mots de passe ne correspondent pas",
+      "PW_CHANGED": "Mot de passe modifié avec succès",
+      "PW_CHANGE_FAILED": "Échec de la modification du mot de passe. Veuillez vérifier votre mot de passe actuel.",
+      "TFA_INIT_FAILED": "Échec de l'initiation de la configuration 2FA.",
+      "TFA_ENTER_CODE": "Veuillez entrer un code à 6 chiffres.",
+      "TFA_ENABLED": "2FA activé avec succès !",
+      "TFA_ENABLE_FAILED": "Échec de l'activation du 2FA. Vérifiez votre code.",
+      "TFA_ENTER_PW": "Veuillez entrer votre mot de passe pour confirmer.",
+      "TFA_DISABLED": "2FA désactivé avec succès.",
+      "TFA_DISABLE_FAILED": "Échec de la désactivation du 2FA. Vérifiez votre mot de passe.",
+      "DEL_NOT_IMPL": "La suppression de compte n'est pas implémentée dans cette démo. En production, cela supprimerait définitivement votre compte.",
+      "DEL_CONFIRM": "Êtes-vous absolument sûr ? Cette action est irréversible.",
+      "DEL_PROMPT": "Tapez SUPPRIMER pour confirmer la suppression du compte :",
+      "DEL_CANCEL": "Suppression du compte annulée."
+    }
   },
   "ORGS": {
     "TITLE": "Organisations",
@@ -253,7 +373,14 @@
     "SITES_BTN": "Sites",
     "NO_ORGS": "Aucune organisation pour le moment",
     "CREATE_FIRST": "Créez votre première organisation pour commencer",
-    "LOADING": "Chargement des organisations…"
+    "LOADING": "Chargement des organisations…",
+    "EDIT_BTN": "Modifier le Nom",
+    "ALERTS": {
+      "CREATED": "Organisation créée avec succès.",
+      "CREATE_FAILED": "Échec de la création de l'organisation.",
+      "UPDATED": "Organisation mise à jour avec succès.",
+      "UPDATE_FAILED": "Échec de la mise à jour de l'organisation."
+    }
   },
   "TEAM": {
     "TITLE": "Gestion d'Équipe",
@@ -288,6 +415,17 @@
     "ROLES": {
       "OWNER": "PROPRIÉTAIRE",
       "ANALYST": "ANALYSTE"
+    },
+    "ALERTS": {
+      "LOAD_FAILED": "Échec du chargement des membres de l'équipe.",
+      "NO_ORG": "Aucune organisation sélectionnée.",
+      "EMAIL_REQ": "L'email est requis.",
+      "INVITE_FAILED": "Échec de l'invitation du membre : ",
+      "REMOVE_CONFIRM": "Retirer {{name}} de cette organisation ?",
+      "REMOVE_FAILED": "Échec de la suppression du membre : ",
+      "TRANSFER_REQ": "Sélectionnez un membre pour transférer la propriété.",
+      "TRANSFER_SUCCESS": "Propriété transférée avec succès.",
+      "TRANSFER_FAILED": "Échec du transfert de propriété : "
     }
   },
   "SITES": {
@@ -316,6 +454,15 @@
       "STEP3_TITLE": "Regardez les logs apparaître en temps réel",
       "STEP3_DESC": "Allez dans l'Explorateur de Logs de votre tableau de bord.",
       "COPY_SNIPPET": "Copier le Snippet du Tracker"
+    },
+    "ALERTS": {
+      "NO_ORG": "Aucune organisation sélectionnée.",
+      "FILL_ALL": "Veuillez remplir tous les champs.",
+      "ADDED": "Application ajoutée avec succès ! Vous pouvez maintenant copier le code de suivi.",
+      "ADD_FAILED": "Échec de la création du site.",
+      "DELETE_CONFIRM": "Supprimer \"{{name}}\" ? Cela invalidera immédiatement sa clé API.",
+      "DELETE_FAILED": "Échec de la suppression du site.",
+      "REGEN_CONFIRM": "Êtes-vous sûr ? Cela invalidera immédiatement l'ancienne clé."
     }
   },
   "API_KEYS": {
@@ -329,8 +476,12 @@
       "LAST_USED": "Dernière Utilisation",
       "PERMISSIONS": "Permissions",
       "STATUS": "Statut",
-      "REVOKE": "Révoquer la clé",
-      "REVOKED": "Révoquée"
+      "REVOKE": "Révoquer",
+      "ACTIVE": "Actif",
+      "REVOKED": "Révoqué"
+    },
+    "ALERTS": {
+      "GENERATE_NOT_IMPL": "La génération de clés se ferait ici."
     }
   },
   "ADMIN_USERS": {
@@ -362,6 +513,16 @@
       "ASSIGN_PLATFORM": "Assigner à un Utilisateur Plateforme",
       "SEARCH_GLOBAL": "Rechercher des utilisateurs globaux...",
       "NO_RESULTS": "Aucun utilisateur trouvé"
+    },
+    "ALERTS": {
+      "ROLE_CONFIRM": "Changer le rôle pour {{name}} à {{role}} ?",
+      "ROLE_FAILED": "Échec du changement de rôle : ",
+      "DEL_CONFIRM": "Supprimer {{name}} ? Cette action est irréversible.",
+      "DEL_FAILED": "Échec de la suppression de l'utilisateur : ",
+      "ACTION_FAILED": "Échec pour {{action}} l'utilisateur : ",
+      "OWNER_CONFIRM_MEM": "Faire de {{name}} le nouveau propriétaire de \"{{org}}\" ?",
+      "OWNER_CONFIRM_NON": "Faire de {{name}} le nouveau propriétaire de \"{{org}}\" ? Il sera ajouté comme membre si ce n'est pas déjà fait.",
+      "OWNER_FAILED": "Échec de l'attribution du propriétaire : "
     }
   },
   "ALERTS_RULES": {
@@ -398,6 +559,10 @@
       "RESULT": "Résultat",
       "PATH": "Chemin",
       "IP": "Adresse IP"
+    },
+    "ALERTS": {
+      "IP_COPIED": "Adresse IP copiée dans le presse-papiers !",
+      "MARKED_SUSPICIOUS": "Le log de {{ip}} a été correctement marqué comme suspect pour le ML."
     }
   },
   "ADMIN_ORGS": {
@@ -419,6 +584,13 @@
       "OWNER": "Propriétaire",
       "MEMBERS": "Membres",
       "SITES": "Sites"
+    },
+    "ALERTS": {
+      "ACTION_CONFIRM": "Êtes-vous sûr de vouloir {{action}} {{name}} ?",
+      "ACTION_FAILED": "Échec pour {{action}} l'organisation : ",
+      "ASSIGN_CONFIRM_NON": "Attribuer {{name}} comme propriétaire de \"{{org}}\" ?\n\nS'il n'est pas encore membre, il sera ajouté automatiquement. Tous les propriétaires actuels seront rétrogradés à Analyste.",
+      "ASSIGN_CONFIRM_MEM": "Faire de {{name}} le nouveau propriétaire de \"{{org}}\" ?\nTous les propriétaires actuels seront rétrogradés à Analyste.",
+      "ASSIGN_FAILED": "Échec de l'attribution du propriétaire : "
     }
   },
   "RESET_PW": {
