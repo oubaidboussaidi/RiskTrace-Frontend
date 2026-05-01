@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
 import { OrganizationService } from '../../services/organization.service';
+import { AvatarComponent } from '../avatar/avatar.component';
 import { Subscription } from 'rxjs';
 import { EventEmitter, Output } from '@angular/core';
 
@@ -14,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, CommonModule, TranslateModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, TranslateModule, AvatarComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
@@ -23,9 +24,10 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   incidentCount: number = 0;
   isPlatformAdmin = false;
   hasActiveOrg = false;
-  adminExpanded = false;
+  isAdminView = false;
   activeOrgName: string = 'Select Org...';
   private userSub?: Subscription;
+  private pollInterval?: any;
 
   @Output() collapsedChange = new EventEmitter<boolean>();
   isCollapsed: boolean = true;
@@ -63,39 +65,46 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.hasActiveOrg = !!org;
       this.activeOrgName = org ? org.name : 'Select Org...';
       
+      if (this.pollInterval) {
+        clearInterval(this.pollInterval);
+      }
+
       if (org) {
-        this.apiService.getActiveAlertsByOrganization(org.id).subscribe(alerts => {
-          this.incidentCount = (alerts || []).length;
-        });
+        const fetchAlerts = () => {
+          this.apiService.getActiveAlertsByOrganization(org.id).subscribe(alerts => {
+            this.incidentCount = (alerts || []).length;
+          });
+        };
+        fetchAlerts();
+        this.pollInterval = setInterval(fetchAlerts, 5000);
       } else {
         this.incidentCount = 0;
       }
     });
 
     // Auto-expand admin section if on an admin route
-    this.adminExpanded = this.router.url.startsWith('/admin');
+    this.isAdminView = this.router.url.startsWith('/admin');
 
     // Keep it sync'd on navigation
     this.router.events.subscribe(() => {
-      if (this.router.url.startsWith('/admin')) {
-        this.adminExpanded = true;
-      }
+      this.isAdminView = this.router.url.startsWith('/admin');
     });
   }
 
   ngOnDestroy() {
     this.userSub?.unsubscribe();
+    if (this.pollInterval) {
+      clearInterval(this.pollInterval);
+    }
   }
 
-  toggleAdmin(event: Event) {
-    event.preventDefault();
-    event.stopPropagation();
-    this.adminExpanded = !this.adminExpanded;
-    setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 50);
-  }
 
   navigateToSettings() {
-    this.router.navigate(['/settings']);
+    if (this.isAdminView) {
+      this.router.navigate(['/admin/settings']);
+    } else {
+      this.router.navigate(['/settings']);
+    }
   }
 
   logout() {
