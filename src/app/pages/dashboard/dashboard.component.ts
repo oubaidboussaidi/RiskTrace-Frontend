@@ -39,12 +39,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Redirect admin users to their own dashboard
-    if (this.authService.isAdmin() || this.authService.isPlatformAdmin()) {
-      this.router.navigate(['/admin/dashboard']);
-      return;
-    }
-
     this.orgSub = this.orgService.currentOrg$.subscribe(org => {
       if (org) {
         this.loadDashboardData(org.id);
@@ -104,13 +98,30 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       this.recentAlerts = (alerts || [])
         .sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         .slice(0, 5)
-        .map((a: any) => ({
-          type: a.type || 'SUSPICIOUS_ACTIVITY',
-          severity: a.severity,
-          description: a.description || a.type,
-          time: this.timeAgo(a.timestamp),
-          severityClass: this.getSeverityClass(a.severity)
-        }));
+        .map((a: any) => {
+          let description = a.description || a.type;
+          let isMlDesc = false;
+          let mlParams = null;
+          if (a.type === 'ANOMALY_DETECTED' && a.anomalyScore != null) {
+              isMlDesc = true;
+              mlParams = {
+                  score: (a.anomalyScore).toFixed(2),
+                  confidence: a.severity || 'N/A',
+                  ip: a.sourceIp || 'N/A',
+                  path: a.targetPath || 'N/A'
+              };
+          }
+          return {
+            type: a.type || 'SUSPICIOUS_ACTIVITY',
+            typeKey: 'INCIDENTS.TYPES.' + (a.type || 'SUSPICIOUS_ACTIVITY'),
+            severity: a.severity,
+            description: description,
+            isMlDesc: isMlDesc,
+            mlParams: mlParams,
+            time: this.timeAgo(a.timestamp),
+            severityClass: this.getSeverityClass(a.severity)
+          };
+        });
 
       // Build Charts
       setTimeout(() => {
@@ -325,14 +336,14 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     return 'status-success';
   }
 
-  private timeAgo(dateStr: string): string {
-    if (!dateStr) return '';
+  private timeAgo(dateStr: string): any {
+    if (!dateStr) return { key: '', params: {} };
     const diff = Date.now() - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 60) return `${mins}m ago`;
+    if (mins < 60) return { key: 'DASHBOARD.TIME_AGO.MINS', params: { time: mins } };
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return { key: 'DASHBOARD.TIME_AGO.HOURS', params: { time: hours } };
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return { key: 'DASHBOARD.TIME_AGO.DAYS', params: { time: days } };
   }
 }

@@ -4,9 +4,6 @@
         <h1 class="page-title">{{ 'DASHBOARD.TITLE' | translate }}</h1>
         <p class="page-subtitle">{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
     </div>
-    <div class="btn btn-secondary">
-        {{ 'DASHBOARD.RANGE_24H' | translate }} <i data-lucide="chevron-down" size="16" style="margin-left: 8px;"></i>
-    </div>
 </div>
 
 <!-- KPI Cards Row -->
@@ -77,10 +74,11 @@
         <div *ngFor="let alert of recentAlerts" class="alert-item">
             <div class="alert-dot" [ngClass]="alert.severityClass"></div>
             <div class="alert-body">
-                <div class="alert-type">{{ alert.type }}</div>
-                <div class="alert-desc">{{ alert.description }}</div>
+                <div class="alert-type">{{ alert.typeKey | translate }}</div>
+                <div class="alert-desc" *ngIf="alert.isMlDesc" [translate]="'INCIDENTS.ML_DESC'" [translateParams]="alert.mlParams"></div>
+                <div class="alert-desc" *ngIf="!alert.isMlDesc">{{ alert.description }}</div>
             </div>
-            <span class="alert-time">{{ alert.time }}</span>
+            <span class="alert-time" [translate]="alert.time.key" [translateParams]="alert.time.params"></span>
         </div>
         <div *ngIf="recentAlerts.length === 0" class="empty-state">
             {{ 'DASHBOARD.RECENT_ALERTS.NO_ALERTS' | translate }}
