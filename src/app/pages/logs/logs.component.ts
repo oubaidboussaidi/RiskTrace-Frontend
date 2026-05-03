@@ -10,7 +10,7 @@ import { forkJoin } from 'rxjs';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-logs',
@@ -37,6 +37,7 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
   selectedMethod: string = 'All Methods';
   selectedSession: string = 'All Sessions';
   searchQuery: string = '';
+  minRiskScore: number = 0;
 
   selectedLog: any = null;
   showLogModal: boolean = false;
@@ -51,7 +52,8 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
     private authService: AuthService,
     private orgService: OrganizationService,
     private route: ActivatedRoute,
-    private zone: NgZone
+    private zone: NgZone,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -153,7 +155,9 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
         (log.method    && log.method.toLowerCase().includes(searchStr)) ||
         (log.sessionId && log.sessionId.toLowerCase().includes(searchStr));
 
-      return matchSite && matchStatus && matchMethod && matchSession && matchSearch;
+      const matchScore = parseInt(log.score) >= this.minRiskScore;
+
+      return matchSite && matchStatus && matchMethod && matchSession && matchSearch && matchScore;
     });
 
     this.currentPage = 1;
@@ -239,7 +243,7 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   copyIp(log: any) {
     navigator.clipboard.writeText(log.ip).then(() => {
-      alert('IP address copied to clipboard!');
+      alert(this.translate.instant('LOGS.ALERTS.IP_COPIED'));
     });
   }
 
@@ -262,7 +266,7 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
     this.apiService.markLogAsAnomaly(log.id).subscribe({
       next: () => {
         log.scoreClass = 'status-alert'; // Optimistic indicator
-        alert(`Log from ${log.ip} has been correctly marked as suspicious for ML feedback.`);
+        alert(this.translate.instant('LOGS.ALERTS.MARKED_SUSPICIOUS', { ip: log.ip }));
       },
       error: (err) => console.error('Error marking log', err)
     });

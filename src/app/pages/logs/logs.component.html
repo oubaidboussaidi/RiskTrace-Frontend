@@ -69,8 +69,18 @@
     <!-- Active Session Filter Badge -->
     <div *ngIf="selectedSession !== 'All Sessions'" style="display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; font-size: 13px;">
         <span style="color: var(--text-secondary); margin-right: 6px;">{{ 'LOGS.SESSION_FILTER' | translate }}</span>
-        <span style="color: white; font-family: var(--font-mono); margin-right: 8px;" [title]="selectedSession">{{ selectedSession | slice:0:12 }}...</span>
-        <i data-lucide="x" size="14" style="cursor: pointer; color: var(--text-secondary);" (click)="selectedSession = 'All Sessions'; filterLogs(); refreshIcons()"></i>
+        <span style="color: var(--text-primary); font-family: var(--font-mono); font-weight: 600; margin-right: 8px;" [title]="selectedSession">{{ selectedSession | slice:0:12 }}...</span>
+        <span style="cursor: pointer; display: flex;" (click)="selectedSession = 'All Sessions'; filterLogs(); refreshIcons()">
+            <i data-lucide="x" size="14" style="color: var(--text-secondary);"></i>
+        </span>
+    </div>
+
+    <!-- Score Range Filter -->
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+        <span>{{ 'LOGS.SCORE' | translate }}:</span>
+        <input type="range" min="0" max="100" [(ngModel)]="minRiskScore" (ngModelChange)="filterLogs()"
+            style="width: 80px; accent-color: var(--accent-primary);">
+        <span style="min-width: 24px;">{{minRiskScore}}</span>
     </div>
 
     <div style="flex-grow: 1; position: relative;">
