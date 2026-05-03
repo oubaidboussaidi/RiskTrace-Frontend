@@ -1,0 +1,8 @@
+.app-logo {
+    width: 54px;
+    height: 54px;
+}
+
+:host-context([data-theme='light']) .app-logo {
+    filter: none;
+}

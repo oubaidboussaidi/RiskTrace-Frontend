@@ -1,1 +1,8 @@
-/* verify-email.component.css - no extra styles needed, uses global CSS vars */
+.app-logo {
+    width: 54px;
+    height: 54px;
+}
+
+:host-context([data-theme='light']) .app-logo {
+    filter: none;
+}
