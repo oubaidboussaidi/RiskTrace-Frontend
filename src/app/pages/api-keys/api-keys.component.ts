@@ -4,7 +4,7 @@ import { DataService } from '../../services/data.service';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-api-keys',
@@ -16,7 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class ApiKeysComponent implements OnInit, AfterViewInit {
   apiKeys: any[] = [];
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService, private translate: TranslateService) { }
 
   ngOnInit() {
     this.dataService.getData('api_keys').subscribe(data => {
@@ -42,6 +42,7 @@ export class ApiKeysComponent implements OnInit, AfterViewInit {
   }
 
   generateKey() {
-    alert('Key generation would happen here.');
+    alert(this.translate.instant('API_KEYS.ALERTS.GENERATE_NOT_IMPL'));
+
   }
 }
