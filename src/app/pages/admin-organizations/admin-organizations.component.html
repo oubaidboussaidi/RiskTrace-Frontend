@@ -25,7 +25,7 @@
     <div *ngIf="!isLoading && !selectedOrg" class="orgs-grid">
         <div class="org-card" *ngFor="let org of filteredOrganizations" [ngClass]="{'suspended': !org.enabled}">
             <div class="org-header">
-                <div class="org-icon">{{ getInitials(org.name) }}</div>
+                <app-avatar [name]="org.name" [imageUrl]="org.logoUrl" [size]="44" [entityId]="org.id" entityType="org"></app-avatar>
                 <div class="org-title-group">
                     <div class="org-name">{{ org.name }}</div>
                     <div class="org-status" [ngClass]="org.enabled ? 'text-ok' : 'text-danger'">
@@ -104,7 +104,7 @@
                             <tr *ngFor="let m of orgMembers">
                                 <td>
                                     <div class="member-row">
-                                        <div class="avatar">{{ getInitials(m.fullName) }}</div>
+                                        <app-avatar [name]="m.fullName" [size]="32" [entityId]="m.userId" entityType="user"></app-avatar>
                                         <span>{{ m.fullName }}</span>
                                     </div>
                                 </td>
@@ -140,7 +140,7 @@
                         </div>
                         <div class="owner-results" *ngIf="ownerSearchResults.length > 0">
                             <div class="owner-result-item" *ngFor="let u of ownerSearchResults">
-                                <div class="avatar sm">{{ getInitials(u.fullName) }}</div>
+                                <app-avatar [name]="u.fullName" [size]="32" [entityId]="u.id" entityType="user"></app-avatar>
                                 <div class="flex-1">
                                     <div class="fw-500 text-xs">{{ u.fullName }}</div>
                                     <div class="text-muted text-xs">{{ u.email }}</div>

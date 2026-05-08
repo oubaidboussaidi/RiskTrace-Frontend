@@ -173,6 +173,22 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
       }
     });
 
+    const activeSeries = [];
+    const activeLabels = [];
+    const activeColors = [];
+
+    if (critical > 0) { activeSeries.push(critical); activeLabels.push('Critical'); activeColors.push('#f85149'); }
+    if (high > 0) { activeSeries.push(high); activeLabels.push('High'); activeColors.push('#fb8f24'); }
+    if (medium > 0) { activeSeries.push(medium); activeLabels.push('Medium'); activeColors.push('#d29922'); }
+    if (low > 0) { activeSeries.push(low); activeLabels.push('Low'); activeColors.push('#3fb950'); }
+
+    // Fallback if there are no alerts at all
+    if (activeSeries.length === 0) {
+      activeSeries.push(1);
+      activeLabels.push('No Alerts');
+      activeColors.push('#30363d');
+    }
+
     const chart = new ApexCharts(el, {
       chart: {
         type: 'donut',
@@ -180,9 +196,9 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit, OnDestroy
         background: 'transparent',
         fontFamily: 'Inter, sans-serif'
       },
-      series: [critical, high, medium, low],
-      labels: ['Critical', 'High', 'Medium', 'Low'],
-      colors: ['#f85149', '#ff7b72', '#d29922', '#3fb950'],
+      series: activeSeries,
+      labels: activeLabels,
+      colors: activeColors,
       plotOptions: {
         pie: {
           donut: {

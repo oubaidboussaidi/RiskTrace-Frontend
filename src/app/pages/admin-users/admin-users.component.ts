@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, UserResponse, OrganizationResponse, OrganizationMemberResponse } from '../../services/api.service';
 import { AuthService } from '../../services/auth.service';
+import { AvatarComponent } from '../../components/avatar/avatar.component';
 import { forkJoin, firstValueFrom } from 'rxjs';
 
 declare var lucide: any;
@@ -12,12 +13,12 @@ interface OrgOwnershipConflict {
     members: OrganizationMemberResponse[];
 }
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-admin-users',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslateModule],
+    imports: [CommonModule, FormsModule, TranslateModule, AvatarComponent],
     templateUrl: './admin-users.component.html',
     styleUrl: './admin-users.component.css'
 })
@@ -54,7 +55,8 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
 
     constructor(
         private apiService: ApiService,
-        public authService: AuthService
+        public authService: AuthService,
+        private translate: TranslateService
     ) { }
 
     ngOnInit() { this.loadUsers(); }
@@ -174,11 +176,11 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
     changeRole(user: UserResponse, newRole: string) {
         if (user.role === newRole) return;
         const oldRole = user.role;
-        if (confirm(`Change role for ${user.fullName} to ${newRole}?`)) {
+        if (confirm(this.translate.instant('ADMIN_USERS.ALERTS.ROLE_CONFIRM', { name: user.fullName, role: newRole }))) {
             this.apiService.updateUserRole(user.id, newRole).subscribe({
                 next: (updated) => this.syncUser(updated),
                 error: (err) => {
-                    alert('Failed to change role: ' + (err.error?.error || err.error?.message || 'Error'));
+                    alert(this.translate.instant('ADMIN_USERS.ALERTS.ROLE_FAILED') + (err.error?.error || err.error?.message || 'Error'));
                     // Revert on failure
                     user.role = oldRole;
                 }
@@ -200,13 +202,13 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
                 // Revert on failure
                 user.enabled = !user.enabled;
                 this.refreshIcons();
-                alert(`Failed to ${action} user: ` + (err.error?.error || err.error?.message || 'Error'));
+                alert(this.translate.instant('ADMIN_USERS.ALERTS.ACTION_FAILED', { action: action }) + (err.error?.error || err.error?.message || 'Error'));
             }
         });
     }
 
     deleteUser(user: UserResponse) {
-        if (!confirm(`Delete ${user.fullName}? This cannot be undone.`)) return;
+        if (!confirm(this.translate.instant('ADMIN_USERS.ALERTS.DEL_CONFIRM', { name: user.fullName }))) return;
 
         this.apiService.deleteUser(user.id).subscribe({
             next: () => {
@@ -220,7 +222,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
                     // Block → show ownership assignment modal
                     this.openOwnershipModal(user);
                 } else {
-                    alert('Failed to delete user: ' + (msg || 'Error'));
+                    alert(this.translate.instant('ADMIN_USERS.ALERTS.DEL_FAILED') + (msg || 'Error'));
                 }
             }
         });
@@ -280,7 +282,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
     }
 
     assignOwnerFromMember(conflict: OrgOwnershipConflict, memberId: string, memberName: string) {
-        if (!confirm(`Make ${memberName} the new owner of "${conflict.org.name}"?`)) return;
+        if (!confirm(this.translate.instant('ADMIN_USERS.ALERTS.OWNER_CONFIRM_MEM', { name: memberName, org: conflict.org.name }))) return;
         this.apiService.adminAssignOwner(conflict.org.id, memberId).subscribe({
             next: () => {
                 this.ownershipConflicts = this.ownershipConflicts.filter(c => c.org.id !== conflict.org.id);
@@ -288,12 +290,12 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
                     this.finishDelete();
                 }
             },
-            error: (err) => alert('Failed to assign owner: ' + (err.error?.message || 'Error'))
+            error: (err) => alert(this.translate.instant('ADMIN_USERS.ALERTS.OWNER_FAILED') + (err.error?.message || 'Error'))
         });
     }
 
     assignOwnerFromPlatform(conflict: OrgOwnershipConflict, user: UserResponse) {
-        if (!confirm(`Make ${user.fullName} the new owner of "${conflict.org.name}"? They will be added as a member if not already.`)) return;
+        if (!confirm(this.translate.instant('ADMIN_USERS.ALERTS.OWNER_CONFIRM_NON', { name: user.fullName, org: conflict.org.name }))) return;
         this.apiService.adminAssignOwner(conflict.org.id, user.id).subscribe({
             next: () => {
                 this.ownershipConflicts = this.ownershipConflicts.filter(c => c.org.id !== conflict.org.id);
@@ -301,7 +303,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
                     this.finishDelete();
                 }
             },
-            error: (err) => alert('Failed to assign owner: ' + (err.error?.message || 'Error'))
+            error: (err) => alert(this.translate.instant('ADMIN_USERS.ALERTS.OWNER_FAILED') + (err.error?.message || 'Error'))
         });
     }
 
@@ -314,7 +316,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
                 this.users = this.users.filter(u => u.id !== userToDelete.id);
                 this.applyFilter();
             },
-            error: (err) => alert('Delete still failed: ' + (err.error?.message || 'Error'))
+            error: (err) => alert(this.translate.instant('ADMIN_USERS.ALERTS.DEL_FAILED') + (err.error?.message || 'Error'))
         });
     }
 

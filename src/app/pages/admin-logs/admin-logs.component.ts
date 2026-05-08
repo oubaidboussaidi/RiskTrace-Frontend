@@ -8,7 +8,7 @@ import { forkJoin } from 'rxjs';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-admin-logs',
@@ -56,7 +56,8 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
         private apiService: ApiService,
         private authService: AuthService,
         private route: ActivatedRoute,
-        private zone: NgZone
+        private zone: NgZone,
+        private translate: TranslateService
     ) { }
 
     ngOnInit() {
@@ -274,7 +275,7 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     copyIp(log: any) {
         navigator.clipboard.writeText(log.ip).then(() => {
-            alert('IP address copied to clipboard!');
+            alert(this.translate.instant('ADMIN_LOGS.ALERTS.IP_COPIED'));
         });
     }
 
@@ -297,7 +298,7 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
         this.apiService.markLogAsAnomaly(log.id).subscribe({
             next: () => {
                 log.scoreClass = 'status-alert';
-                alert(`Log from ${log.ip} has been correctly marked as suspicious for ML feedback.`);
+                alert(this.translate.instant('ADMIN_LOGS.ALERTS.MARKED_SUSPICIOUS', { ip: log.ip }));
             },
             error: (err) => console.error('Error marking log', err)
         });

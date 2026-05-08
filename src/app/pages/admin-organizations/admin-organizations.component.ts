@@ -2,15 +2,16 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService, OrganizationResponse, OrganizationMemberResponse, UserResponse } from '../../services/api.service';
+import { AvatarComponent } from '../../components/avatar/avatar.component';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-admin-organizations',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslateModule],
+    imports: [CommonModule, FormsModule, TranslateModule, AvatarComponent],
     templateUrl: './admin-organizations.component.html',
     styleUrl: './admin-organizations.component.css'
 })
@@ -32,7 +33,7 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
     ownerSearchTerm = '';
     ownerSearchResults: UserResponse[] = [];
 
-    constructor(private apiService: ApiService) { }
+    constructor(private apiService: ApiService, private translate: TranslateService) { }
 
     ngOnInit() {
         this.loadOrganizations();
@@ -71,7 +72,7 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
 
     toggleStatus(org: OrganizationResponse) {
         const action = org.enabled ? 'suspend' : 'activate';
-        if (confirm(`Are you sure you want to ${action} ${org.name}?`)) {
+        if (confirm(this.translate.instant('ADMIN_ORGS.ALERTS.ACTION_CONFIRM', { action, name: org.name }))) {
             this.apiService.updateOrganizationStatus(org.id, !org.enabled).subscribe({
                 next: (updated) => {
                     const idx = this.organizations.findIndex(o => o.id === updated.id);
@@ -85,7 +86,7 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
                         setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
                     }
                 },
-                error: (err) => alert(`Failed to ${action} organization: ` + (err.error?.error || err.error?.message || 'Error'))
+                error: (err) => alert(this.translate.instant('ADMIN_ORGS.ALERTS.ACTION_FAILED', { action }) + (err.error?.error || err.error?.message || 'Error'))
             });
         }
     }
@@ -140,7 +141,7 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
     assignOwner(user: UserResponse) {
         if (!this.selectedOrg) return;
         const orgName = this.selectedOrg.name;
-        if (!confirm(`Assign ${user.fullName} as owner of "${orgName}"?\n\nIf they are not yet a member they will be added automatically. All current owners will be demoted to Analyst.`)) return;
+        if (!confirm(this.translate.instant('ADMIN_ORGS.ALERTS.ASSIGN_CONFIRM_NON', { name: user.fullName, org: orgName }))) return;
 
         this.apiService.adminAssignOwner(this.selectedOrg.id, user.id).subscribe({
             next: () => {
@@ -150,17 +151,17 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
                 // Reload members to reflect new ownership
                 if (this.selectedOrg) this.viewDetails(this.selectedOrg);
             },
-            error: (err) => alert('Failed to assign owner: ' + (err.error?.error || err.error?.message || 'Error'))
+            error: (err) => alert(this.translate.instant('ADMIN_ORGS.ALERTS.ASSIGN_FAILED') + (err.error?.error || err.error?.message || 'Error'))
         });
     }
 
     // ── Existing member Make-Owner (from table) ───────────────
     forceTransferOwnership(org: OrganizationResponse | null, newOwnerId: string, memberName: string) {
         if (!org) return;
-        if (!confirm(`Make ${memberName} the new owner of "${org.name}"?\nAll current owners will be demoted to Analyst.`)) return;
+        if (!confirm(this.translate.instant('ADMIN_ORGS.ALERTS.ASSIGN_CONFIRM_MEM', { name: memberName, org: org.name }))) return;
         this.apiService.adminAssignOwner(org.id, newOwnerId).subscribe({
             next: () => { if (this.selectedOrg) this.viewDetails(this.selectedOrg); },
-            error: (err) => alert('Failed: ' + (err.error?.error || err.error?.message || 'Error'))
+            error: (err) => alert(this.translate.instant('ADMIN_ORGS.ALERTS.ASSIGN_FAILED') + (err.error?.error || err.error?.message || 'Error'))
         });
     }
 

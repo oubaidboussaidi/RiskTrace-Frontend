@@ -66,9 +66,13 @@
                     <td>
                         <div class="user-cell">
                             <div class="avatar-wrapper">
-                                <div class="avatar" [style.background]="user.enabled ? '#6366f1' : '#334155'">
-                                    {{ getInitials(user.fullName) }}
-                                </div>
+                                <app-avatar
+                                    [name]="user.fullName"
+                                    [imageUrl]="user.profileImageUrl"
+                                    [size]="36"
+                                    [entityId]="user.id"
+                                    entityType="user">
+                                </app-avatar>
                             </div>
                             <div class="user-name-group">
                                 <div class="user-name-line">
@@ -218,7 +222,7 @@
                         <p class="section-label">{{ 'ADMIN_USERS.MODAL_OWNERSHIP.ASSIGN_EXISTING' | translate }}:</p>
                         <div class="member-pick-list">
                             <div class="member-pick-item" *ngFor="let mem of getOtherMembers(conflict)">
-                                <div class="avatar sm">{{ getInitials(mem.fullName || mem.email) }}</div>
+                                <app-avatar [name]="mem.fullName || mem.email" [size]="32" [entityId]="mem.userId" entityType="user"></app-avatar>
                                 <div class="flex-1">
                                     <div class="fw-500">{{ mem.fullName }}</div>
                                     <div class="text-xs text-muted">{{ mem.email }} · {{ mem.role }}</div>
@@ -246,8 +250,7 @@
                         </div>
                         <div class="platform-results" *ngIf="platformUserResults[conflict.org.id]?.length">
                             <div class="member-pick-item" *ngFor="let u of platformUserResults[conflict.org.id]">
-                                <div class="avatar sm" [style.background]="'#6366f1'">{{ getInitials(u.fullName) }}
-                                </div>
+                                <app-avatar [name]="u.fullName" [imageUrl]="u.profileImageUrl" [size]="32" [entityId]="u.id" entityType="user"></app-avatar>
                                 <div class="flex-1">
                                     <div class="fw-500">{{ u.fullName }}</div>
                                     <div class="text-xs text-muted">{{ u.email }}</div>
