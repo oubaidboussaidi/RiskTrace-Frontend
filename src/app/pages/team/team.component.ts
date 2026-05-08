@@ -5,15 +5,16 @@ import { ActivatedRoute } from '@angular/router';
 import { ApiService, OrganizationMemberResponse } from '../../services/api.service';
 import { OrganizationService } from '../../services/organization.service';
 import { AuthService } from '../../services/auth.service';
+import { AvatarComponent } from '../../components/avatar/avatar.component';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-team',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, AvatarComponent],
   templateUrl: './team.component.html',
   styleUrl: './team.component.css'
 })
@@ -38,7 +39,8 @@ export class TeamComponent implements OnInit, AfterViewInit {
     private apiService: ApiService,
     private orgService: OrganizationService,
     public authService: AuthService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -78,7 +80,7 @@ export class TeamComponent implements OnInit, AfterViewInit {
         this.currentPage = 1;
         this.refreshIcons();
       },
-      error: () => alert('Failed to load team members.')
+      error: () => alert(this.translate.instant('TEAM.ALERTS.LOAD_FAILED'))
     });
   }
 
@@ -119,8 +121,8 @@ export class TeamComponent implements OnInit, AfterViewInit {
   }
 
   inviteMember() {
-    if (!this.currentOrgId) { alert('No organization selected.'); return; }
-    if (!this.inviteForm.email) { alert('Email is required.'); return; }
+    if (!this.currentOrgId) { alert(this.translate.instant('TEAM.ALERTS.NO_ORG')); return; }
+    if (!this.inviteForm.email) { alert(this.translate.instant('TEAM.ALERTS.EMAIL_REQ')); return; }
 
     this.apiService.inviteMember(this.currentOrgId, {
       email: this.inviteForm.email,
@@ -132,33 +134,33 @@ export class TeamComponent implements OnInit, AfterViewInit {
         this.inviteForm = { email: '', role: 'ANALYST' };
         setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
       },
-      error: (err) => alert('Failed to invite member: ' + (err.error?.error || err.error?.message || 'User not found or already a member.'))
+      error: (err) => alert(this.translate.instant('TEAM.ALERTS.INVITE_FAILED') + (err.error?.error || err.error?.message || 'User not found or already a member.'))
     });
   }
 
   removeMember(member: OrganizationMemberResponse) {
     if (!this.currentOrgId) return;
-    if (!confirm(`Remove ${member.fullName || member.email} from this organization?`)) return;
+    if (!confirm(this.translate.instant('TEAM.ALERTS.REMOVE_CONFIRM', { name: member.fullName || member.email }))) return;
 
     this.apiService.removeMember(this.currentOrgId, member.userId).subscribe({
       next: () => {
         this.teamMembers = this.teamMembers.filter(m => m.userId !== member.userId);
       },
-      error: (err) => alert('Failed to remove member: ' + (err.error?.error || err.error?.message || 'Error removing member.'))
+      error: (err) => alert(this.translate.instant('TEAM.ALERTS.REMOVE_FAILED') + (err.error?.error || err.error?.message || 'Error removing member.'))
     });
   }
 
   transferOwnership() {
     if (!this.currentOrgId) return;
-    if (!this.transferForm.newOwnerUserId) { alert('Select a member to transfer ownership to.'); return; }
+    if (!this.transferForm.newOwnerUserId) { alert(this.translate.instant('TEAM.ALERTS.TRANSFER_REQ')); return; }
 
     this.apiService.transferOwnership(this.currentOrgId, { newOwnerUserId: this.transferForm.newOwnerUserId }).subscribe({
       next: () => {
-        alert('Ownership transferred successfully.');
+        alert(this.translate.instant('TEAM.ALERTS.TRANSFER_SUCCESS'));
         this.showTransferForm = false;
         this.loadMembers(); // Refresh to show updated roles
       },
-      error: (err) => alert('Failed to transfer ownership: ' + (err.error?.error || err.error?.message || 'Error.'))
+      error: (err) => alert(this.translate.instant('TEAM.ALERTS.TRANSFER_FAILED') + (err.error?.error || err.error?.message || 'Error.'))
     });
   }
 

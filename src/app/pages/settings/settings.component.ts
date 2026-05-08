@@ -4,15 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService, StoredUser } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { AvatarComponent } from '../../components/avatar/avatar.component';
+import { AvatarService } from '../../services/avatar.service';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule],
+  imports: [CommonModule, FormsModule, TranslateModule, AvatarComponent],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
 })
@@ -46,7 +48,9 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   constructor(
     private authService: AuthService,
     private apiService: ApiService,
-    private router: Router
+    private avatarService: AvatarService,
+    private router: Router,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -72,13 +76,31 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       fullName: this.fullName
     }).subscribe({
       next: (updatedUser) => {
-        alert('Profile updated successfully!');
+        alert(this.translate.instant('SETTINGS.ALERTS.PROFILE_UPDATED'));
         this.authService.updateCurrentUser({ fullName: updatedUser.fullName });
         this.currentUser = this.authService.currentUserValue;
         this.fullName = updatedUser.fullName;
       },
-      error: () => alert('Failed to update profile.')
+      error: () => alert(this.translate.instant('SETTINGS.ALERTS.PROFILE_UPDATE_FAILED'))
     });
+  }
+
+  onAvatarChanged(dataUrl: string | null) {
+    // Update the stored user so the sidebar and topbar reflect the new avatar
+    this.authService.updateCurrentUser({ profileImageUrl: dataUrl });
+    this.currentUser = this.authService.currentUserValue;
+    if (this.currentUser?.id) {
+      if (dataUrl) {
+        this.avatarService.notifyUserAvatarChange(this.currentUser.id, dataUrl);
+      } else {
+        this.avatarService.notifyUserAvatarChange(this.currentUser.id, null);
+      }
+    }
+    
+    // Re-initialize icons after DOM update
+    setTimeout(() => {
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 100);
   }
 
   togglePasswordForm() {
@@ -87,7 +109,7 @@ export class SettingsComponent implements OnInit, AfterViewInit {
 
   changePassword() {
     if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
-      alert('New passwords do not match');
+      alert(this.translate.instant('SETTINGS.ALERTS.PW_MISMATCH'));
       return;
     }
 
@@ -96,11 +118,11 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       newPassword: this.passwordData.newPassword
     }).subscribe({
       next: () => {
-        alert('Password changed successfully');
+        alert(this.translate.instant('SETTINGS.ALERTS.PW_CHANGED'));
         this.passwordData = { oldPassword: '', newPassword: '', confirmPassword: '' };
         this.showPasswordForm = false;
       },
-      error: () => alert('Failed to change password. Please check your current password.')
+      error: () => alert(this.translate.instant('SETTINGS.ALERTS.PW_CHANGE_FAILED'))
     });
   }
 
@@ -115,13 +137,13 @@ export class SettingsComponent implements OnInit, AfterViewInit {
         this.setupData = data;
         this.show2faSetup = true;
       },
-      error: () => alert('Failed to initiate 2FA setup.')
+      error: () => alert(this.translate.instant('SETTINGS.ALERTS.TFA_INIT_FAILED'))
     });
   }
 
   enable2fa() {
     if (!this.mfaCode || this.mfaCode.length !== 6) {
-      alert('Please enter a 6-digit code.');
+      alert(this.translate.instant('SETTINGS.ALERTS.TFA_ENTER_CODE'));
       return;
     }
 
@@ -130,13 +152,13 @@ export class SettingsComponent implements OnInit, AfterViewInit {
       code: this.mfaCode
     }).subscribe({
       next: () => {
-        alert('2FA enabled successfully!');
+        alert(this.translate.instant('SETTINGS.ALERTS.TFA_ENABLED'));
         this.isTwoFactorEnabled = true;
         this.show2faSetup = false;
         this.setupData = null;
         this.mfaCode = '';
       },
-      error: (err) => alert(err.error?.error || 'Failed to enable 2FA. Verify your code.')
+      error: (err) => alert(err.error?.error || this.translate.instant('SETTINGS.ALERTS.TFA_ENABLE_FAILED'))
     });
   }
 
@@ -146,33 +168,33 @@ export class SettingsComponent implements OnInit, AfterViewInit {
 
   disable2fa() {
     if (!this.disablePassword) {
-      alert('Please enter your password to confirm.');
+      alert(this.translate.instant('SETTINGS.ALERTS.TFA_ENTER_PW'));
       return;
     }
 
     this.apiService.disable2fa(this.disablePassword).subscribe({
       next: () => {
-        alert('2FA disabled successfully.');
+        alert(this.translate.instant('SETTINGS.ALERTS.TFA_DISABLED'));
         this.isTwoFactorEnabled = false;
         this.showDisable2fa = false;
         this.disablePassword = '';
       },
-      error: (err) => alert(err.error?.error || 'Failed to disable 2FA. Check your password.')
+      error: (err) => alert(err.error?.error || this.translate.instant('SETTINGS.ALERTS.TFA_DISABLE_FAILED'))
     });
   }
 
   deleteAccount() {
-    const confirmed = confirm('Are you absolutely sure? This action cannot be undone.');
+    const confirmed = confirm(this.translate.instant('SETTINGS.ALERTS.DEL_CONFIRM'));
     if (confirmed) {
-      const doubleCheck = prompt('Type DELETE to confirm account deletion:');
-      if (doubleCheck === 'DELETE') {
-        alert('Account deletion is not implemented in this demo. In production, this would permanently delete your account.');
+      const doubleCheck = prompt(this.translate.instant('SETTINGS.ALERTS.DEL_PROMPT'));
+      if (doubleCheck === 'DELETE' || doubleCheck === 'SUPPRIMER') {
+        alert(this.translate.instant('SETTINGS.ALERTS.DEL_NOT_IMPL'));
         // Uncomment when backend endpoint is available:
         // this.apiService.deleteAccount(this.currentUser!.id).subscribe(() => {
         //   this.authService.logout();
         // });
       } else {
-        alert('Account deletion cancelled.');
+        alert(this.translate.instant('SETTINGS.ALERTS.DEL_CANCEL'));
       }
     }
   }

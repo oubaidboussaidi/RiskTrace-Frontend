@@ -156,7 +156,12 @@
                 <tr *ngFor="let member of paginatedMembers">
                     <td>
                         <div class="member-cell">
-                            <div class="avatar">{{ getInitials(member.fullName || member.email) }}</div>
+                            <app-avatar
+                                [name]="member.fullName || member.email"
+                                [size]="32"
+                                [entityId]="member.userId"
+                                entityType="user">
+                            </app-avatar>
                             <span class="member-name">{{ member.fullName || '—' }}</span>
                         </div>
                     </td>

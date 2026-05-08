@@ -8,7 +8,7 @@ import { environment } from '../../../environments/environment';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sites',
@@ -42,7 +42,8 @@ export class SitesComponent implements OnInit, AfterViewInit {
   constructor(
     private apiService: ApiService,
     private orgService: OrganizationService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -113,15 +114,21 @@ export class SitesComponent implements OnInit, AfterViewInit {
 
   createSite() {
     if (!this.currentOrgId) {
-      alert('No organization selected.');
+      alert(this.translate.instant('SITES.ALERTS.NO_ORG'));
       return;
     }
-    if (!this.newSite.siteName || !this.newSite.domain) {
-      alert('Please fill in all fields');
+    
+    if (!this.newSite.siteName || !this.newSite.siteName.trim()) {
+      alert(this.translate.instant('ERR_SITE_NAME_EMPTY'));
       return;
     }
 
-    if (!confirm(`Are you sure you want to add "${this.newSite.siteName}" (${this.newSite.domain})?`)) {
+    if (!this.newSite.domain || !this.newSite.domain.trim()) {
+      alert(this.translate.instant('ERR_SITE_DOMAIN_EMPTY'));
+      return;
+    }
+
+    if (!confirm(this.translate.instant('CONFIRM_SITE_CREATE', { name: this.newSite.siteName, domain: this.newSite.domain }))) {
       return;
     }
 
@@ -132,17 +139,17 @@ export class SitesComponent implements OnInit, AfterViewInit {
         this.refreshSites();
         this.showCreateForm = false;
         this.newSite = { siteName: '', domain: '' };
-        alert('Application added successfully! You can now copy the tracking code.');
+        alert(this.translate.instant('SITES.ALERTS.ADDED'));
       },
-      error: () => alert('Failed to create site.')
+      error: () => alert(this.translate.instant('SITES.ALERTS.ADD_FAILED'))
     });
   }
 
   deleteSite(site: any) {
-    if (confirm(`Delete "${site.siteName}"? This will invalidate its API key immediately.`)) {
+    if (confirm(this.translate.instant('SITES.ALERTS.DELETE_CONFIRM', { name: site.siteName }))) {
       this.apiService.deleteSite(site.id).subscribe({
         next: () => this.sites = this.sites.filter(s => s.id !== site.id),
-        error: () => alert('Failed to delete site.')
+        error: () => alert(this.translate.instant('SITES.ALERTS.DELETE_FAILED'))
       });
     }
   }
@@ -167,7 +174,7 @@ export class SitesComponent implements OnInit, AfterViewInit {
 
   copyScript(site?: any) {
     const apiKey = site?.apiKey || this.selectedSite?.apiKey || 'YOUR_API_KEY';
-    const tag = `<script src="http://localhost:8080/tracker.js" data-api-key="${apiKey}"></script>`;
+    const tag = `<script src="http://localhost:8084/tracker.js" data-api-key="${apiKey}"></script>`;
     navigator.clipboard.writeText(tag).then(() => {
       this.copiedSiteId = site?.id || null;
       setTimeout(() => this.copiedSiteId = null, 2000);
@@ -175,9 +182,29 @@ export class SitesComponent implements OnInit, AfterViewInit {
     });
   }
 
-  /** Copies just the <script> tag (embed snippet) */
+  /** Copies just the raw API key and shows a tick icon for 2 seconds */
+  copyApiKey(site: any) {
+    navigator.clipboard.writeText(site.apiKey).then(() => {
+      this.copiedSiteId = site.id;
+      setTimeout(() => {
+        this.copiedSiteId = null;
+      }, 2000);
+    }).catch(() => {
+      // Fallback for browsers without clipboard API
+      const el = document.createElement('textarea');
+      el.value = site.apiKey;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.copiedSiteId = site.id;
+      setTimeout(() => { this.copiedSiteId = null; }, 2000);
+    });
+  }
+
+  /** Copies the full <script> embed tag */
   copyEmbed(site: any) {
-    const tag = `<script src="http://localhost:8080/tracker.js" data-api-key="${site.apiKey}"></script>`;
+    const tag = `<script src="http://localhost:8084/tracker.js" data-api-key="${site.apiKey}"><\/script>`;
     navigator.clipboard.writeText(tag).then(() => {
       this.copiedSiteId = site.id;
       setTimeout(() => this.copiedSiteId = null, 2000);
@@ -185,7 +212,7 @@ export class SitesComponent implements OnInit, AfterViewInit {
   }
 
   regenerateKey(siteId: string) {
-    if (confirm('Are you sure? This will invalidate the old key immediately.')) {
+    if (confirm(this.translate.instant('SITES.ALERTS.REGEN_CONFIRM'))) {
       this.apiService.regenerateApiKey(siteId).subscribe(updatedSite => {
         const index = this.sites.findIndex(s => s.id === updatedSite.id);
         if (index !== -1) {

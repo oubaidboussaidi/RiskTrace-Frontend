@@ -30,7 +30,6 @@
             <div class="status-badge badge-low">{{site.status}}</div>
         </div>
 
-        <!-- API Key Display -->
         <div
             style="background: var(--bg-dark); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
             <div style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">
@@ -39,10 +38,18 @@
             <div
                 style="font-family: var(--font-mono); font-size: 13px; display: flex; justify-content: space-between; align-items: center; word-break: break-all;">
                 <span style="color: var(--accent-primary); letter-spacing: 1px;">{{site.apiKey}}</span>
-                <i data-lucide="copy" size="14"
-                    style="color: var(--text-muted); cursor: pointer; margin-left: 8px; flex-shrink: 0;"
-                    (click)="copyEmbed(site)" title="Copy embed script tag">
-                </i>
+                <button
+                    class="copy-key-btn"
+                    (click)="copyApiKey(site)"
+                    [title]="copiedSiteId === site.id ? 'Copied!' : 'Copy API key'">
+                    <!-- Toggle display via CSS instead of ngIf to avoid re-running lucide globally -->
+                    <span [style.display]="copiedSiteId !== site.id ? 'inline-flex' : 'none'">
+                        <i data-lucide="copy" style="width:14px;height:14px;"></i>
+                    </span>
+                    <span [style.display]="copiedSiteId === site.id ? 'inline-flex' : 'none'">
+                        <i data-lucide="check" style="width:14px;height:14px;color:var(--sev-low);"></i>
+                    </span>
+                </button>
             </div>
         </div>
 
@@ -111,9 +118,9 @@
                     {{ 'SITES.MODAL_HELP.STEP1_DESC' | translate }}
                 </p>
                 <div class="code-block">
-                    <code *ngIf="selectedSite">&lt;script src="http://localhost:8080/tracker.js"
+                    <code *ngIf="selectedSite">&lt;script src="http://localhost:8084/tracker.js"
        data-api-key="<strong style="color:#f0883e;">{{selectedSite.apiKey}}</strong>"&gt;&lt;/script&gt;</code>
-                    <code *ngIf="!selectedSite">&lt;script src="http://localhost:8080/tracker.js"
+                    <code *ngIf="!selectedSite">&lt;script src="http://localhost:8084/tracker.js"
        data-api-key="YOUR_API_KEY"&gt;&lt;/script&gt;</code>
                 </div>
             </div>

@@ -9,10 +9,15 @@
             {{ 'SETTINGS.PROFILE_TITLE' | translate }}</h3>
 
         <div style="display: flex; gap: 24px; align-items: start;">
-            <div
-                style="width: 80px; height: 80px; border-radius: 50%; background: #a371f7; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: white;">
-                {{ fullName.charAt(0).toUpperCase() || 'U' }}
-            </div>
+            <app-avatar
+                [name]="fullName || 'U'"
+                [imageUrl]="currentUser?.profileImageUrl"
+                [size]="80"
+                [editable]="true"
+                [entityId]="currentUser?.id || ''"
+                entityType="user"
+                (avatarChanged)="onAvatarChanged($event)">
+            </app-avatar>
             <div style="flex: 1;">
                 <div class="form-group">
                     <label>{{ 'SETTINGS.FULL_NAME' | translate }}</label>
