@@ -5,7 +5,7 @@ import { ApiService } from '../../services/api.service';
 
 declare var lucide: any;
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-incidents',
@@ -27,7 +27,7 @@ export class IncidentsComponent implements OnInit, AfterViewInit {
     status: 'OPEN'
   };
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private translate: TranslateService) { }
 
   ngOnInit() {
     this.refreshIncidents();
@@ -73,9 +73,14 @@ export class IncidentsComponent implements OnInit, AfterViewInit {
   processAlert(alert: any) {
     return {
       ...alert,
-      title: alert.type || 'Unknown Threat',
-      details: alert.description || `${alert.type} detected on ${alert.targetPath} from ${alert.sourceIp}`,
-      assignee: 'Unassigned', // Default for now
+      typeKey: 'INCIDENTS.TYPES.' + (alert.type || 'SUSPICIOUS_ACTIVITY'),
+      mlDescParams: alert.type === 'ANOMALY_DETECTED' && alert.anomalyScore != null ? {
+        score: (alert.anomalyScore as number).toFixed(2),
+        confidence: alert.severity || 'N/A',
+        ip: alert.sourceIp || 'N/A',
+        path: alert.targetPath || 'N/A'
+      } : null,
+      assignee: 'Unassigned',
       severityClass: this.getSeverityClass(alert.severity),
       borderClass: this.getBorderClass(alert.severity)
     };

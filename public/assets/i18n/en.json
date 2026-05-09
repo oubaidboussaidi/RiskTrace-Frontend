@@ -142,11 +142,13 @@
       "TARGET_PATH": "Target Path (Optional)"
     },
     "TYPES": {
+      "ANOMALY_DETECTED": "Anomaly Detected",
       "SUSPICIOUS_ACTIVITY": "Suspicious Activity",
       "UNAUTHORIZED_ACCESS": "Unauthorized Access",
       "DATA_LEAK": "Data Leak",
       "MALWARE_DETECTED": "Malware Detected"
     },
+    "ML_DESC": "ML detected an anomalous session (score: {{score}}, confidence: {{confidence}}). Source IP: {{ip}}, Target: {{path}}",
     "SEVERITY": {
       "LOW": "Low",
       "MEDIUM": "Medium",

@@ -14,9 +14,14 @@
         <div>
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px;">
                 <span class="status-badge" [ngClass]="incident.severityClass">{{ ('INCIDENTS.SEVERITY.' + incident.severity) | translate }}</span>
-                <span style="font-weight: 600; font-size: 15px;">{{incident.title}}</span>
+                <span style="font-weight: 600; font-size: 15px;">{{ incident.typeKey | translate }}</span>
             </div>
-            <div style="color: var(--text-secondary); font-size: 12px;">{{incident.details}}</div>
+            <div style="color: var(--text-secondary); font-size: 12px;" *ngIf="incident.mlDescParams"
+                [translate]="'INCIDENTS.ML_DESC'" [translateParams]="incident.mlDescParams">
+            </div>
+            <div style="color: var(--text-secondary); font-size: 12px;" *ngIf="!incident.mlDescParams">
+                {{incident.description}}
+            </div>
         </div>
         <div style="display: flex; gap: 24px; align-items: center;">
             <div style="text-align: right;">
@@ -25,7 +30,7 @@
             </div>
             <button class="btn" [ngClass]="incident.assignee === 'Unassigned' ? 'btn-secondary' : 'btn-primary'"
                 (click)="updateStatus(incident)">
-                {{incident.assignee === 'Unassigned' ? ('INCIDENTS.ACTION.ASSIGN_ME' | translate) : ('INCIDENTS.ACTION.RESOLVE' | translate)}}
+                {{incident.assignee === 'Unassigned' ? ('INCIDENTS.ASSIGN_ME' | translate) : ('INCIDENTS.RESOLVE' | translate)}}
             </button>
 
         </div>
