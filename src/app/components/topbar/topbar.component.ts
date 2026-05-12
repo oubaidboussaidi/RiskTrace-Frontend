@@ -1,11 +1,13 @@
-import { Component, AfterViewInit, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import { Component, AfterViewInit, OnInit, OnDestroy, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { ApiService } from '../../services/api.service';
+import { OrganizationService } from '../../services/organization.service';
 import { RouterModule, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from '../../services/language.service';
 import { ThemeService } from '../../services/theme.service';
+import { Subscription } from 'rxjs';
 
 declare var lucide: any;
 
@@ -16,11 +18,12 @@ declare var lucide: any;
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.css'
 })
-export class TopbarComponent implements OnInit, AfterViewInit {
+export class TopbarComponent implements OnInit, AfterViewInit, OnDestroy {
   currentUser: any = null;
   notifications: any[] = [];
   showNotifications = false;
   showSettings = false;
+  private orgSub?: Subscription;
 
   get currentLang() { return this.languageService.currentLang; }
 
@@ -52,6 +55,7 @@ export class TopbarComponent implements OnInit, AfterViewInit {
   constructor(
     public authService: AuthService,
     private apiService: ApiService,
+    private orgService: OrganizationService,
     private router: Router,
     public languageService: LanguageService,
     public themeService: ThemeService
@@ -60,12 +64,22 @@ export class TopbarComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.currentUser = this.authService.currentUserValue;
-    this.loadNotifications();
+    this.orgSub = this.orgService.currentOrg$.subscribe(org => {
+      if (org) {
+        this.loadNotifications(org.id);
+      } else {
+        this.notifications = [];
+      }
+    });
   }
 
-  loadNotifications() {
-    this.apiService.getActiveAlerts().subscribe(alerts => {
-      this.notifications = alerts.slice(0, 5); // Show top 5
+  ngOnDestroy() {
+    this.orgSub?.unsubscribe();
+  }
+
+  loadNotifications(orgId: string) {
+    this.apiService.getActiveAlertsByOrganization(orgId).subscribe(alerts => {
+      this.notifications = (alerts || []).slice(0, 5); // Show top 5
     });
   }
 

@@ -19,6 +19,7 @@
     "ALERT_CENTER": "Centre d'Alertes",
     "TEAM_ROLES": "Équipe & Rôles",
     "ADMIN_PANEL": "Panneau d'Administration",
+    "ADMIN_DASHBOARD": "Tableau de Bord",
     "GLOBAL_USERS": "Utilisateurs Globaux",
     "GLOBAL_ORGS": "Orgs Globales",
     "GLOBAL_LOGS": "Logs Globaux"
@@ -70,9 +71,15 @@
       "VS_LAST_WEEK": "vs la semaine dernière"
     },
     "CHART": {
-      "ANOMALY_TREND": "Tendance des Anomalies au Fil du Temps",
+      "ANOMALY_TREND": "Volume de Logs & Anomalies",
       "NORMAL": "Normal",
-      "ANOMALOUS": "Anormal"
+      "ANOMALOUS": "Anormal",
+      "SCORE_DIST": "Distribution des Scores d'Anomalie",
+      "HTTP_METHODS": "Répartition des Méthodes HTTP"
+    },
+    "RECENT_ALERTS": {
+      "TITLE": "Alertes Récentes",
+      "NO_ALERTS": "Aucune alerte enregistrée."
     },
     "RISKY_SITES": {
       "TITLE": "Sites les plus Risqués",
@@ -421,5 +428,37 @@
     "SETTING": "Définition...",
     "EXPIRED": "Le lien de réinitialisation a expiré ou est invalide.",
     "SUCCESS": "Mot de passe modifié avec succès ! Redirection..."
+  },
+  "ADMIN_DASHBOARD": {
+    "TITLE": "Vue d'Ensemble de la Plateforme",
+    "SUBTITLE": "Surveillance globale de toutes les organisations et utilisateurs.",
+    "BADGE": "Admin Plateforme",
+    "KPI": {
+      "TOTAL_USERS": "Utilisateurs Totaux",
+      "TOTAL_ORGS": "Organisations",
+      "TOTAL_LOGS": "Logs Plateforme",
+      "CRITICAL_ALERTS": "Alertes Critiques"
+    },
+    "CHART": {
+      "LOGS_PER_ORG": "Logs Par Organisation",
+      "ALERT_SEVERITY": "Distribution de la Sévérité des Alertes",
+      "USER_ROLES": "Distribution des Rôles Utilisateur",
+      "PLATFORM_ACTIVITY": "Activité Plateforme (30 Jours)"
+    },
+    "ORG_HEALTH": {
+      "TITLE": "Moniteur de Santé des Organisations",
+      "ORG": "Organisation",
+      "STATUS": "Statut",
+      "MEMBERS": "Membres",
+      "LOGS": "Logs",
+      "ANOMALIES": "Anomalies",
+      "ALERTS": "Alertes",
+      "HEALTH": "Santé",
+      "ACTIVE": "Actif",
+      "SUSPENDED": "Suspendu",
+      "HEALTHY": "Sain",
+      "MODERATE": "Modéré",
+      "HIGH_RISK": "Risque Élevé"
+    }
   }
 }

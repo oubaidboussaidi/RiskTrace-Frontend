@@ -25,6 +25,7 @@ export const routes: Routes = [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
             { path: 'dashboard', component: DashboardComponent },
             { path: 'organizations', loadComponent: () => import('./pages/organizations/organizations.component').then(m => m.OrganizationsComponent) },
+            { path: 'admin/dashboard', loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
             { path: 'admin/organizations', loadComponent: () => import('./pages/admin-organizations/admin-organizations.component').then(m => m.AdminOrganizationsComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
             { path: 'admin/users', loadComponent: () => import('./pages/admin-users/admin-users.component').then(m => m.AdminUsersComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },
             { path: 'admin/logs', loadComponent: () => import('./pages/admin-logs/admin-logs.component').then(m => m.AdminLogsComponent), canActivate: [AuthGuard, RoleGuard], data: { expectedRole: 'PLATFORM_ADMIN' } },

@@ -19,6 +19,7 @@
     "ALERT_CENTER": "Alert Center",
     "TEAM_ROLES": "Team & Roles",
     "ADMIN_PANEL": "Admin Panel",
+    "ADMIN_DASHBOARD": "Dashboard",
     "GLOBAL_USERS": "Global Users",
     "GLOBAL_ORGS": "Global Orgs",
     "GLOBAL_LOGS": "Global Logs"
@@ -70,9 +71,15 @@
       "VS_LAST_WEEK": "vs last week"
     },
     "CHART": {
-      "ANOMALY_TREND": "Anomaly Trend over Time",
+      "ANOMALY_TREND": "Log Volume & Anomalies",
       "NORMAL": "Normal",
-      "ANOMALOUS": "Anomalous"
+      "ANOMALOUS": "Anomalous",
+      "SCORE_DIST": "Anomaly Score Distribution",
+      "HTTP_METHODS": "HTTP Methods Breakdown"
+    },
+    "RECENT_ALERTS": {
+      "TITLE": "Recent Alerts",
+      "NO_ALERTS": "No alerts recorded yet."
     },
     "RISKY_SITES": {
       "TITLE": "Top Risky Sites",
@@ -427,5 +434,37 @@
     "SETTING": "Setting...",
     "EXPIRED": "The reset link has expired or is invalid.",
     "SUCCESS": "Password changed successfully! Redirecting..."
+  },
+  "ADMIN_DASHBOARD": {
+    "TITLE": "Platform Overview",
+    "SUBTITLE": "Global monitoring across all organizations and users.",
+    "BADGE": "Platform Admin",
+    "KPI": {
+      "TOTAL_USERS": "Total Users",
+      "TOTAL_ORGS": "Organizations",
+      "TOTAL_LOGS": "Platform Logs",
+      "CRITICAL_ALERTS": "Critical Alerts"
+    },
+    "CHART": {
+      "LOGS_PER_ORG": "Logs Per Organization",
+      "ALERT_SEVERITY": "Alert Severity Distribution",
+      "USER_ROLES": "User Roles Distribution",
+      "PLATFORM_ACTIVITY": "Platform Activity (30 Days)"
+    },
+    "ORG_HEALTH": {
+      "TITLE": "Organizations Health Monitor",
+      "ORG": "Organization",
+      "STATUS": "Status",
+      "MEMBERS": "Members",
+      "LOGS": "Logs",
+      "ANOMALIES": "Anomalies",
+      "ALERTS": "Alerts",
+      "HEALTH": "Health",
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended",
+      "HEALTHY": "Healthy",
+      "MODERATE": "Moderate",
+      "HIGH_RISK": "High Risk"
+    }
   }
 }

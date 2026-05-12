@@ -1,7 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { OrganizationService } from '../../services/organization.service';
+import { Subscription } from 'rxjs';
 
 declare var lucide: any;
 
@@ -14,9 +16,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './incidents.component.html',
   styleUrl: './incidents.component.css'
 })
-export class IncidentsComponent implements OnInit, AfterViewInit {
+export class IncidentsComponent implements OnInit, AfterViewInit, OnDestroy {
   incidents: any[] = [];
   showCreateForm: boolean = false;
+  activeOrgId: string | null = null;
+  private orgSub?: Subscription;
 
   newIncident = {
     type: 'SUSPICIOUS_ACTIVITY',
@@ -24,17 +28,36 @@ export class IncidentsComponent implements OnInit, AfterViewInit {
     description: '',
     targetPath: '/',
     sourceIp: '0.0.0.0',
-    status: 'OPEN'
+    status: 'OPEN',
+    organizationId: ''
   };
 
-  constructor(private apiService: ApiService, private translate: TranslateService) { }
+  constructor(
+    private apiService: ApiService,
+    private translate: TranslateService,
+    private orgService: OrganizationService
+  ) { }
 
   ngOnInit() {
-    this.refreshIncidents();
+    this.orgSub = this.orgService.currentOrg$.subscribe(org => {
+      if (org) {
+        this.activeOrgId = org.id;
+        this.newIncident.organizationId = org.id;
+        this.refreshIncidents();
+      } else {
+        this.activeOrgId = null;
+        this.incidents = [];
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.orgSub?.unsubscribe();
   }
 
   refreshIncidents() {
-    this.apiService.getAlerts().subscribe(data => {
+    if (!this.activeOrgId) return;
+    this.apiService.getAlertsByOrganization(this.activeOrgId).subscribe(data => {
       this.incidents = (data || []).map(alert => this.processAlert(alert));
       setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
     });
@@ -60,7 +83,8 @@ export class IncidentsComponent implements OnInit, AfterViewInit {
           description: '',
           targetPath: '/',
           sourceIp: '0.0.0.0',
-          status: 'OPEN'
+          status: 'OPEN',
+          organizationId: this.activeOrgId || ''
         };
         alert('Incident reported successfully.');
       },

@@ -21,87 +21,119 @@
     <!-- Scrollable nav area -->
     <div class="nav-scroll">
 
-        <!-- General -->
-        <div class="nav-group">
-            <div class="nav-label">{{ 'SIDEBAR.GENERAL' | translate }}</div>
-            <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.OVERVIEW' | translate">
-                <i data-lucide="layout-dashboard" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.OVERVIEW' | translate }}</span>
-            </a>
-            <a routerLink="/incidents" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.INCIDENTS' | translate">
-                <i data-lucide="shield-alert" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.INCIDENTS' | translate }}</span>
-                <span class="incident-badge" *ngIf="incidentCount > 0">{{incidentCount}}</span>
-            </a>
-        </div>
+        <!-- ═══════════ ANALYST NAVIGATION (USER role only) ═══════════ -->
+        <ng-container *ngIf="!isPlatformAdmin">
 
-        <!-- Investigation -->
-        <div class="nav-group">
-            <div class="nav-label">{{ 'SIDEBAR.INVESTIGATION' | translate }}</div>
-            <a routerLink="/logs" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.LOG_EXPLORER' | translate">
-                <i data-lucide="file-search" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.LOG_EXPLORER' | translate }}</span>
-            </a>
-            <a routerLink="/analytics" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ML_ANALYTICS' | translate">
-                <i data-lucide="bar-chart-3" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.ML_ANALYTICS' | translate }}</span>
-            </a>
-        </div>
-
-        <!-- Management -->
-        <div class="nav-group">
-            <div class="nav-label">{{ 'SIDEBAR.MANAGEMENT' | translate }}</div>
-            <a routerLink="/organizations" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ORGANIZATIONS' | translate">
-                <i data-lucide="building-2" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.ORGANIZATIONS' | translate }}</span>
-            </a>
-            <a routerLink="/sites" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.APPLICATIONS' | translate">
-                <i data-lucide="globe" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.APPLICATIONS' | translate }}</span>
-            </a>
-            <a routerLink="/alerts" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ALERT_CENTER' | translate">
-                <i data-lucide="bell-ring" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.ALERT_CENTER' | translate }}</span>
-            </a>
-            <a routerLink="/team" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.TEAM_ROLES' | translate">
-                <i data-lucide="users" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.TEAM_ROLES' | translate }}</span>
-            </a>
-        </div>
-
-        <!-- Platform Admin — collapsible single entry -->
-        <div class="nav-group admin-group" *ngIf="isPlatformAdmin">
-
-            <!-- Toggle trigger -->
-            <div class="nav-item admin-toggle" (click)="toggleAdmin($event)" [class.admin-active]="adminExpanded"
-                [title]="'SIDEBAR.ADMIN_PANEL' | translate">
-                <i data-lucide="shield-check" size="18"></i>
-                <span class="nav-text">{{ 'SIDEBAR.ADMIN_PANEL' | translate }}</span>
-                <svg class="chevron nav-text" [class.chevron-open]="adminExpanded" xmlns="http://www.w3.org/2000/svg"
-                    width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+            <!-- General -->
+            <div class="nav-group">
+                <div class="nav-label">{{ 'SIDEBAR.GENERAL' | translate }}</div>
+                <ng-container *ngIf="hasActiveOrg">
+                    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.OVERVIEW' | translate">
+                        <i data-lucide="layout-dashboard" size="18"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.OVERVIEW' | translate }}</span>
+                    </a>
+                    <a routerLink="/incidents" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.INCIDENTS' | translate">
+                        <i data-lucide="shield-alert" size="18"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.INCIDENTS' | translate }}</span>
+                        <span class="incident-badge" *ngIf="incidentCount > 0">{{incidentCount}}</span>
+                    </a>
+                </ng-container>
             </div>
 
-            <!-- Sub-items (slide in/out) -->
-            <div class="admin-submenu" [class.open]="adminExpanded">
-                <a routerLink="/admin/users" routerLinkActive="active" class="nav-item sub-item" [title]="'SIDEBAR.GLOBAL_USERS' | translate">
-                    <i data-lucide="users-2" size="16"></i>
-                    <span class="nav-text">{{ 'SIDEBAR.GLOBAL_USERS' | translate }}</span>
+            <!-- Investigation -->
+            <div class="nav-group" *ngIf="hasActiveOrg">
+                <div class="nav-label">{{ 'SIDEBAR.INVESTIGATION' | translate }}</div>
+                <a routerLink="/logs" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.LOG_EXPLORER' | translate">
+                    <i data-lucide="file-search" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.LOG_EXPLORER' | translate }}</span>
                 </a>
-                <a routerLink="/admin/organizations" routerLinkActive="active" class="nav-item sub-item"
-                    [title]="'SIDEBAR.GLOBAL_ORGS' | translate">
-                    <i data-lucide="building" size="16"></i>
-                    <span class="nav-text">{{ 'SIDEBAR.GLOBAL_ORGS' | translate }}</span>
-                </a>
-                <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item sub-item" [title]="'SIDEBAR.GLOBAL_LOGS' | translate">
-                    <i data-lucide="file-search" size="16"></i>
-                    <span class="nav-text">{{ 'SIDEBAR.GLOBAL_LOGS' | translate }}</span>
+                <a routerLink="/analytics" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ML_ANALYTICS' | translate">
+                    <i data-lucide="bar-chart-3" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.ML_ANALYTICS' | translate }}</span>
                 </a>
             </div>
 
-        </div>
+            <!-- Management -->
+            <div class="nav-group">
+                <div class="nav-label">{{ 'SIDEBAR.MANAGEMENT' | translate }}</div>
+                <a routerLink="/organizations" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ORGANIZATIONS' | translate">
+                    <i data-lucide="building-2" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.ORGANIZATIONS' | translate }}</span>
+                </a>
+                <ng-container *ngIf="hasActiveOrg">
+                    <a routerLink="/sites" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.APPLICATIONS' | translate">
+                        <i data-lucide="globe" size="18"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.APPLICATIONS' | translate }}</span>
+                    </a>
+                    <a routerLink="/alerts" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ALERT_CENTER' | translate">
+                        <i data-lucide="bell-ring" size="18"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.ALERT_CENTER' | translate }}</span>
+                    </a>
+                    <a routerLink="/team" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.TEAM_ROLES' | translate">
+                        <i data-lucide="users" size="18"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.TEAM_ROLES' | translate }}</span>
+                    </a>
+                </ng-container>
+            </div>
+
+        </ng-container>
+
+        <!-- ═══════════ ADMIN NAVIGATION (ADMIN role only) ═══════════ -->
+        <ng-container *ngIf="isPlatformAdmin">
+
+            <!-- Admin General -->
+            <div class="nav-group">
+                <div class="nav-label">{{ 'SIDEBAR.GENERAL' | translate }}</div>
+                <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ADMIN_DASHBOARD' | translate">
+                    <i data-lucide="layout-dashboard" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.ADMIN_DASHBOARD' | translate }}</span>
+                </a>
+            </div>
+
+            <!-- Platform Admin — collapsible -->
+            <div class="nav-group admin-group">
+
+                <!-- Toggle trigger -->
+                <div class="nav-item admin-toggle" (click)="toggleAdmin($event)" [class.admin-active]="adminExpanded"
+                    [title]="'SIDEBAR.ADMIN_PANEL' | translate">
+                    <i data-lucide="shield-check" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.ADMIN_PANEL' | translate }}</span>
+                    <svg class="chevron nav-text" [class.chevron-open]="adminExpanded" xmlns="http://www.w3.org/2000/svg"
+                        width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <!-- Sub-items (slide in/out) -->
+                <div class="admin-submenu" [class.open]="adminExpanded">
+                    <a routerLink="/admin/users" routerLinkActive="active" class="nav-item sub-item" [title]="'SIDEBAR.GLOBAL_USERS' | translate">
+                        <i data-lucide="users-2" size="16"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.GLOBAL_USERS' | translate }}</span>
+                    </a>
+                    <a routerLink="/admin/organizations" routerLinkActive="active" class="nav-item sub-item"
+                        [title]="'SIDEBAR.GLOBAL_ORGS' | translate">
+                        <i data-lucide="building" size="16"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.GLOBAL_ORGS' | translate }}</span>
+                    </a>
+                    <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item sub-item" [title]="'SIDEBAR.GLOBAL_LOGS' | translate">
+                        <i data-lucide="file-search" size="16"></i>
+                        <span class="nav-text">{{ 'SIDEBAR.GLOBAL_LOGS' | translate }}</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- Shared: Organizations access for admin -->
+            <div class="nav-group">
+                <div class="nav-label">{{ 'SIDEBAR.MANAGEMENT' | translate }}</div>
+                <a routerLink="/organizations" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.ORGANIZATIONS' | translate">
+                    <i data-lucide="building-2" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.ORGANIZATIONS' | translate }}</span>
+                </a>
+            </div>
+
+        </ng-container>
 
     </div><!-- /nav-scroll -->
 

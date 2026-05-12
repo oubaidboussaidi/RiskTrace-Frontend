@@ -2,11 +2,242 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
 }
 
-.dashboard-grid {
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* ── KPI Row ────────────────────────────────────── */
+.kpi-row {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.kpi-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.kpi-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.kpi-icon-wrap {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent-primary);
+}
+
+.kpi-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    margin-top: auto;
+}
+
+.trend-up {
+    color: var(--sev-low);
+    font-weight: 600;
+}
+
+.trend-down {
+    color: var(--sev-critical);
+    font-weight: 600;
+}
+
+.trend-label {
+    color: var(--text-muted);
+}
+
+/* ── Charts Grid ────────────────────────────────── */
+.charts-grid-2 {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
     gap: 24px;
+    margin-bottom: 24px;
+}
+
+.chart-card {
+    min-height: 340px;
+}
+
+.chart-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+/* ── Risky Sites List ──────────────────────────── */
+.risky-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.risky-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background: var(--bg-dark);
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    transition: background 0.15s ease;
+}
+
+.risky-item:hover {
+    background: var(--bg-hover);
+}
+
+.risky-info {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.risky-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.risky-count {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* ── Status badges (re-use pattern) ─────────────── */
+.status-alert {
+    background: rgba(248, 81, 73, 0.12);
+    color: var(--sev-critical);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-warning {
+    background: rgba(210, 153, 34, 0.12);
+    color: var(--sev-medium);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.status-success {
+    background: rgba(63, 185, 80, 0.12);
+    color: var(--sev-low);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* ── Alerts Timeline ──────────────────────────── */
+.alerts-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.alert-item:last-child {
+    border-bottom: none;
+}
+
+.alert-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+}
+
+.alert-dot.status-alert {
+    background: var(--sev-critical);
+    padding: 0;
+}
+
+.alert-dot.status-warning {
+    background: var(--sev-medium);
+    padding: 0;
+}
+
+.alert-dot.status-success {
+    background: var(--sev-low);
+    padding: 0;
+}
+
+.alert-body {
+    flex: 1;
+}
+
+.alert-type {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.alert-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.alert-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    padding: 24px 0;
+}
+
+/* ── Responsive ────────────────────────────────── */
+@media (max-width: 1200px) {
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .charts-grid-2 {
+        grid-template-columns: 1fr;
+    }
 }

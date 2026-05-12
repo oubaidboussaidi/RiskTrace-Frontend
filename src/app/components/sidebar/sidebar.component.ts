@@ -22,6 +22,7 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
   currentUser: any = null;
   incidentCount: number = 0;
   isPlatformAdmin = false;
+  hasActiveOrg = false;
   adminExpanded = false;
   activeOrgName: string = 'Select Org...';
   private userSub?: Subscription;
@@ -58,12 +59,17 @@ export class SidebarComponent implements OnInit, AfterViewInit, OnDestroy {
       this.isPlatformAdmin = this.authService.isPlatformAdmin() || this.authService.isAdmin();
     });
 
-    this.apiService.getActiveAlerts().subscribe(alerts => {
-      this.incidentCount = alerts.length;
-    });
-
     this.orgService.currentOrg$.subscribe(org => {
+      this.hasActiveOrg = !!org;
       this.activeOrgName = org ? org.name : 'Select Org...';
+      
+      if (org) {
+        this.apiService.getActiveAlertsByOrganization(org.id).subscribe(alerts => {
+          this.incidentCount = (alerts || []).length;
+        });
+      } else {
+        this.incidentCount = 0;
+      }
     });
 
     // Auto-expand admin section if on an admin route

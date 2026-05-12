@@ -291,8 +291,16 @@ export class ApiService {
         return this.http.get<any[]>(`${this.apiUrl}/alerts`, { headers: this.getHeaders() });
     }
 
+    getAlertsByOrganization(orgId: string): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/alerts/organization/${orgId}`, { headers: this.getHeaders() });
+    }
+
     getActiveAlerts(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiUrl}/alerts/active`, { headers: this.getHeaders() });
+    }
+
+    getActiveAlertsByOrganization(orgId: string): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiUrl}/alerts/active/${orgId}`, { headers: this.getHeaders() });
     }
 
     updateAlertStatus(alertId: string, status: string): Observable<any> {
