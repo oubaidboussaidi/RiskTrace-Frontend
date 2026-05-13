@@ -98,8 +98,21 @@
                     </td>
                     <td class="text-muted">{{ user.createdAt | date:'mediumDate' }}</td>
                     <td>
-                        <span class="status-badge" [ngClass]="user.enabled ? 'badge-ok' : 'badge-disabled'">
-                            {{ user.enabled ? ('ALERTS_RULES.ENABLED' | translate) : ('ALERTS_RULES.DISABLED' | translate) }}
+                        <!-- Brute-force Locked -->
+                        <span class="status-badge badge-disabled" *ngIf="!user.accountNonLocked">
+                            <i data-lucide="lock" size="12" style="margin-right: 4px;"></i> {{ 'ADMIN_USERS.STATUS_LOCKED' | translate }}
+                        </span>
+                        <!-- Pending Verification -->
+                        <span class="status-badge badge-warning" *ngIf="user.accountNonLocked && !user.emailVerified">
+                            <i data-lucide="mail-warning" size="12" style="margin-right: 4px;"></i> {{ 'ADMIN_USERS.STATUS_PENDING' | translate }}
+                        </span>
+                        <!-- Admin Disabled -->
+                        <span class="status-badge badge-disabled" *ngIf="user.accountNonLocked && user.emailVerified && !user.enabled">
+                            <i data-lucide="user-x" size="12" style="margin-right: 4px;"></i> {{ 'ADMIN_USERS.STATUS_DISABLED' | translate }}
+                        </span>
+                        <!-- Active -->
+                        <span class="status-badge badge-ok" *ngIf="user.accountNonLocked && user.emailVerified && user.enabled">
+                            <i data-lucide="user-check" size="12" style="margin-right: 4px;"></i> {{ 'ADMIN_USERS.STATUS_ACTIVE' | translate }}
                         </span>
                     </td>
                     <td>
