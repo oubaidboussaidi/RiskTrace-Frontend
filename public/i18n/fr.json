@@ -154,7 +154,14 @@
   "ERR_ORG_NAME_EXISTS": "Une organisation avec ce nom existe déjà.",
   "CONFIRM_ORG_CREATE": "Êtes-vous sûr de vouloir créer l'organisation \"{{name}}\" ?",
   "CONFIRM_ORG_UPDATE": "Êtes-vous sûr de vouloir renommer cette organisation en \"{{name}}\" ?",
-  "ERR_SITE_NAME_EMPTY": "Le nom de l'application est requis.",
+  "ERR_EMAIL_FORMAT": "Format d'e-mail invalide.",
+  "ERR_NAME_TOO_SHORT": "Le nom doit comporter au moins 2 caractères.",
+  "ERR_PASSWORD_WEAK": "Le mot de passe doit comporter au moins 8 caractères, une lettre et un chiffre.",
+  "ERR_ORG_NAME_TOO_SHORT": "Le nom de l'organisation doit comporter au moins 2 caractères.",
+  "ERR_ORG_NAME_TOO_LONG": "Le nom de l'organisation ne peut pas dépasser 60 caractères.",
+  "ERR_DOMAIN_FORMAT": "Le format du domaine est invalide (ex. store.example.com).",
+  "ERR_ACCOUNT_BANNED": "Votre compte a été désactivé par un administrateur.",
+  "ERR_SITE_NAME_EMPTY": "Le nom du site est requis.",
   "ERR_SITE_DOMAIN_EMPTY": "Le domaine / l'URL est requis.",
   "CONFIRM_SITE_CREATE": "Êtes-vous sûr de vouloir ajouter \"{{name}}\" ({{domain}}) ?",
   "INCIDENTS": {
@@ -193,6 +200,16 @@
       "DESC_PLACEHOLDER": "Décrivez l'incident...",
       "TARGET_PATH": "Chemin Cible (Optionnel)",
       "SITE": "Site"
+    },
+    "ESCALATE": {
+      "TITLE": "Escalader au Propriétaire de l'Org",
+      "SUCCESS_TITLE": "Escalade Envoyée",
+      "SUCCESS_DESC": "Le propriétaire de l'organisation a été notifié.",
+      "MESSAGE_LABEL": "Message pour le propriétaire",
+      "OPTIONAL": "Optionnel",
+      "PLACEHOLDER": "Ex. : Veuillez enquêter sur ces endpoints immédiatement...",
+      "BUTTON": "Envoyer l'escalade",
+      "NOTIFY_OWNER": "Avertir Propriétaire"
     },
     "TYPES": {
       "ANOMALY_DETECTED": "Anomalie Détectée",
@@ -268,7 +285,8 @@
       "ANOMALY_RATE": "Taux d'Anomalies",
       "CRITICAL": "Menaces Critiques",
       "MODEL_STATUS": "Statut du Modèle",
-      "ONLINE_ISOLATION_FOREST": "En ligne (Isolation Forest)"
+      "ONLINE_ISOLATION_FOREST": "En ligne (Isolation Forest)",
+      "OFFLINE": "Hors ligne"
     },
     "CHART": {
       "SCORE_DIST": "Distribution des Scores",
@@ -453,7 +471,17 @@
       "STEP2_DESC": "Le tracker capture automatiquement les chargements de page, les requêtes API, etc.",
       "STEP3_TITLE": "Regardez les logs apparaître en temps réel",
       "STEP3_DESC": "Allez dans l'Explorateur de Logs de votre tableau de bord.",
-      "COPY_SNIPPET": "Copier le Snippet du Tracker"
+      "COPY_SNIPPET": "Copier le Snippet"
+    },
+    "INTEGRATION": {
+      "TITLE": "Choisissez votre Plateforme",
+      "DESC_FRONTEND": "Placez cette balise script dans le <head> de votre HTML. Elle capture automatiquement les chargements de page, les appels API et les erreurs JS.",
+      "DESC_NODEJS": "Ajoutez ce middleware à votre app Express.js ou Next.js. Il intercepte toutes les requêtes backend et signale les erreurs 4xx/5xx.",
+      "DESC_SPRING": "Copiez cette classe dans votre projet Spring Boot (n'importe quel package). L'annotation @Component l'enregistre automatiquement.",
+      "DESC_CSHARP": "Ajoutez ce middleware à votre pipeline ASP.NET Core dans Program.cs via app.UseMiddleware<RiskTraceMiddleware>().",
+      "DESC_PYTHON": "Ajoutez ce middleware à votre application FastAPI ou Django. Il capture toutes les erreurs HTTP de votre serveur.",
+      "DESC_PHP": "Enregistrez ce middleware dans votre Kernel.php Laravel. Il capture les erreurs 4xx/5xx de votre backend Laravel.",
+      "NOTE": "Ce snippet capture les attaques côté serveur (scan de chemins, brute force) invisibles depuis le navigateur."
     },
     "ALERTS": {
       "NO_ORG": "Aucune organisation sélectionnée.",
@@ -493,6 +521,10 @@
     "FILTER_OWNERS": "Propriétaires d'Org",
     "FILTER_NON_OWNERS": "Non-Propriétaires",
     "REFRESH": "Actualiser",
+    "STATUS_LOCKED": "Verrouillé",
+    "STATUS_PENDING": "E-mail en attente",
+    "STATUS_DISABLED": "Désactivé",
+    "STATUS_ACTIVE": "Actif",
     "TABLE": {
       "USER": "Utilisateur",
       "EMAIL": "Email",
@@ -545,7 +577,9 @@
     "SIGNIN_BTN": "Se connecter à RiskTrace",
     "FAILED": "Vérification Échouée",
     "RESEND_DESC": "Entrez votre email pour recevoir un nouveau lien de vérification :",
-    "RESEND_BTN": "Renvoyer l'Email de Vérification"
+    "RESEND_BTN": "Renvoyer l'Email de Vérification",
+    "INVALID_TOKEN": "Le lien de vérification est invalide ou a expiré.",
+    "GENERIC_ERROR": "Une erreur s'est produite lors de la vérification. Veuillez réessayer."
   },
   "ADMIN_LOGS": {
     "TITLE": "Logs de Sécurité de la Plateforme",
