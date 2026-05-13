@@ -154,7 +154,14 @@
   "ERR_ORG_NAME_EXISTS": "An organization with this name already exists.",
   "CONFIRM_ORG_CREATE": "Are you sure you want to create the organization \"{{name}}\"?",
   "CONFIRM_ORG_UPDATE": "Are you sure you want to rename this organization to \"{{name}}\"?",
-  "ERR_SITE_NAME_EMPTY": "Application name is required.",
+  "ERR_EMAIL_FORMAT": "Invalid email format.",
+  "ERR_NAME_TOO_SHORT": "Name must be at least 2 characters.",
+  "ERR_PASSWORD_WEAK": "Password must be at least 8 characters, with a letter and a number.",
+  "ERR_ORG_NAME_TOO_SHORT": "Organization name must be at least 2 characters.",
+  "ERR_ORG_NAME_TOO_LONG": "Organization name cannot exceed 60 characters.",
+  "ERR_DOMAIN_FORMAT": "Domain format is invalid (e.g. store.example.com).",
+  "ERR_ACCOUNT_BANNED": "Your account has been disabled by an administrator.",
+  "ERR_SITE_NAME_EMPTY": "Site name is required.",
   "ERR_SITE_DOMAIN_EMPTY": "Domain / URL is required.",
   "CONFIRM_SITE_CREATE": "Are you sure you want to add \"{{name}}\" ({{domain}})?",
   "INCIDENTS": {
@@ -193,6 +200,16 @@
       "DESC_PLACEHOLDER": "Describe the incident...",
       "TARGET_PATH": "Target Path (Optional)",
       "SITE": "Site"
+    },
+    "ESCALATE": {
+      "TITLE": "Escalate to Org Owner",
+      "SUCCESS_TITLE": "Escalation Sent",
+      "SUCCESS_DESC": "The organization owner has been notified.",
+      "MESSAGE_LABEL": "Message to Owner",
+      "OPTIONAL": "Optional",
+      "PLACEHOLDER": "E.g., Please investigate these endpoints immediately...",
+      "BUTTON": "Send Escalation",
+      "NOTIFY_OWNER": "Notify Owner"
     },
     "TYPES": {
       "ANOMALY_DETECTED": "Anomaly Detected",
@@ -273,7 +290,8 @@
       "ANOMALY_RATE": "Anomaly Rate",
       "CRITICAL": "Critical Threats",
       "MODEL_STATUS": "Model Status",
-      "ONLINE_ISOLATION_FOREST": "Online (Isolation Forest)"
+      "ONLINE_ISOLATION_FOREST": "Online (Isolation Forest)",
+      "OFFLINE": "Offline"
     },
     "CHART": {
       "SCORE_DIST": "Score Distribution",
@@ -458,7 +476,17 @@
       "STEP2_DESC": "The tracker automatically captures page loads, API requests, etc.",
       "STEP3_TITLE": "Watch logs appear in real-time",
       "STEP3_DESC": "Go to Log Explorer in your dashboard.",
-      "COPY_SNIPPET": "Copy Tracker Snippet"
+      "COPY_SNIPPET": "Copy Snippet"
+    },
+    "INTEGRATION": {
+      "TITLE": "Choose your Platform",
+      "DESC_FRONTEND": "Place this script tag in the <head> of your HTML. It automatically tracks page loads, API calls, and JS errors.",
+      "DESC_NODEJS": "Add this middleware to your Express.js or Next.js app. It intercepts all backend requests and reports 4xx/5xx errors.",
+      "DESC_SPRING": "Copy this class into your Spring Boot project (any package). The @Component annotation registers it automatically.",
+      "DESC_CSHARP": "Add this middleware to your ASP.NET Core pipeline in Program.cs using app.UseMiddleware<RiskTraceMiddleware>().",
+      "DESC_PYTHON": "Add this middleware to your FastAPI or Django application. It captures all HTTP errors from your server.",
+      "DESC_PHP": "Register this middleware in your Laravel Kernel.php. It captures 4xx/5xx errors from your Laravel backend.",
+      "NOTE": "This snippet captures backend-side attacks (path scanning, brute force) invisible to the browser tracker."
     },
     "ALERTS": {
       "NO_ORG": "No organization selected.",
@@ -497,6 +525,10 @@
     "FILTER_OWNERS": "Org Owners",
     "FILTER_NON_OWNERS": "Non-Owners",
     "REFRESH": "Refresh",
+    "STATUS_LOCKED": "Locked",
+    "STATUS_PENDING": "Pending Email",
+    "STATUS_DISABLED": "Disabled",
+    "STATUS_ACTIVE": "Active",
     "TABLE": {
       "USER": "User",
       "EMAIL": "Email",
@@ -549,7 +581,9 @@
     "SIGNIN_BTN": "Sign In to RiskTrace",
     "FAILED": "Verification Failed",
     "RESEND_DESC": "Enter your email to receive a new verification link:",
-    "RESEND_BTN": "Resend Verification Email"
+    "RESEND_BTN": "Resend Verification Email",
+    "INVALID_TOKEN": "The verification link is invalid or has expired.",
+    "GENERIC_ERROR": "An error occurred during verification. Please try again."
   },
   "ADMIN_LOGS": {
     "TITLE": "Platform Security Logs",
