@@ -24,19 +24,17 @@
         <!-- ═══════════ ANALYST NAVIGATION ═══════════ -->
         <ng-container *ngIf="!isAdminView">
             <!-- General -->
-            <div class="nav-group">
+            <div class="nav-group" *ngIf="hasActiveOrg">
                 <div class="nav-label">{{ 'SIDEBAR.GENERAL' | translate }}</div>
-                <ng-container *ngIf="hasActiveOrg">
-                    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.OVERVIEW' | translate">
-                        <i data-lucide="layout-dashboard" size="18"></i>
-                        <span class="nav-text">{{ 'SIDEBAR.OVERVIEW' | translate }}</span>
-                    </a>
-                    <a routerLink="/incidents" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.INCIDENTS' | translate">
-                        <i data-lucide="shield-alert" size="18"></i>
-                        <span class="nav-text">{{ 'SIDEBAR.INCIDENTS' | translate }}</span>
-                        <span class="incident-badge" *ngIf="incidentCount > 0">{{incidentCount}}</span>
-                    </a>
-                </ng-container>
+                <a routerLink="/dashboard" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.OVERVIEW' | translate">
+                    <i data-lucide="layout-dashboard" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.OVERVIEW' | translate }}</span>
+                </a>
+                <a routerLink="/incidents" routerLinkActive="active" class="nav-item" [title]="'SIDEBAR.INCIDENTS' | translate">
+                    <i data-lucide="shield-alert" size="18"></i>
+                    <span class="nav-text">{{ 'SIDEBAR.INCIDENTS' | translate }}</span>
+                    <span class="incident-badge" *ngIf="incidentCount > 0">{{incidentCount}}</span>
+                </a>
             </div>
 
             <!-- Investigation -->
