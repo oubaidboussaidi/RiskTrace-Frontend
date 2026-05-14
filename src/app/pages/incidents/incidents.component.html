@@ -160,7 +160,7 @@
     </div>
     <div class="bulk-actions">
         <button class="btn-bulk" style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.2); color: #58a6ff;" (click)="openEscalateModal()" [disabled]="isExecutingBulk">
-            <i data-lucide="send" size="16"></i> Notify Owner
+            <i data-lucide="send" size="16"></i> {{ 'INCIDENTS.ESCALATE.NOTIFY_OWNER' | translate }}
         </button>
         <button class="btn-bulk btn-ignore" (click)="bulkUpdateStatus('IGNORED')" [disabled]="isExecutingBulk">
             <i data-lucide="eye-off" size="16"></i> {{ 'INCIDENTS.IGNORE' | translate }}
@@ -179,7 +179,7 @@
         <div class="modal-header">
             <div class="modal-title-group">
                 <i data-lucide="send" size="18"></i>
-                <h2 id="escalate-modal-title">Escalate to Org Owner</h2>
+                <h2 id="escalate-modal-title">{{ 'INCIDENTS.ESCALATE.TITLE' | translate }}</h2>
             </div>
             <button class="btn-icon" (click)="closeEscalateModal()" [disabled]="escalateSubmitting" title="{{ 'COMMON.CLOSE' | translate }}">
                 <i data-lucide="x" size="16"></i>
@@ -189,20 +189,20 @@
         <!-- Success state -->
         <div class="modal-success-state" *ngIf="escalateSuccess">
             <i data-lucide="check-circle" size="44"></i>
-            <p class="success-title">Escalation Sent</p>
-            <p class="success-sub">The organization owner has been notified.</p>
+            <p class="success-title">{{ 'INCIDENTS.ESCALATE.SUCCESS_TITLE' | translate }}</p>
+            <p class="success-sub">{{ 'INCIDENTS.ESCALATE.SUCCESS_DESC' | translate }}</p>
         </div>
 
         <!-- Form -->
         <div class="modal-body" *ngIf="!escalateSuccess">
             <div class="form-group">
                 <label class="form-label">
-                    Message to Owner <span class="form-label-optional">Optional</span>
+                    {{ 'INCIDENTS.ESCALATE.MESSAGE_LABEL' | translate }} <span class="form-label-optional">{{ 'INCIDENTS.ESCALATE.OPTIONAL' | translate }}</span>
                 </label>
                 <textarea [(ngModel)]="escalateMessage"
                           rows="5"
                           class="modal-textarea"
-                          placeholder="E.g., Please investigate these endpoints immediately..."></textarea>
+                          [placeholder]="'INCIDENTS.ESCALATE.PLACEHOLDER' | translate"></textarea>
             </div>
 
             <!-- Error message -->
@@ -220,7 +220,7 @@
             <button class="modal-btn modal-btn-submit" (click)="submitEscalation()" [disabled]="escalateSubmitting">
                 <i data-lucide="loader-circle" size="15" *ngIf="escalateSubmitting" class="icon-spin"></i>
                 <i data-lucide="send" size="15" *ngIf="!escalateSubmitting"></i>
-                {{ escalateSubmitting ? ('COMMON.LOADING' | translate) : 'Send Escalation' }}
+                {{ escalateSubmitting ? ('COMMON.LOADING' | translate) : ('INCIDENTS.ESCALATE.BUTTON' | translate) }}
             </button>
         </div>
 
