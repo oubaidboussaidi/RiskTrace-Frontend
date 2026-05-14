@@ -35,10 +35,12 @@
             </div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-icon green"><i data-lucide="cpu"></i></div>
+            <div class="kpi-icon" [ngClass]="isMlOnline ? 'green' : 'red'"><i data-lucide="cpu"></i></div>
             <div class="kpi-data">
                 <div class="kpi-label">{{ 'ANALYTICS.KPI.MODEL_STATUS' | translate }}</div>
-                <div class="kpi-value" style="font-size: 13px; padding-top: 4px;">{{ kpis.status | translate }}</div>
+                <div class="kpi-value" style="font-size: 13.5px; padding-top: 4px; font-weight: 600;">
+                    {{ (isMlOnline ? 'ANALYTICS.KPI.ONLINE_ISOLATION_FOREST' : 'ANALYTICS.KPI.OFFLINE') | translate }}
+                </div>
             </div>
         </div>
     </div>
