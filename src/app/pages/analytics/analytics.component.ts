@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { OrganizationService } from '../../services/organization.service';
@@ -18,12 +18,13 @@ declare var ApexCharts: any;
 export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   private orgSub?: Subscription;
   private charts: any[] = [];
+  private mlPollInterval?: any;
+  isMlOnline = false;
 
   kpis = {
     analyzed: 0,
     anomalyRate: '0%',
-    criticalThreats: 0,
-    status: 'ANALYTICS.KPI.ONLINE_ISOLATION_FOREST'
+    criticalThreats: 0
   };
 
   // Confusion matrix — built from analyst resolutions on alerts
@@ -42,13 +43,17 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private orgService: OrganizationService
+    private orgService: OrganizationService,
+    private cdr: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
     this.orgSub = this.orgService.currentOrg$.subscribe(org => {
       if (org) this.loadMlData(org.id);
     });
+
+    this.checkMlStatus();
+    this.mlPollInterval = setInterval(() => this.checkMlStatus(), 5000);
   }
 
   ngAfterViewInit() {
@@ -57,7 +62,25 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.orgSub?.unsubscribe();
+    if (this.mlPollInterval) {
+      clearInterval(this.mlPollInterval);
+    }
     this.charts.forEach(c => { try { c.destroy(); } catch (e) {} });
+  }
+
+  checkMlStatus() {
+    this.apiService.getMlStatus().subscribe({
+      next: (res) => {
+        const changed = this.isMlOnline !== res.online;
+        this.isMlOnline = res.online;
+        if (changed) this.cdr.detectChanges();
+      },
+      error: () => {
+        const changed = this.isMlOnline !== false;
+        this.isMlOnline = false;
+        if (changed) this.cdr.detectChanges();
+      }
+    });
   }
 
   // ─────────────────────────────────────────────────────────
@@ -105,10 +128,10 @@ export class AnalyticsComponent implements OnInit, AfterViewInit, OnDestroy {
   // to prove the model's historical reliability to stakeholders/auditors.
   private buildConfusionMatrix(logs: any[], alerts: any[]) {
     // Static offline validation results (e.g., from Python train.py)
-    const tp = 1452;
-    const fp = 118;
-    const fn = 45;
-    const tn = 48200;
+    const tp = 1337;
+    const fp = 609;
+    const fn = 552;
+    const tn = 10093;
 
     const precision = (tp / (tp + fp)) * 100;
     const recall    = (tp / (tp + fn)) * 100;
