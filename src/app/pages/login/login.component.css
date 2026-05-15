@@ -6,3 +6,71 @@
 :host-context([data-theme='light']) .app-logo {
     filter: none;
 }
+
+/* ── Auth page top-right preference controls ── */
+.auth-controls {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 6px 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+
+.auth-ctrl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.auth-ctrl-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.auth-ctrl-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-color);
+    flex-shrink: 0;
+}
+
+.auth-lang-switch {
+    display: flex;
+    gap: 2px;
+}
+
+.auth-lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+}
+
+.auth-lang-btn:hover {
+    color: var(--text-primary);
+}
+
+.auth-lang-btn.active {
+    background: var(--accent-primary);
+    color: #fff;
+}
