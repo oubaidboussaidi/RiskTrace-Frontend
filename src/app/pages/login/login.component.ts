@@ -5,6 +5,8 @@ import { ApiService } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../../services/theme.service';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-login',
@@ -38,8 +40,14 @@ export class LoginComponent {
     private route: ActivatedRoute,
     private authService: AuthService,
     private apiService: ApiService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public themeService: ThemeService,
+    public languageService: LanguageService
   ) { }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
+  }
 
   toggleMode() {
     this.isRegisterMode = !this.isRegisterMode;
@@ -71,9 +79,34 @@ export class LoginComponent {
     this.showConfirmPassword = false;
   }
 
+  get pwHasLength(): boolean {
+    return this.password.length >= 8;
+  }
+
+  get pwHasLetter(): boolean {
+    return /[a-zA-Z]/.test(this.password);
+  }
+
+  get pwHasNumber(): boolean {
+    return /\d/.test(this.password);
+  }
+
+  get isStrongPassword(): boolean {
+    return this.pwHasLength && this.pwHasLetter && this.pwHasNumber;
+  }
+
+  isValidEmail(email: string): boolean {
+    return /.+@.+\..+/.test(email);
+  }
+
   login() {
     if (!this.email || !this.password) {
       this.error = 'ERR_FILL_ALL';
+      return;
+    }
+    
+    if (!this.isValidEmail(this.email)) {
+      this.error = 'ERR_EMAIL_FORMAT';
       return;
     }
 
@@ -103,6 +136,8 @@ export class LoginComponent {
         } else if (code === 'ACCOUNT_LOCKED') {
           this.isLockedMode = true;
           this.error = err.error?.error || 'ERR_LOCKED';
+        } else if (code === 'ACCOUNT_BANNED') {
+          this.error = 'ERR_ACCOUNT_BANNED';
         } else {
           this.error = err.error?.error || 'ERR_INVALID_CREDENTIALS';
         }
@@ -137,13 +172,23 @@ export class LoginComponent {
       return;
     }
 
+    if (this.name.trim().length < 2) {
+      this.error = 'ERR_NAME_TOO_SHORT';
+      return;
+    }
+
+    if (!this.isValidEmail(this.email)) {
+      this.error = 'ERR_EMAIL_FORMAT';
+      return;
+    }
+
     if (this.password !== this.confirmPassword) {
       this.error = 'ERR_MISMATCH';
       return;
     }
 
-    if (this.password.length < 8) {
-      this.error = 'ERR_PASSWORD_SHORT';
+    if (!this.isStrongPassword) {
+      this.error = 'ERR_PASSWORD_WEAK';
       return;
     }
 
@@ -179,13 +224,18 @@ export class LoginComponent {
       return;
     }
 
+    if (!this.isValidEmail(this.email)) {
+      this.error = 'ERR_EMAIL_FORMAT';
+      return;
+    }
+
     this.error = '';
     this.loading = true;
 
     this.apiService.forgotPassword(this.email).subscribe({
       next: (res) => {
         this.loading = false;
-        this.successMessage = '📧 ' + res.message;
+        this.successMessage = res.message;
       },
       error: () => {
         this.loading = false;
@@ -200,7 +250,7 @@ export class LoginComponent {
       next: (res) => {
         this.loading = false;
         this.showResendButton = false;
-        this.successMessage = '📧 ' + res.message;
+        this.successMessage = res.message;
         this.error = '';
       },
       error: () => {
