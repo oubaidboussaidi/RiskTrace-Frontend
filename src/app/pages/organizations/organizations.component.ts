@@ -86,6 +86,14 @@ export class OrganizationsComponent implements OnInit, AfterViewInit {
             alert(this.translate.instant('ERR_ORG_NAME_EMPTY'));
             return;
         }
+        if (name.length < 2) {
+            alert(this.translate.instant('ERR_ORG_NAME_TOO_SHORT'));
+            return;
+        }
+        if (name.length > 60) {
+            alert(this.translate.instant('ERR_ORG_NAME_TOO_LONG'));
+            return;
+        }
 
         const exists = this.organizations.some(o => o.name.toLowerCase() === name.toLowerCase() && o.id !== this.editingOrgId);
         if (exists) {
