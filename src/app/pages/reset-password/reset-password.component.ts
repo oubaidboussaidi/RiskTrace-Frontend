@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { ThemeService } from '../../services/theme.service';
+import { LanguageService } from '../../services/language.service';
 
 type ResetState = 'form' | 'loading' | 'success' | 'error';
 
@@ -27,39 +29,40 @@ export class ResetPasswordComponent implements OnInit {
     showPassword = false;
     showConfirmPassword = false;
 
-    // Password strength
-    get passwordStrength(): number {
-        if (!this.newPassword) return 0;
-        let score = 0;
-        if (this.newPassword.length >= 8) score++;
-        if (/[A-Z]/.test(this.newPassword)) score++;
-        if (/[0-9]/.test(this.newPassword)) score++;
-        if (/[^A-Za-z0-9]/.test(this.newPassword)) score++;
-        return score;
+    get pwHasLength(): boolean {
+        return this.newPassword.length >= 8;
     }
 
-    get strengthLabel(): string {
-        const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
-        return labels[this.passwordStrength];
+    get pwHasLetter(): boolean {
+        return /[a-zA-Z]/.test(this.newPassword);
     }
 
-    get strengthColor(): string {
-        const colors = ['', '#ef4444', '#f59e0b', '#22c55e', '#10b981'];
-        return colors[this.passwordStrength];
+    get pwHasNumber(): boolean {
+        return /\d/.test(this.newPassword);
+    }
+
+    get isStrongPassword(): boolean {
+        return this.pwHasLength && this.pwHasLetter && this.pwHasNumber;
     }
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private apiService: ApiService
+        private apiService: ApiService,
+        public themeService: ThemeService,
+        public languageService: LanguageService
     ) { }
+
+    toggleTheme() {
+        this.themeService.toggleTheme();
+    }
 
     ngOnInit() {
         const token = this.route.snapshot.queryParamMap.get('token');
         if (!token) {
             this.state = 'error';
             this.isTokenError = true;
-            this.error = 'No reset token found. Please request a new password reset link.';
+            this.error = 'RESET_PW.EXPIRED';
         } else {
             this.token = token;
         }
@@ -69,17 +72,17 @@ export class ResetPasswordComponent implements OnInit {
         this.error = '';
 
         if (!this.newPassword || !this.confirmPassword) {
-            this.error = 'Please fill in all fields';
+            this.error = 'ERR_FILL_ALL';
             return;
         }
 
         if (this.newPassword !== this.confirmPassword) {
-            this.error = 'Passwords do not match';
+            this.error = 'ERR_MISMATCH';
             return;
         }
 
-        if (this.newPassword.length < 8) {
-            this.error = 'Password must be at least 8 characters';
+        if (!this.isStrongPassword) {
+            this.error = 'ERR_PASSWORD_WEAK';
             return;
         }
 
@@ -93,7 +96,11 @@ export class ResetPasswordComponent implements OnInit {
             error: (err) => {
                 this.state = 'error';
                 this.isTokenError = err.error?.code === 'INVALID_TOKEN';
-                this.error = err.error?.error || 'Failed to reset password. The link may be invalid or expired.';
+                if (this.isTokenError) {
+                    this.error = 'RESET_PW.EXPIRED';
+                } else {
+                    this.error = 'COMMON.ERRORS.GENERIC';
+                }
             }
         });
     }
