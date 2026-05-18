@@ -72,6 +72,11 @@ export class SettingsComponent implements OnInit, AfterViewInit {
   }
 
   saveProfile() {
+    if (this.fullName.trim().length < 2) {
+      alert(this.translate.instant('ERR_NAME_TOO_SHORT'));
+      return;
+    }
+
     this.apiService.updateFullName({
       fullName: this.fullName
     }).subscribe({
@@ -107,7 +112,17 @@ export class SettingsComponent implements OnInit, AfterViewInit {
     this.showPasswordForm = !this.showPasswordForm;
   }
 
+  get pwHasLength(): boolean { return this.passwordData.newPassword.length >= 8; }
+  get pwHasLetter(): boolean { return /[a-zA-Z]/.test(this.passwordData.newPassword); }
+  get pwHasNumber(): boolean { return /\d/.test(this.passwordData.newPassword); }
+  get isStrongPassword(): boolean { return this.pwHasLength && this.pwHasLetter && this.pwHasNumber; }
+
   changePassword() {
+    if (!this.isStrongPassword) {
+      alert(this.translate.instant('ERR_PASSWORD_WEAK'));
+      return;
+    }
+
     if (this.passwordData.newPassword !== this.passwordData.confirmPassword) {
       alert(this.translate.instant('SETTINGS.ALERTS.PW_MISMATCH'));
       return;
