@@ -6,3 +6,141 @@
 :host-context([data-theme='light']) .app-logo {
     filter: none;
 }
+
+.auth-controls {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    padding: 6px 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    z-index: 10;
+}
+
+.auth-ctrl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+}
+
+.auth-ctrl-btn:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+}
+
+.auth-ctrl-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border-color);
+    flex-shrink: 0;
+}
+
+.auth-lang-switch {
+    display: flex;
+    gap: 2px;
+}
+
+.auth-lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+}
+
+.auth-lang-btn:hover {
+    color: var(--text-primary);
+}
+
+.auth-lang-btn.active {
+    background: var(--accent-primary);
+    color: #fff;
+}
+
+/* ── Professional alert cards for status states (Enterprise layout) ── */
+.auth-alert-card {
+    text-align: center;
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.auth-alert-card.error {
+    background: rgba(248, 81, 73, 0.04);
+    border: 1px solid rgba(248, 81, 73, 0.18);
+}
+
+:host-context([data-theme='light']) .auth-alert-card.error {
+    background: rgba(207, 34, 46, 0.03);
+    border-color: rgba(207, 34, 46, 0.15);
+}
+
+.auth-alert-card.success {
+    background: rgba(63, 185, 80, 0.04);
+    border: 1px solid rgba(63, 185, 80, 0.18);
+}
+
+:host-context([data-theme='light']) .auth-alert-card.success {
+    background: rgba(26, 127, 55, 0.03);
+    border-color: rgba(26, 127, 55, 0.15);
+}
+
+.auth-alert-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.auth-alert-card.error .auth-alert-header {
+    color: var(--sev-critical);
+}
+
+.auth-alert-card.success .auth-alert-header {
+    color: var(--sev-low);
+}
+
+.auth-alert-title {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+}
+
+.auth-alert-desc {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 0;
+}
+
+.spinner-svg {
+    animation: spin-anim 1s linear infinite;
+}
+
+@keyframes spin-anim {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
