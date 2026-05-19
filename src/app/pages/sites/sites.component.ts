@@ -10,6 +10,8 @@ declare var lucide: any;
 
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
+import { INTEGRATION_TABS, getSnippet } from '../../data/integration-snippets';
+
 @Component({
   selector: 'app-sites',
   standalone: true,
@@ -30,6 +32,7 @@ export class SitesComponent implements OnInit, AfterViewInit {
   selectedSite: any = null;
   copiedSiteId: string | null = null;
   currentOrgId: string | null = null;
+  activeTab: string = 'frontend';
 
   newSite = {
     siteName: '',
@@ -38,6 +41,8 @@ export class SitesComponent implements OnInit, AfterViewInit {
 
   // The log collect endpoint — tracker.js sends logs here
   readonly logEndpoint = environment.apiUrl.replace('/api', '') + '/api/logs/collect';
+
+  readonly tabs = INTEGRATION_TABS;
 
   constructor(
     private apiService: ApiService,
@@ -117,7 +122,7 @@ export class SitesComponent implements OnInit, AfterViewInit {
       alert(this.translate.instant('SITES.ALERTS.NO_ORG'));
       return;
     }
-    
+
     if (!this.newSite.siteName || !this.newSite.siteName.trim()) {
       alert(this.translate.instant('ERR_SITE_NAME_EMPTY'));
       return;
@@ -128,7 +133,8 @@ export class SitesComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if (!confirm(this.translate.instant('CONFIRM_SITE_CREATE', { name: this.newSite.siteName, domain: this.newSite.domain }))) {
+    if (!this.newSite.domain.includes('.') || this.newSite.domain.includes(' ')) {
+      alert(this.translate.instant('ERR_DOMAIN_FORMAT'));
       return;
     }
 
@@ -163,22 +169,47 @@ export class SitesComponent implements OnInit, AfterViewInit {
   /** Opens the "How to Integrate" modal for a specific site (shows personalised script) */
   showIntegration(site: any) {
     this.selectedSite = site;
+    this.activeTab = 'frontend';
     this.showHelp = true;
+    setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
   }
 
   /** Opens the generic help modal (no specific site chosen) */
   openHelp() {
     this.selectedSite = null;
+    this.activeTab = 'frontend';
     this.showHelp = true;
+    setTimeout(() => { if (typeof lucide !== 'undefined') lucide.createIcons(); }, 100);
+  }
+
+  /** Returns the plain-text snippet for the currently active tab */
+  getSnippet(apiKey: string): string {
+    return getSnippet(this.activeTab, apiKey, this.logEndpoint);
+  }
+
+  get currentTabDesc(): string {
+    return this.tabs.find(t => t.id === this.activeTab)?.descKey ?? '';
+  }
+
+  get currentSnippet(): string {
+    const key = this.selectedSite?.apiKey || 'YOUR_API_KEY';
+    return this.getSnippet(key);
   }
 
   copyScript(site?: any) {
-    const apiKey = site?.apiKey || this.selectedSite?.apiKey || 'YOUR_API_KEY';
-    const tag = `<script src="http://localhost:8084/tracker.js" data-api-key="${apiKey}"></script>`;
-    navigator.clipboard.writeText(tag).then(() => {
-      this.copiedSiteId = site?.id || null;
+    const snippet = this.getSnippet(site?.apiKey || this.selectedSite?.apiKey || 'YOUR_API_KEY');
+    navigator.clipboard.writeText(snippet).then(() => {
+      this.copiedSiteId = site?.id || '__copied__';
       setTimeout(() => this.copiedSiteId = null, 2000);
-      if (!site) this.showHelp = false;
+    }).catch(() => {
+      const el = document.createElement('textarea');
+      el.value = snippet;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.copiedSiteId = site?.id || '__copied__';
+      setTimeout(() => this.copiedSiteId = null, 2000);
     });
   }
 
@@ -222,6 +253,4 @@ export class SitesComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
-  // Removed buildTrackerScript since script is hosted remotely on the backend.
 }
