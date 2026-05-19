@@ -98,7 +98,7 @@
 
 <!-- ── How to Integrate Modal ── -->
 <div class="modal-overlay" *ngIf="showHelp" (click)="showHelp = false">
-    <div class="modal-content" style="max-width: 640px;" (click)="$event.stopPropagation()">
+    <div class="modal-content integration-modal" (click)="$event.stopPropagation()">
 
         <div class="modal-header">
             <span class="modal-title">
@@ -109,46 +109,35 @@
             </button>
         </div>
 
-        <!-- Step 1: embed tag -->
-        <div class="step" style="margin-bottom: 24px;">
-            <div class="step-number">1</div>
-            <div class="step-content">
-                <h3>{{ 'SITES.MODAL_HELP.STEP1_TITLE' | translate }}</h3>
-                <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 8px;">
-                    {{ 'SITES.MODAL_HELP.STEP1_DESC' | translate }}
-                </p>
-                <div class="code-block">
-                    <code *ngIf="selectedSite">&lt;script src="http://localhost:8084/tracker.js"
-       data-api-key="<strong style="color:#f0883e;">{{selectedSite.apiKey}}</strong>"&gt;&lt;/script&gt;</code>
-                    <code *ngIf="!selectedSite">&lt;script src="http://localhost:8084/tracker.js"
-       data-api-key="YOUR_API_KEY"&gt;&lt;/script&gt;</code>
-                </div>
-            </div>
+        <!-- Platform Tab Bar -->
+        <div class="tab-bar">
+            <button
+                *ngFor="let tab of tabs"
+                class="tab-btn"
+                [class.active]="activeTab === tab.id"
+                (click)="activeTab = tab.id">
+                {{ tab.label }}
+            </button>
         </div>
 
-        <div class="step" style="margin-bottom: 24px;">
-            <div class="step-number">2</div>
-            <div class="step-content">
-                <h3>{{ 'SITES.MODAL_HELP.STEP2_TITLE' | translate }}</h3>
-                <p style="color: var(--text-secondary); font-size: 13px;">
-                    {{ 'SITES.MODAL_HELP.STEP2_DESC' | translate }}
-                </p>
-            </div>
+        <!-- Description -->
+        <p class="tab-desc">{{ currentTabDesc | translate }}</p>
+
+        <!-- Code Block -->
+        <div class="code-block integration-code">
+            <pre><code>{{ currentSnippet }}</code></pre>
         </div>
 
-        <div class="step" style="margin-bottom: 28px;">
-            <div class="step-number">3</div>
-            <div class="step-content">
-                <h3>{{ 'SITES.MODAL_HELP.STEP3_TITLE' | translate }}</h3>
-                <p style="color: var(--text-secondary); font-size: 13px;">
-                    {{ 'SITES.MODAL_HELP.STEP3_DESC' | translate }}
-                </p>
-            </div>
+        <!-- Note for backend tabs -->
+        <div class="integration-note" *ngIf="activeTab !== 'frontend'">
+            <i data-lucide="info" size="14"></i>
+            {{ 'SITES.INTEGRATION.NOTE' | translate }}
         </div>
 
-        <button class="btn btn-primary" style="width: 100%;" (click)="copyScript(selectedSite)">
+        <!-- Copy Button -->
+        <button class="btn btn-primary" style="width: 100%; margin-top: 16px;" (click)="copyScript(selectedSite)">
             <i data-lucide="copy" size="16"></i>
-            {{ selectedSite ? ('SITES.MODAL_HELP.COPY_SNIPPET' | translate) : ('SITES.MODAL_HELP.COPY_SNIPPET' | translate) }}
+            {{ copiedSiteId ? ('COMMON.COPIED' | translate) : ('SITES.MODAL_HELP.COPY_SNIPPET' | translate) }}
         </button>
     </div>
 </div>
