@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../services/api.service';
+import { ThemeService } from '../../services/theme.service';
+import { LanguageService } from '../../services/language.service';
 
 type VerifyState = 'loading' | 'success' | 'error';
 
@@ -24,8 +26,14 @@ export class VerifyEmailComponent implements OnInit {
     constructor(
         private route: ActivatedRoute,
         private router: Router,
-        private apiService: ApiService
+        private apiService: ApiService,
+        public themeService: ThemeService,
+        public languageService: LanguageService
     ) { }
+
+    toggleTheme() {
+        this.themeService.toggleTheme();
+    }
 
     ngOnInit() {
         const token = this.route.snapshot.queryParamMap.get('token');
@@ -46,8 +54,14 @@ export class VerifyEmailComponent implements OnInit {
             },
             error: (err) => {
                 this.state = 'error';
-                this.message = err.error?.error || 'Verification failed. The link may be invalid or expired.';
-                this.isExpired = err.error?.code === 'INVALID_TOKEN';
+                const code = err.error?.code;
+                if (code === 'INVALID_TOKEN') {
+                    this.message = 'VERIFY_EMAIL.INVALID_TOKEN';
+                    this.isExpired = true;
+                } else {
+                    this.message = 'VERIFY_EMAIL.GENERIC_ERROR';
+                    this.isExpired = false;
+                }
             }
         });
     }
@@ -60,7 +74,7 @@ export class VerifyEmailComponent implements OnInit {
         if (!this.email) return;
         this.apiService.resendVerificationEmail(this.email).subscribe({
             next: (res) => {
-                this.message = '📧 ' + res.message;
+                this.message = res.message;
                 this.isExpired = false;
             },
             error: () => {
