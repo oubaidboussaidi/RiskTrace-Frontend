@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ApiService, AuthResponse, UserResponse } from './api.service';
+import { OrganizationService } from './organization.service';
 
 export interface StoredUser {
     id: string;
@@ -27,7 +28,8 @@ export class AuthService {
 
     constructor(
         private router: Router,
-        private apiService: ApiService
+        private apiService: ApiService,
+        private orgService: OrganizationService
     ) {
         // Restore non-sensitive user info (no token) from localStorage
         const storedUser = localStorage.getItem('user');
@@ -110,11 +112,17 @@ export class AuthService {
             error: (err) => console.error('Server logout failed (non-critical):', err)
         });
 
-        // Clear all local state
+        // Clear all local state immediately
         this.accessToken = null;
         localStorage.removeItem('user');
         this.currentUserSubject.next(null);
-        this.router.navigate(['/auth/login']);
+
+        // Reset org service in-memory state so it doesn't leak to the next login session
+        this.orgService.clearOrg();
+
+        // Hard navigation: tears down the entire Angular app and all singleton
+        // service instances, ensuring no stale state persists between sessions.
+        window.location.href = '/auth/login';
     }
 
     isAuthenticated(): boolean {
