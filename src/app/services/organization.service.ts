@@ -43,6 +43,7 @@ export class OrganizationService {
 
     clearOrg(): void {
         this.currentOrgSubject.next(null);
+        this.myOrgsSubject.next([]);
         localStorage.removeItem('activeOrgId');
     }
 }
