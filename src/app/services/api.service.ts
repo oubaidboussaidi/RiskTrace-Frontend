@@ -9,6 +9,8 @@ export interface UserResponse {
     email: string;
     role: string;
     enabled: boolean;
+    accountNonLocked: boolean;
+    emailVerified: boolean;
     isTwoFactorEnabled: boolean;
     createdAt: string;
     updatedAt: string;
