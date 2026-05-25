@@ -1,0 +1,23 @@
+# ── Node ──
+node_modules/
+dist/
+.angular/
+
+# ── IDE ──
+.idea/
+.vscode/
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── Git ──
+.git/
+.gitignore
+
+# ── Logs ──
+*.log
+*.txt
+
+# ── Docker ──
+Dockerfile
