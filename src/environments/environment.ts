@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:8084/api'
+    apiUrl: 'https://risktrace-gateway.onrender.com/api'
 };
