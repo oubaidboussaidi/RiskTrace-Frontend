@@ -183,12 +183,12 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
             const searchStr = this.searchQuery ? this.searchQuery.toLowerCase() : '';
             const matchSearch = !searchStr ||
-                (log.path && log.path.toLowerCase().includes(searchStr)) ||
-                (log.ip && log.ip.toLowerCase().includes(searchStr)) ||
-                (log.site && log.site.toLowerCase().includes(searchStr)) ||
-                (log.organization && log.organization.toLowerCase().includes(searchStr)) ||
-                (log.status && log.status.toLowerCase().includes(searchStr)) ||
-                (log.method && log.method.toLowerCase().includes(searchStr));
+                ((log.path || '').toLowerCase().includes(searchStr)) ||
+                ((log.ip || '').toLowerCase().includes(searchStr)) ||
+                ((log.site || '').toLowerCase().includes(searchStr)) ||
+                ((log.organization || '').toLowerCase().includes(searchStr)) ||
+                ((log.status || '').toLowerCase().includes(searchStr)) ||
+                ((log.method || '').toLowerCase().includes(searchStr));
 
             return matchOrg && matchSite && matchStatus && matchMethod && matchDate && matchScore && matchSearch;
         });

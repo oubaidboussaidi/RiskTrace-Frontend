@@ -132,9 +132,9 @@ export class AdminOrganizationsComponent implements OnInit, AfterViewInit {
     // ── Owner search ──────────────────────────────────────────
     searchOwnerCandidates() {
         const term = this.ownerSearchTerm.trim().toLowerCase();
-        if (term.length < 2) { this.ownerSearchResults = []; return; }
+        if (!term || term.length < 2) { this.ownerSearchResults = []; return; }
         this.ownerSearchResults = this.allPlatformUsers.filter(u =>
-            u.fullName.toLowerCase().includes(term) || u.email.toLowerCase().includes(term)
+            (u.fullName || '').toLowerCase().includes(term) || (u.email || '').toLowerCase().includes(term)
         );
     }
 

@@ -36,7 +36,7 @@ export function getSnippet(tabId: string, apiKey: string, endpoint: string): str
 
     // ── Frontend ──────────────────────────────────────────────────────────────
     case 'frontend':
-      return `<script src="https://risktrace-gateway.onrender.com/tracker.js"\n  data-api-key="${apiKey}"></script>`;
+      return `<script src="http://localhost:8084/tracker.js"\n  data-api-key="${apiKey}"></script>`;
 
     // ── Node.js / Express ─────────────────────────────────────────────────────
     case 'nodejs':

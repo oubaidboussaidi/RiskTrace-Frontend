@@ -87,8 +87,16 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
         try {
             const orgs = await firstValueFrom(this.apiService.getAllOrganizations());
             const map: { [userId: string]: string[] } = {};
-            for (const org of orgs || []) {
-                const members = await firstValueFrom(this.apiService.getOrganizationMembers(org.id));
+            
+            // Fetch all members in parallel instead of sequentially to prevent N+1 delay
+            const memberCalls = (orgs || []).map(org => 
+                firstValueFrom(this.apiService.getOrganizationMembers(org.id))
+                    .then(members => ({ org, members }))
+            );
+            
+            const results = await Promise.all(memberCalls);
+            
+            for (const { org, members } of results) {
                 for (const m of members || []) {
                     if (m.role === 'OWNER') {
                         if (!map[m.userId]) map[m.userId] = [];
@@ -116,7 +124,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
     private applyFilter() {
         const term = this.searchTerm.toLowerCase();
         this.filteredUsers = this.users.filter(u => {
-            const matchesTerm = u.fullName.toLowerCase().includes(term) || u.email.toLowerCase().includes(term);
+            const matchesTerm = (u.fullName || '').toLowerCase().includes(term) || (u.email || '').toLowerCase().includes(term);
             const matchesRole = this.roleFilter ? u.role === this.roleFilter : true;
             const isOwner = this.getOwnedOrgNames(u.id).length > 0;
             const matchesOwner = this.ownerFilter === 'owner' ? isOwner
@@ -276,7 +284,7 @@ export class AdminUsersComponent implements OnInit, AfterViewInit {
         // Filter from already-loaded users list; skip the user being deleted
         this.platformUserResults[orgId] = this.users.filter(u =>
             u.id !== this.ownershipTargetUser?.id &&
-            (u.fullName.toLowerCase().includes(term.toLowerCase()) || u.email.toLowerCase().includes(term.toLowerCase()))
+            ((u.fullName || '').toLowerCase().includes(term.toLowerCase()) || (u.email || '').toLowerCase().includes(term.toLowerCase()))
         );
         this.isSearchingUsers[orgId] = false;
     }

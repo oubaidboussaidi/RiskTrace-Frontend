@@ -235,7 +235,7 @@ export class SitesComponent implements OnInit, AfterViewInit {
 
   /** Copies the full <script> embed tag */
   copyEmbed(site: any) {
-    const tag = `<script src="https://risktrace-gateway.onrender.com/tracker.js" data-api-key="${site.apiKey}"><\/script>`;
+    const tag = `<script src="http://localhost:8084/tracker.js" data-api-key="${site.apiKey}"><\/script>`;
     navigator.clipboard.writeText(tag).then(() => {
       this.copiedSiteId = site.id;
       setTimeout(() => this.copiedSiteId = null, 2000);
