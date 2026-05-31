@@ -28,31 +28,28 @@
 <div class="card"
     style="padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
 
-    <!-- Organization Filter -->
     <div class="filter-dropdown">
         <span style="color: var(--text-secondary);">{{ 'SIDEBAR.ORGANIZATIONS' | translate }}:</span>
         <span class="filter-value">{{selectedOrganization === 'All Organizations' ? ('LOGS.ALL_ORGS' | translate) :
             selectedOrganization}}</span>
-        <select [(ngModel)]="selectedOrganization" (ngModelChange)="filterLogs()">
+        <select [(ngModel)]="selectedOrganization" (ngModelChange)="onOrganizationChange()">
             <option value="All Organizations">{{ 'LOGS.ALL_ORGS' | translate }}</option>
             <option *ngFor="let org of organizations" [value]="org">{{org}}</option>
         </select>
         <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
     </div>
 
-    <!-- Site Filter -->
-    <div class="filter-dropdown">
+    <div class="filter-dropdown" [style.opacity]="selectedOrganization === 'All Organizations' ? '0.5' : '1'">
         <span style="color: var(--text-secondary);">{{ 'LOGS.SITE_FILTER' | translate }}</span>
         <span class="filter-value">{{selectedSite === 'All Sites' ? ('LOGS.ALL_SITES' | translate) :
             selectedSite}}</span>
-        <select [(ngModel)]="selectedSite" (ngModelChange)="filterLogs()">
+        <select [(ngModel)]="selectedSite" (ngModelChange)="filterLogs()" [disabled]="selectedOrganization === 'All Organizations'" [style.cursor]="selectedOrganization === 'All Organizations' ? 'not-allowed' : 'pointer'">
             <option value="All Sites">{{ 'LOGS.ALL_SITES' | translate }}</option>
             <option *ngFor="let site of sites" [value]="site">{{site}}</option>
         </select>
         <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
     </div>
 
-    <!-- Status Filter -->
     <div class="filter-dropdown">
         <span style="color: var(--text-secondary);">{{ 'LOGS.STATUS_FILTER' | translate }}</span>
         <span class="filter-value">{{getStatusLabel(selectedStatus) | translate}}</span>
@@ -64,7 +61,6 @@
         <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
     </div>
 
-    <!-- Method Filter -->
     <div class="filter-dropdown">
         <span style="color: var(--text-secondary);">{{ 'LOGS.METHOD_FILTER' | translate }}</span>
         <span class="filter-value">{{selectedMethod === 'All Methods' ? ('LOGS.ALL_METHODS' | translate) :
@@ -79,7 +75,6 @@
         <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
     </div>
 
-    <!-- Date Range Filter -->
     <div
         style="display: flex; gap: 8px; align-items: center; background: var(--bg-elevated); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color);">
         <input type="date" [(ngModel)]="startDate" (ngModelChange)="filterLogs()" title="Start Date"
@@ -175,7 +170,6 @@
     </div>
 </div>
 
-<!-- Modal Overlay -->
 <div *ngIf="showLogModal" class="modal-overlay" (click)="closeLogModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">

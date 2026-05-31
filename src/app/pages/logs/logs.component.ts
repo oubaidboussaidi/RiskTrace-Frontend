@@ -141,18 +141,18 @@ export class LogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
   filterLogs() {
     this.logs = this.allLogs.filter(log => {
-      const matchSite    = this.selectedSite    === 'All Sites'    || log.site      === this.selectedSite;
-      const matchStatus  = this.selectedStatus  === 'All Status'  || this.checkStatus(log.status, this.selectedStatus);
-      const matchMethod  = this.selectedMethod  === 'All Methods'  || log.method    === this.selectedMethod;
+      const matchSite = this.selectedSite === 'All Sites' || log.site === this.selectedSite;
+      const matchStatus = this.selectedStatus === 'All Status' || this.checkStatus(log.status, this.selectedStatus);
+      const matchMethod = this.selectedMethod === 'All Methods' || log.method === this.selectedMethod;
       const matchSession = this.selectedSession === 'All Sessions' || log.sessionId === this.selectedSession;
 
       const searchStr = this.searchQuery ? this.searchQuery.toLowerCase() : '';
       const matchSearch = !searchStr ||
-        (log.path      && log.path.toLowerCase().includes(searchStr)) ||
-        (log.ip        && log.ip.toLowerCase().includes(searchStr)) ||
-        (log.site      && log.site.toLowerCase().includes(searchStr)) ||
-        (log.status    && log.status.toLowerCase().includes(searchStr)) ||
-        (log.method    && log.method.toLowerCase().includes(searchStr)) ||
+        (log.path && log.path.toLowerCase().includes(searchStr)) ||
+        (log.ip && log.ip.toLowerCase().includes(searchStr)) ||
+        (log.site && log.site.toLowerCase().includes(searchStr)) ||
+        (log.status && log.status.toLowerCase().includes(searchStr)) ||
+        (log.method && log.method.toLowerCase().includes(searchStr)) ||
         (log.sessionId && log.sessionId.toLowerCase().includes(searchStr));
 
       const matchScore = parseInt(log.score) >= this.minRiskScore;

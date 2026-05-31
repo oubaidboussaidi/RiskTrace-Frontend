@@ -70,7 +70,7 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.orgMap = orgMap;
 
                 // For each organization, fetch its sites to build a complete global site map
-                const siteRequests = (organizations || []).map(org => 
+                const siteRequests = (organizations || []).map(org =>
                     this.apiService.getSitesByOrganization(org.id)
                 );
 
@@ -81,7 +81,7 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
                     next: ({ allSitesArrays, logs }) => {
                         const siteMap = new Map<string, string>();
                         const allSites = (allSitesArrays as any[]).flat();
-                        
+
                         allSites.forEach((s: any) => {
                             // Map site names, checking both siteName and name fields
                             siteMap.set(s.id, s.siteName || s.name || s.domain || s.id);
@@ -153,10 +153,30 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     extractFilters() {
         const uniqueOrgs = new Set(this.allLogs.map(log => log.organization));
-        this.organizations = ['All Organizations', ...Array.from(uniqueOrgs)];
+        uniqueOrgs.delete('All Organizations');
+        this.organizations = Array.from(uniqueOrgs);
 
-        const uniqueSites = new Set(this.allLogs.map(log => log.site));
-        this.sites = ['All Sites', ...Array.from(uniqueSites)];
+        this.updateSiteList();
+    }
+
+    updateSiteList() {
+        if (this.selectedOrganization === 'All Organizations') {
+            this.sites = [];
+            this.selectedSite = 'All Sites';
+        } else {
+            const orgLogs = this.allLogs.filter(log => log.organization === this.selectedOrganization);
+            const uniqueSites = new Set(orgLogs.map(log => log.site));
+            uniqueSites.delete('All Sites');
+            this.sites = Array.from(uniqueSites);
+            if (this.selectedSite !== 'All Sites' && !this.sites.includes(this.selectedSite)) {
+                this.selectedSite = 'All Sites';
+            }
+        }
+    }
+
+    onOrganizationChange() {
+        this.updateSiteList();
+        this.filterLogs();
     }
 
     filterLogs() {
@@ -291,7 +311,7 @@ export class AdminLogsComponent implements OnInit, AfterViewInit, OnDestroy {
 
     filterByOrganization(log: any) {
         this.selectedOrganization = log.organization;
-        this.filterLogs();
+        this.onOrganizationChange();
     }
 
     markAsAnomaly(log: any) {
