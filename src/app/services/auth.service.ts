@@ -122,7 +122,12 @@ export class AuthService {
 
         // Hard navigation: tears down the entire Angular app and all singleton
         // service instances, ensuring no stale state persists between sessions.
-        window.location.href = '/auth/login';
+        this.redirect('/auth/login');
+    }
+
+    /** Abstracted for testability — allows spying in unit tests */
+    protected redirect(url: string): void {
+        window.location.href = url;
     }
 
     isAuthenticated(): boolean {
