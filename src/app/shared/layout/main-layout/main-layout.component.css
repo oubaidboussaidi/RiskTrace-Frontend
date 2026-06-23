@@ -1,0 +1,62 @@
+:host {
+    display: block;
+    height: 100vh;
+}
+
+#app-root {
+    display: flex;
+    height: 100%;
+}
+
+.sidebar {
+    width: 250px;
+    background: var(--bg-elevated);
+    height: 100%;
+    border-right: 1px solid var(--border-color);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: visible;
+    /* lets toggle button overlap the right border */
+    z-index: 10;
+}
+
+.sidebar.collapsed {
+    width: 80px;
+    align-items: center;
+}
+
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+.content-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+    /* This creates the left margin and page spacing the user requested */
+    /* Scrollbar styling for modern aesthetics */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+/* Custom scrollbar for Webkit */
+.content-scrollable::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content-scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.content-scrollable::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 4px;
+}

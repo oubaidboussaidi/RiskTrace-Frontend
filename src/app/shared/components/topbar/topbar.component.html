@@ -1,0 +1,102 @@
+<div class="search-container">
+    <i data-lucide="search" size="16"></i>
+    <input #searchInput type="text" [placeholder]="'TOPBAR.SEARCH_PLACEHOLDER' | translate"
+        (keydown)="onSearch($event)">
+
+    <span class="cmd-k">⌘ K</span>
+</div>
+
+<div class="topbar-actions">
+    <div class="status-indicator">
+        <div class="status-dot" [class.offline]="!isMlOnline"></div>
+        {{ (isMlOnline ? 'TOPBAR.ML_ENGINE_ONLINE' : 'TOPBAR.ML_ENGINE_OFFLINE') | translate }}
+    </div>
+
+    <div style="position: relative; display: flex; align-items: center;">
+        <div class="action-btn-container" style="position: relative;" (click)="toggleNotifications(); $event.stopPropagation()">
+            <i data-lucide="bell" size="20" class="action-icon" style="cursor: pointer;"></i>
+            <div *ngIf="notifications.length > 0"
+                style="position: absolute; top: -4px; right: -4px; width: 10px; height: 10px; background: var(--sev-critical); border-radius: 50%; border: 2px solid var(--bg-elevated); animation: pulse 2s infinite;">
+            </div>
+        </div>
+
+        <div *ngIf="showNotifications" class="dropdown-menu"
+            style="position: absolute; top: 100%; right: 0; background-color: #1a1a24; background: var(--bg-elevated); border: 1px solid var(--border-color); border-radius: 12px; width: 340px; z-index: 9999; box-shadow: 0 10px 40px rgba(0,0,0,0.5); margin-top: 14px; overflow: hidden; animation: popoverFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
+
+            <div style="padding: 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
+                <span style="font-size: 14px;">{{ 'TOPBAR.NOTIFICATIONS' | translate }}</span>
+                <span *ngIf="notifications.length > 0" style="background: rgba(248, 81, 73, 0.1); color: var(--sev-critical); padding: 2px 8px; border-radius: 10px; font-size: 11px;">{{ notifications.length }} {{ 'TOPBAR.NEW' | translate }}</span>
+            </div>
+
+            <div style="max-height: 300px; overflow-y: auto;">
+                <div *ngFor="let n of notifications"
+                    style="padding: 14px 16px; border-bottom: 1px solid var(--border-subtle); cursor: pointer; display: flex; gap: 12px; transition: background 0.2s;"
+                    onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'"
+                    [routerLink]="['/incidents']">
+                    <div style="flex-shrink: 0; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: rgba(248, 81, 73, 0.1); color: var(--sev-critical);">
+                        <i data-lucide="alert-triangle" size="16" *ngIf="n.severity === 'CRITICAL'"></i>
+                        <i data-lucide="shield-alert" size="16" *ngIf="n.severity === 'HIGH'"></i>
+                    </div>
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; display: flex; justify-content: space-between;">
+                            <span>{{ n.typeKey | translate }}</span>
+                        </div>
+                        <div *ngIf="n.isMlDesc" style="font-size: 12px; color: var(--text-secondary); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ 'INCIDENTS.ML_DESC' | translate: n.mlParams }}</div>
+                        <div *ngIf="!n.isMlDesc" style="font-size: 12px; color: var(--text-secondary); line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ n.description }}</div>
+                    </div>
+                </div>
+
+                <div *ngIf="notifications.length === 0"
+                    style="padding: 32px 16px; text-align: center; color: var(--text-secondary); font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <i data-lucide="check-circle" size="32" style="opacity: 0.3;"></i>
+                    <span>{{ 'TOPBAR.NO_ALERTS' | translate }}</span>
+                </div>
+            </div>
+
+            <div style="padding: 12px; text-align: center; border-top: 1px solid var(--border-color); background: var(--bg-dark);">
+                <a routerLink="/incidents" style="color: var(--accent-primary); font-size: 13px; font-weight: 500; text-decoration: none;">{{ 'TOPBAR.VIEW_ALL' | translate }}</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="settings-btn-wrap">
+        <button class="action-icon settings-btn" (click)="toggleSettings()" [class.active]="showSettings" title="Preferences">
+            <i data-lucide="settings-2" size="18"></i>
+        </button>
+
+        <div *ngIf="showSettings" class="settings-popover">
+            <div class="settings-popover-header">
+                <i data-lucide="sliders-horizontal" size="13"></i>
+                <span>Preferences</span>
+            </div>
+
+            <div class="settings-section">
+                <div class="settings-label">Appearance</div>
+                <div class="settings-row">
+                    <div class="settings-row-left">
+                        <i *ngIf="themeService.isDarkMode()" data-lucide="moon" size="14"></i>
+                        <i *ngIf="!themeService.isDarkMode()" data-lucide="sun" size="14"></i>
+                        <span>{{ themeService.isDarkMode() ? 'Dark mode' : 'Light mode' }}</span>
+                    </div>
+                    <button class="theme-toggle" (click)="toggleTheme()" [class.is-dark]="themeService.isDarkMode()">
+                        <span class="theme-toggle-knob"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <div class="settings-section">
+                <div class="settings-label">Language</div>
+                <div class="lang-options">
+                    <button class="lang-option" [class.active]="currentLang === 'en'" (click)="languageService.setLanguage('en')">
+                        English
+                    </button>
+                    <button class="lang-option" [class.active]="currentLang === 'fr'" (click)="languageService.setLanguage('fr')">
+                        Français
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

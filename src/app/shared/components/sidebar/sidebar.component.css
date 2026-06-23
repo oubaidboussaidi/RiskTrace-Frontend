@@ -1,0 +1,434 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+/* ===========================
+   Sidebar Container
+   =========================== */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 24px 0 0 0;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible;
+    /* prevent the sidebar itself from scrolling */
+}
+
+/* Scrollable middle section — between logo and profile footer */
+.nav-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0;
+    /* critical: allows flex child to shrink below its content size */
+}
+
+/* Hide scrollbar visually but keep it functional */
+.nav-scroll::-webkit-scrollbar {
+    width: 3px;
+}
+
+.nav-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 3px;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Collapsed: center the icons in the scroll area */
+.sidebar-content.collapsed .nav-scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+
+/* ===========================
+   App Header (Logo + Org merged)
+   =========================== */
+.app-header {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 8px;
+}
+
+.sidebar-content.collapsed .app-header {
+    padding: 0 0 20px;
+    display: flex;
+    justify-content: center;
+    border-bottom: none;
+    overflow: visible;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.app-logo {
+    width: 46px;
+    height: 46px;
+}
+
+:host-context([data-theme='light']) .app-logo {
+    filter: none;
+}
+
+
+
+.logo-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+    flex: 1;
+    justify-content: center;
+}
+
+.logo-text {
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+
+/* Prominent org chip selector */
+.org-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px 5px 8px;
+    border-radius: 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    max-width: fit-content;
+    margin-top: 2px;
+}
+
+.org-chip:hover {
+    background: rgba(88, 166, 255, 0.05);
+    border-color: rgba(88, 166, 255, 0.4);
+    box-shadow: 0 2px 8px rgba(88, 166, 255, 0.15);
+}
+
+/* Pulsing green dot — signals "connected / active" */
+.org-chip-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #38bdf8;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+}
+
+.org-chip-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid #38bdf8;
+    opacity: 0;
+    animation: dotPulse 2s ease-out infinite;
+}
+
+@keyframes dotPulse {
+    0% {
+        transform: scale(0.7);
+        opacity: 0.7;
+    }
+
+    70% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+.org-chip-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+}
+
+.org-chip-chevron {
+    color: var(--text-muted);
+    opacity: 0.8;
+    flex-shrink: 0;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.org-chip:hover .org-chip-chevron {
+    color: var(--accent-primary);
+    transform: translateY(1px);
+}
+
+/* Collapsed: hide chip, show only the icon */
+.sidebar-content.collapsed .logo-meta {
+    display: none;
+}
+
+
+/* ===========================
+   Nav Groups
+   =========================== */
+.nav-group {
+    margin-bottom: 16px;
+}
+
+.sidebar-content.collapsed .nav-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nav-label {
+    padding: 0 24px 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.sidebar-content.collapsed .nav-label {
+    display: none !important;
+}
+
+/* ===========================
+   Nav Items
+   =========================== */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 24px;
+    color: var(--text-primary);
+    opacity: 0.8;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    transform: translateZ(0);
+}
+
+.nav-item:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    opacity: 1;
+}
+
+/* Original expanded look */
+.nav-item.active {
+    background-color: rgba(88, 166, 255, 0.08);
+    /* Faint blue tint */
+    color: var(--accent-primary);
+    border-left-color: var(--accent-primary);
+    opacity: 1;
+}
+
+.nav-item i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* ===========================
+   Collapsed Mode Nav Styles
+   =========================== */
+.sidebar-content.collapsed .nav-item {
+    margin: 0 0 4px 0;
+    padding: 12px;
+    width: 44px;
+    border-radius: 10px;
+    justify-content: center;
+}
+
+/* Smooth pop for collapsed active item */
+.sidebar-content.collapsed .nav-item.active {
+    background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(163, 113, 247, 0.1) 100%);
+    box-shadow: inset 0 1px 0 var(--border-subtle);
+    color: var(--accent-primary);
+}
+
+/* Hide labels when collapsed */
+.sidebar-content.collapsed .nav-text,
+.sidebar-content.collapsed .logo-text,
+.sidebar-content.collapsed .user-info,
+.sidebar-content.collapsed .incident-badge {
+    display: none !important;
+}
+
+.incident-badge {
+    margin-left: auto;
+    background: var(--sev-critical, #f85149);
+    color: white;
+    border-radius: 10px;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(248, 81, 73, 0.2);
+}
+
+
+
+/* ===========================
+   User Profile Footer
+   =========================== */
+.user-profile {
+    margin-top: auto;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    border-top: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--bg-surface, #161b22);
+}
+
+.user-profile:hover {
+    background-color: var(--bg-hover);
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    /* Squircle avatar matches app design better */
+    background: #a371f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+    color: white;
+    flex-shrink: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+}
+
+.user-name {
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-primary);
+}
+
+.user-role {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+/* Logout Token */
+.profile-logout-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    padding: 6px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-logout-btn:hover {
+    background-color: rgba(248, 81, 73, 0.1);
+    border-color: rgba(248, 81, 73, 0.2);
+    color: var(--sev-critical, #f85149);
+}
+
+/* ===========================
+   ADJUSTED VERTICAL REVEAL (COMPRESSED)
+   =========================== */
+.sidebar-content.collapsed .user-profile {
+    padding: 20px 0;
+    flex-direction: column;
+    height: 72px;
+    /* Standard collapsed height */
+    justify-content: center;
+    gap: 0;
+}
+
+.sidebar-content.collapsed .profile-logout-btn {
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(10px);
+    width: 32px;
+    margin-top: 0;
+    padding: 0;
+}
+
+/* Hover Adjustment: Smooth transition reveal */
+.sidebar-content.collapsed .user-profile:hover {
+    height: 110px;
+    /* Expands to fit both exactly */
+    background: var(--bg-elevated);
+}
+
+.sidebar-content.collapsed .user-profile:hover .avatar {
+    transform: translateY(-4px);
+    border-radius: 8px;
+    /* Slightly more round on hover */
+}
+
+.sidebar-content.collapsed .user-profile:hover .profile-logout-btn {
+    height: 32px;
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 12px;
+    padding: 6px;
+    background-color: rgba(248, 81, 73, 0.08);
+}
+
+.sidebar-content.collapsed .profile-logout-btn:hover {
+    background-color: var(--sev-critical, #f85149);
+    color: white;
+    border-color: var(--sev-critical);
+    box-shadow: 0 4px 12px rgba(248, 81, 73, 0.3);
+}

@@ -1,0 +1,11 @@
+<div id="app-root">
+    <app-sidebar class="sidebar" (collapsedChange)="onSidebarCollapsedChange($event)"
+        [class.collapsed]="isSidebarCollapsed"></app-sidebar>
+
+    <main class="main-wrapper">
+        <app-topbar></app-topbar>
+        <div class="content-scrollable">
+            <router-outlet></router-outlet>
+        </div>
+    </main>
+</div>
