@@ -1,0 +1,39 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">{{ 'API_KEYS.TITLE' | translate }}</h1>
+        <p style="color: var(--text-secondary);">{{ 'API_KEYS.SUBTITLE' | translate }}</p>
+    </div>
+    <button class="btn btn-primary" (click)="generateKey()"><i data-lucide="plus" size="18"></i> {{ 'API_KEYS.GENERATE_BTN' | translate }}</button>
+</div>
+
+<div class="card p-0" style="overflow: hidden;">
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>{{ 'API_KEYS.TABLE.NAME' | translate }}</th>
+                <th>{{ 'API_KEYS.TABLE.KEY' | translate }}</th>
+                <th>{{ 'API_KEYS.TABLE.CREATED' | translate }}</th>
+                <th>{{ 'API_KEYS.TABLE.LAST_USED' | translate }}</th>
+                <th>{{ 'API_KEYS.TABLE.STATUS' | translate }}</th>
+                <th style="text-align: right;">{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let k of apiKeys">
+                <td><span style="font-weight: 500;">{{k.name}}</span></td>
+                <td><code style="background: var(--bg-dark); padding: 4px 8px; border-radius: 4px;">{{k.key}}</code></td>
+                <td style="color: var(--text-secondary); font-size: 13px;">{{k.created}}</td>
+                <td style="color: var(--text-secondary); font-size: 13px;">{{k.lastUsed}}</td>
+                <td><span class="status-badge status-success">{{ 'ALERTS_RULES.ENABLED' | translate }}</span></td>
+                <td style="text-align: right;">
+                    <button class="btn btn-icon-only text-danger" title="Revoke Key"><i data-lucide="trash-2"
+                            size="16"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div *ngIf="apiKeys.length === 0" style="padding: 40px; text-align: center; color: var(--text-muted);">
+        <i data-lucide="key" size="32" style="opacity: 0.3; margin-bottom: 12px;"></i>
+        <p>{{ 'COMMON.NO_DATA' | translate }}</p>
+    </div>
+</div>

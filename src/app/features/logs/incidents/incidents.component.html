@@ -1,0 +1,220 @@
+<div class="incidents-header">
+    <div>
+        <h1 class="page-title">{{ 'INCIDENTS.TITLE' | translate }}</h1>
+        <p class="page-subtitle">{{ 'INCIDENTS.SUBTITLE' | translate }}</p>
+    </div>
+    <div class="filters-row">
+        <div class="filter-group search-group">
+            <div class="search-input-wrapper">
+                <i data-lucide="search" class="search-icon" size="14"></i>
+                <input type="text" [(ngModel)]="searchQuery" (input)="onFilterChange()" 
+                       [placeholder]="'INCIDENTS.SEARCH_PLACEHOLDER' | translate" 
+                       class="custom-input search-input">
+            </div>
+        </div>
+        <div class="filter-group">
+            <label>{{ 'INCIDENTS.FILTER_STATUS' | translate }}</label>
+            <select [(ngModel)]="filterStatus" class="custom-select" (change)="onFilterChange()">
+                <option value="ALL">{{ 'INCIDENTS.STATUS_ALL' | translate }}</option>
+                <option value="OPEN">{{ 'INCIDENTS.STATUS_OPEN' | translate }}</option>
+                <option value="RESOLVED">{{ 'INCIDENTS.STATUS_RESOLVED' | translate }}</option>
+                <option value="IGNORED">{{ 'INCIDENTS.STATUS_IGNORED' | translate }}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>{{ 'INCIDENTS.FILTER_SITE' | translate }}</label>
+            <select [(ngModel)]="filterSite" class="custom-select" (change)="onFilterChange()">
+                <option value="ALL">{{ 'INCIDENTS.ALL_SITES' | translate }}</option>
+                <option *ngFor="let site of sites" [value]="site.id">{{ site.siteName || site.domain }}</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>{{ 'INCIDENTS.FILTER_SEVERITY' | translate }}</label>
+            <select [(ngModel)]="filterSeverity" class="custom-select" (change)="onFilterChange()">
+                <option value="ALL">{{ 'INCIDENTS.ALL_SEVERITIES' | translate }}</option>
+                <option value="CRITICAL">{{ 'INCIDENTS.SEVERITY.CRITICAL' | translate }}</option>
+                <option value="HIGH">{{ 'INCIDENTS.SEVERITY.HIGH' | translate }}</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="bulk-select-header" *ngIf="filteredIncidents.length > 0">
+    <label class="custom-checkbox-wrapper">
+        <input type="checkbox" [checked]="isAllOnPageSelected()" (change)="toggleSelectAllOnPage()">
+        <span class="custom-checkbox"></span>
+        <span class="checkbox-label">{{ 'INCIDENTS.SELECT_PAGE' | translate }}</span>
+    </label>
+
+    <div class="bulk-match-banner" *ngIf="isAllOnPageSelected() && filteredIncidents.length > paginatedIncidents.length && !isSelectAllAcrossPages">
+        <span>{{ paginatedIncidents.length }} {{ 'INCIDENTS.PAGE_SELECTED_MSG' | translate }}</span>
+        <button class="btn-link" (click)="selectAllMatching()">{{ 'INCIDENTS.SELECT_ALL_MSG' | translate: { count: filteredIncidents.length } }}</button>
+    </div>
+
+    <div class="bulk-match-banner success" *ngIf="isSelectAllAcrossPages">
+        <span>{{ 'INCIDENTS.ALL_SELECTED_MSG' | translate: { count: filteredIncidents.length } }}</span>
+        <button class="btn-link" (click)="clearSelection()">{{ 'INCIDENTS.CLEAR_SELECTION' | translate }}</button>
+    </div>
+</div>
+
+<div class="incidents-grid">
+    <div class="incident-card" *ngFor="let incident of paginatedIncidents" [ngClass]="incident.borderClass" [class.selected]="selectedIds.has(incident.id)">
+        <div class="incident-card-header">
+            <div class="incident-tags">
+                <label class="custom-checkbox-wrapper mr-2">
+                    <input type="checkbox" [checked]="selectedIds.has(incident.id)" (change)="toggleSelection(incident.id)">
+                    <span class="custom-checkbox"></span>
+                </label>
+                <span class="status-badge" [ngClass]="incident.severityClass">
+                    <i data-lucide="alert-triangle" size="11" *ngIf="incident.severity === 'CRITICAL' || incident.severity === 'HIGH'"></i>
+                    <i data-lucide="info" size="11" *ngIf="incident.severity !== 'CRITICAL' && incident.severity !== 'HIGH'"></i>
+                    {{ ('INCIDENTS.SEVERITY.' + incident.severity) | translate }}
+                </span>
+                <span class="status-lamp">
+                    <span class="lamp-dot"
+                        [class.lamp-open]="incident.status === 'OPEN'"
+                        [class.lamp-resolved]="incident.status === 'RESOLVED'"
+                        [class.lamp-progress]="incident.status === 'IN_PROGRESS'"
+                        [class.lamp-ignored]="incident.status === 'IGNORED'">
+                    </span>
+                    {{ ('INCIDENTS.STATUS.' + incident.status) | translate }}
+                </span>
+            </div>
+            <div class="incident-actions">
+                <button class="btn-icon" (click)="updateStatus(incident, 'IGNORED')" *ngIf="incident.status !== 'IGNORED' && incident.status !== 'RESOLVED'" title="{{ 'INCIDENTS.IGNORE' | translate }}">
+                    <i data-lucide="eye-off" size="14"></i>
+                </button>
+                <button class="btn-icon btn-success" (click)="updateStatus(incident, 'RESOLVED')" *ngIf="incident.status !== 'RESOLVED'" title="{{ 'INCIDENTS.MARK_RESOLVED' | translate }}">
+                    <i data-lucide="check-circle" size="14"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="incident-card-body">
+            <h3 class="incident-title">{{ incident.typeKey | translate }}</h3>
+
+            <div class="incident-desc" *ngIf="incident.mlDescParams" [translate]="'INCIDENTS.ML_DESC'" [translateParams]="incident.mlDescParams"></div>
+            <div class="incident-desc" *ngIf="!incident.mlDescParams">{{incident.description}}</div>
+
+            <div class="incident-meta">
+                <div class="meta-item" *ngIf="incident.sourceIp">
+                    <i data-lucide="monitor" size="14"></i> 
+                    <span>{{ incident.sourceIp }}</span>
+                </div>
+                <div class="meta-item" *ngIf="incident.targetPath">
+                    <i data-lucide="link" size="14"></i> 
+                    <span class="truncate-text" [title]="incident.targetPath">{{ incident.targetPath }}</span>
+                </div>
+                <div class="meta-item" *ngIf="incident.timestamp">
+                    <i data-lucide="clock" size="14"></i>
+                    <span>{{ incident.timestamp | date:'short' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="incident-card-footer">
+            <a *ngIf="incident.sessionId" [routerLink]="['/logs']" [queryParams]="{search: incident.sessionId}" class="view-logs-link">
+                <i data-lucide="search" size="14"></i> {{ 'INCIDENTS.VIEW_LOGS' | translate }}
+            </a>
+            <a *ngIf="!incident.sessionId" [routerLink]="['/logs']" [queryParams]="{search: incident.sourceIp}" class="view-logs-link">
+                <i data-lucide="search" size="14"></i> {{ 'INCIDENTS.VIEW_LOGS' | translate }}
+            </a>
+        </div>
+    </div>
+
+    <div *ngIf="filteredIncidents.length === 0" class="empty-state">
+        <div class="empty-state-icon">
+            <i data-lucide="shield-check" size="48"></i>
+        </div>
+        <h3>No Incidents Found</h3>
+        <p>Everything looks secure. No alerts match your current filters.</p>
+    </div>
+</div>
+
+<div class="pagination-controls" *ngIf="totalPages > 1">
+    <button class="btn btn-secondary btn-sm" [disabled]="currentPage === 1" (click)="changePage(-1)">
+        <i data-lucide="chevron-left" size="16"></i> Prev
+    </button>
+
+    <div class="page-numbers">
+        <button *ngFor="let page of getPageRange()" 
+                class="btn btn-page" 
+                [class.active]="page === currentPage"
+                [disabled]="page === '...'"
+                (click)="page !== '...' && goToPage($any(page))">
+            {{ page }}
+        </button>
+    </div>
+
+    <button class="btn btn-secondary btn-sm" [disabled]="currentPage === totalPages" (click)="changePage(1)">
+        Next <i data-lucide="chevron-right" size="16"></i>
+    </button>
+</div>
+
+<div class="floating-action-bar" [class.visible]="selectedIds.size > 0">
+    <div class="selection-info">
+        <span class="selection-count">{{ selectedIds.size }}</span>
+        <span class="selection-text">{{ 'INCIDENTS.SELECTED' | translate }}</span>
+    </div>
+    <div class="bulk-actions">
+        <button class="btn-bulk" style="background: rgba(88, 166, 255, 0.1); border: 1px solid rgba(88, 166, 255, 0.2); color: #58a6ff;" (click)="openEscalateModal()" [disabled]="isExecutingBulk">
+            <i data-lucide="send" size="16"></i> {{ 'INCIDENTS.ESCALATE.NOTIFY_OWNER' | translate }}
+        </button>
+        <button class="btn-bulk btn-ignore" (click)="bulkUpdateStatus('IGNORED')" [disabled]="isExecutingBulk">
+            <i data-lucide="eye-off" size="16"></i> {{ 'INCIDENTS.IGNORE' | translate }}
+        </button>
+        <button class="btn-bulk btn-resolve" (click)="bulkUpdateStatus('RESOLVED')" [disabled]="isExecutingBulk">
+            <i data-lucide="check-circle" size="16"></i> {{ 'INCIDENTS.MARK_RESOLVED' | translate }}
+        </button>
+    </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showEscalateModal" (click)="closeEscalateModal()" id="escalate-modal-backdrop">
+    <div class="modal-panel" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="escalate-modal-title">
+
+        <div class="modal-header">
+            <div class="modal-title-group">
+                <i data-lucide="send" size="18"></i>
+                <h2 id="escalate-modal-title">{{ 'INCIDENTS.ESCALATE.TITLE' | translate }}</h2>
+            </div>
+            <button class="btn-icon" (click)="closeEscalateModal()" [disabled]="escalateSubmitting" title="{{ 'COMMON.CLOSE' | translate }}">
+                <i data-lucide="x" size="16"></i>
+            </button>
+        </div>
+
+        <div class="modal-success-state" *ngIf="escalateSuccess">
+            <i data-lucide="check-circle" size="44"></i>
+            <p class="success-title">{{ 'INCIDENTS.ESCALATE.SUCCESS_TITLE' | translate }}</p>
+            <p class="success-sub">{{ 'INCIDENTS.ESCALATE.SUCCESS_DESC' | translate }}</p>
+        </div>
+
+        <div class="modal-body" *ngIf="!escalateSuccess">
+            <div class="form-group">
+                <label class="form-label">
+                    {{ 'INCIDENTS.ESCALATE.MESSAGE_LABEL' | translate }} <span class="form-label-optional">{{ 'INCIDENTS.ESCALATE.OPTIONAL' | translate }}</span>
+                </label>
+                <textarea [(ngModel)]="escalateMessage"
+                          rows="5"
+                          class="modal-textarea"
+                          [placeholder]="'INCIDENTS.ESCALATE.PLACEHOLDER' | translate"></textarea>
+            </div>
+
+            <div class="form-error-banner" *ngIf="escalateError">
+                <i data-lucide="alert-circle" size="14"></i>
+                {{ escalateError }}
+            </div>
+        </div>
+
+        <div class="modal-footer" *ngIf="!escalateSuccess">
+            <button class="modal-btn modal-btn-cancel" (click)="closeEscalateModal()" [disabled]="escalateSubmitting">
+                {{ 'COMMON.CANCEL' | translate }}
+            </button>
+            <button class="modal-btn modal-btn-submit" (click)="submitEscalation()" [disabled]="escalateSubmitting">
+                <i data-lucide="loader-circle" size="15" *ngIf="escalateSubmitting" class="icon-spin"></i>
+                <i data-lucide="send" size="15" *ngIf="!escalateSubmitting"></i>
+                {{ escalateSubmitting ? ('COMMON.LOADING' | translate) : ('INCIDENTS.ESCALATE.BUTTON' | translate) }}
+            </button>
+        </div>
+
+    </div>
+</div>

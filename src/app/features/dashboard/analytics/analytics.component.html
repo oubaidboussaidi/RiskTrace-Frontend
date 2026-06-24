@@ -1,0 +1,184 @@
+<div class="page-header">
+    <div>
+        <h1 class="page-title">{{ 'ANALYTICS.TITLE' | translate }}</h1>
+        <p class="page-subtitle">{{ 'ANALYTICS.SUBTITLE' | translate }}</p>
+    </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+    <i data-lucide="loader-2" class="spin"></i> {{ 'COMMON.LOADING' | translate }}
+</div>
+
+<div *ngIf="!isLoading" class="analytics-content">
+
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon blue"><i data-lucide="activity"></i></div>
+            <div class="kpi-data">
+                <div class="kpi-label">{{ 'ANALYTICS.KPI.ANALYZED' | translate }}</div>
+                <div class="kpi-value">{{kpis.analyzed | number}}</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon purple"><i data-lucide="percent"></i></div>
+            <div class="kpi-data">
+                <div class="kpi-label">{{ 'ANALYTICS.KPI.ANOMALY_RATE' | translate }}</div>
+                <div class="kpi-value">{{kpis.anomalyRate}}</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon red"><i data-lucide="shield-alert"></i></div>
+            <div class="kpi-data">
+                <div class="kpi-label">{{ 'ANALYTICS.KPI.CRITICAL' | translate }}</div>
+                <div class="kpi-value">{{kpis.criticalThreats | number}}</div>
+            </div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon" [ngClass]="isMlOnline ? 'green' : 'red'"><i data-lucide="cpu"></i></div>
+            <div class="kpi-data">
+                <div class="kpi-label">{{ 'ANALYTICS.KPI.MODEL_STATUS' | translate }}</div>
+                <div class="kpi-value" style="font-size: 13.5px; padding-top: 4px; font-weight: 600;">
+                    {{ (isMlOnline ? 'ANALYTICS.KPI.ONLINE_ISOLATION_FOREST' : 'ANALYTICS.KPI.OFFLINE') | translate }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-row">
+        <div class="card chart-card large">
+            <div class="card-header">
+                <h3>{{ 'ANALYTICS.CHART.SCORE_DIST' | translate }}</h3>
+                <span class="badge info">{{ 'ANALYTICS.CHART.HISTOGRAM' | translate }}</span>
+            </div>
+            <p class="card-desc">{{ 'ANALYTICS.CHART.SCORE_DIST_DESC' | translate }}</p>
+            <div id="ml-score-dist" class="chart-container"></div>
+        </div>
+        <div class="card chart-card small">
+            <div class="card-header">
+                <h3>{{ 'ANALYTICS.CHART.FEATURE_RADAR' | translate }}</h3>
+                <span class="badge info">{{ 'ANALYTICS.CHART.DEVIATIONS' | translate }}</span>
+            </div>
+            <p class="card-desc">{{ 'ANALYTICS.CHART.FEATURE_RADAR_DESC' | translate }}</p>
+            <div id="ml-feature-impact" class="chart-container"></div>
+        </div>
+    </div>
+
+    <div class="chart-row split">
+        <div class="card chart-card">
+            <div class="card-header">
+                <h3>{{ 'ANALYTICS.CHART.SCATTER' | translate }}</h3>
+                <span class="badge warning">{{ 'ANALYTICS.CHART.LIVE' | translate }}</span>
+            </div>
+            <p class="card-desc">{{ 'ANALYTICS.CHART.SCATTER_DESC' | translate }}</p>
+            <div id="ml-scatter" class="chart-container"></div>
+        </div>
+
+        <div class="card table-card">
+            <div class="card-header">
+                <h3>{{ 'ANALYTICS.TABLE.TITLE' | translate }}</h3>
+                <span class="badge danger">Score &gt; 0.8</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>{{ 'ANALYTICS.TABLE.SCORE' | translate }}</th>
+                            <th>{{ 'ANALYTICS.TABLE.METHOD' | translate }}</th>
+                            <th>{{ 'ANALYTICS.TABLE.PATH' | translate }}</th>
+                            <th>{{ 'ANALYTICS.TABLE.IP' | translate }}</th>
+                            <th>{{ 'ANALYTICS.TABLE.TIME' | translate }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let anomaly of highConfidenceAnomalies">
+                            <td>
+                                <div class="score-badge"
+                                    [style.color]="getScoreColor(anomaly.anomalyScore)"
+                                    [style.border-color]="getScoreColor(anomaly.anomalyScore) + '40'"
+                                    [style.background]="getScoreColor(anomaly.anomalyScore) + '15'">
+                                    {{ (anomaly.anomalyScore || 0).toFixed(3) }}
+                                </div>
+                            </td>
+                            <td><span class="method-badge" [ngClass]="anomaly.method">{{ anomaly.method }}</span></td>
+                            <td class="path-cell" [title]="anomaly.path">{{ anomaly.path }}</td>
+                            <td class="ip-cell">{{ anomaly.ipAddress || 'Unknown' }}</td>
+                            <td class="time-cell">{{ anomaly.createdAt | date:'shortTime' }}</td>
+                        </tr>
+                        <tr *ngIf="highConfidenceAnomalies.length === 0">
+                            <td colspan="5" class="empty-state">{{ 'ANALYTICS.TABLE.EMPTY' | translate }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card confusion-card">
+        <div class="card-header">
+            <h3>{{ 'ANALYTICS.CONFUSION.TITLE' | translate }}</h3>
+            <span class="badge success">{{ 'ANALYTICS.CONFUSION.BADGE' | translate }}</span>
+        </div>
+        <p class="card-desc">{{ 'ANALYTICS.CONFUSION.DESC' | translate }}</p>
+
+        <div class="confusion-layout">
+
+            <div class="cm-wrap">
+                <div class="cm-col-headers">
+                    <div class="cm-corner"></div>
+                    <div class="cm-col-header">{{ 'ANALYTICS.CONFUSION.ACTUAL_POS' | translate }}</div>
+                    <div class="cm-col-header">{{ 'ANALYTICS.CONFUSION.ACTUAL_NEG' | translate }}</div>
+                </div>
+                <div class="cm-row">
+                    <div class="cm-row-header">{{ 'ANALYTICS.CONFUSION.PREDICTED_POS' | translate }}</div>
+                    <div class="matrix-cell tp">
+                        <div class="cell-count">{{ confusionMatrix.tp }}</div>
+                        <div class="cell-label">TP</div>
+                        <div class="cell-desc">{{ 'ANALYTICS.CONFUSION.TP_DESC' | translate }}</div>
+                    </div>
+                    <div class="matrix-cell fp">
+                        <div class="cell-count">{{ confusionMatrix.fp }}</div>
+                        <div class="cell-label">FP</div>
+                        <div class="cell-desc">{{ 'ANALYTICS.CONFUSION.FP_DESC' | translate }}</div>
+                    </div>
+                </div>
+                <div class="cm-row">
+                    <div class="cm-row-header">{{ 'ANALYTICS.CONFUSION.PREDICTED_NEG' | translate }}</div>
+                    <div class="matrix-cell fn">
+                        <div class="cell-count">{{ confusionMatrix.fn }}</div>
+                        <div class="cell-label">FN</div>
+                        <div class="cell-desc">{{ 'ANALYTICS.CONFUSION.FN_DESC' | translate }}</div>
+                    </div>
+                    <div class="matrix-cell tn">
+                        <div class="cell-count">{{ confusionMatrix.tn }}</div>
+                        <div class="cell-label">TN</div>
+                        <div class="cell-desc">{{ 'ANALYTICS.CONFUSION.TN_DESC' | translate }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="confusion-metrics">
+                <div class="metric-item">
+                    <div class="metric-name">{{ 'ANALYTICS.CONFUSION.PRECISION' | translate }}</div>
+                    <div class="metric-value blue">{{ confusionMatrix.precision }}</div>
+                    <div class="metric-hint">{{ 'ANALYTICS.CONFUSION.PRECISION_HINT' | translate }}</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-name">{{ 'ANALYTICS.CONFUSION.RECALL' | translate }}</div>
+                    <div class="metric-value green">{{ confusionMatrix.recall }}</div>
+                    <div class="metric-hint">{{ 'ANALYTICS.CONFUSION.RECALL_HINT' | translate }}</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-name">{{ 'ANALYTICS.CONFUSION.F1' | translate }}</div>
+                    <div class="metric-value purple">{{ confusionMatrix.f1 }}</div>
+                    <div class="metric-hint">{{ 'ANALYTICS.CONFUSION.F1_HINT' | translate }}</div>
+                </div>
+                <div class="metric-note">
+                    <i data-lucide="info" style="width:13px;height:13px;flex-shrink:0;margin-top:1px;"></i>
+                    {{ 'ANALYTICS.CONFUSION.NOTE' | translate }}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

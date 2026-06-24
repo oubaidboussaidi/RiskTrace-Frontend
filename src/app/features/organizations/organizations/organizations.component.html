@@ -1,0 +1,121 @@
+<div class="orgs-page">
+
+    <div class="page-header">
+        <div class="header-left">
+            <h1 class="page-title">
+                <i data-lucide="building-2" size="24"></i>
+                {{ 'ORGS.TITLE' | translate }}
+            </h1>
+            <p class="page-subtitle">{{ 'ORGS.SUBTITLE' | translate }}</p>
+        </div>
+        <div class="header-actions" *ngIf="organizations.length > 0">
+            <button class="btn btn-primary" id="btn-create-org" (click)="toggleCreateForm()">
+                <i data-lucide="plus" size="16"></i>
+                {{ 'ORGS.CREATE_BTN' | translate }}
+            </button>
+        </div>
+    </div>
+
+    <div class="create-panel" *ngIf="showCreateForm">
+        <div class="create-panel-header">
+            <h3>
+                <i data-lucide="building-2" size="16"></i> 
+                {{ editingOrgId ? ('COMMON.EDIT' | translate) + ' ' + ('ORGS.TITLE' | translate) : ('ORGS.CREATE_TITLE' | translate) }}
+            </h3>
+            <button class="btn-icon" (click)="toggleCreateForm()">
+                <i data-lucide="x" size="16"></i>
+            </button>
+        </div>
+        <div class="create-panel-body">
+            <div class="form-group">
+                <label class="form-label">{{ 'ORGS.NAME_LABEL' | translate }}</label>
+                <input id="org-name-input" class="form-input" type="text" [(ngModel)]="newOrg.name"
+                    placeholder="e.g. Acme Corp" (keydown.enter)="saveOrganization()" />
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-ghost" (click)="toggleCreateForm()">{{ 'COMMON.CANCEL' | translate }}</button>
+                <button class="btn btn-primary" id="btn-confirm-save-org"
+                    (click)="saveOrganization()">{{ 'COMMON.SAVE' | translate }}</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="error-banner" *ngIf="errorMessage">
+        <i data-lucide="alert-circle" size="16"></i>
+        {{ errorMessage }}
+    </div>
+
+    <div class="loading-state" *ngIf="isLoading">
+        <div class="spinner"></div>
+        <p>{{ 'ORGS.LOADING' | translate }}</p>
+    </div>
+
+    <div class="orgs-grid" *ngIf="!isLoading">
+        <div class="org-card" [class.active-org]="org.id === activeOrgId" [class.suspended-org]="!org.enabled" *ngFor="let org of organizations">
+            <div class="org-card-header">
+                <app-avatar
+                    [name]="org.name"
+                    [imageUrl]="org.logoUrl"
+                    [size]="48"
+                    [editable]="canEditOrg(org)"
+                    [entityId]="org.id"
+                    entityType="org"
+                    (avatarChanged)="onOrgLogoChanged(org, $event)">
+                </app-avatar>
+                <div class="org-info">
+                    <h3 class="org-name">{{ org.name }}</h3>
+                    <span class="org-meta">{{ 'COMMON.CREATED' | translate }} {{ org.createdAt | date:'mediumDate' }}</span>
+                </div>
+                <div class="org-mini-actions">
+                    <button *ngIf="canEditOrg(org)" 
+                            class="btn-icon" (click)="editOrg(org)" [title]="'ORGS.EDIT_BTN' | translate">
+                        <i data-lucide="edit-2" size="16"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="org-card-body">
+                <div class="org-status-indicator suspended-indicator" *ngIf="!org.enabled">
+                    <i data-lucide="lock" size="12"></i>
+                    <span>{{ 'TEAM.SUSPENDED' | translate }}</span>
+                </div>
+                <div class="org-status-indicator" *ngIf="org.enabled" [style.visibility]="org.id === activeOrgId ? 'visible' : 'hidden'">
+                    <div class="status-dot active"></div>
+                    <span>{{ 'ALERTS_RULES.ENABLED' | translate }}</span>
+                </div>
+            </div>
+
+            <div class="org-card-actions">
+                <button class="action-btn" 
+                        [disabled]="org.id === activeOrgId || !org.enabled" 
+                        [class.active]="org.id === activeOrgId"
+                        [class.locked]="!org.enabled"
+                        (click)="switchOrg(org)"
+                        [title]="!org.enabled ? ('ORGS.SUSPENDED_TOOLTIP' | translate) : ''">
+                    <span *ngIf="!org.enabled" style="display: contents"><i data-lucide="lock" size="16"></i></span>
+                    <span *ngIf="org.enabled && org.id !== activeOrgId" style="display: contents"><i data-lucide="arrow-right-circle" size="16"></i></span>
+                    <span *ngIf="org.enabled && org.id === activeOrgId" style="display: contents"><i data-lucide="check-circle" size="16"></i></span>
+                    {{ !org.enabled ? ('TEAM.SUSPENDED' | translate) : (org.id === activeOrgId ? ('ALERTS_RULES.ENABLED' | translate) : ('ORGS.SWITCH_BTN' | translate)) }}
+                </button>
+                <a class="action-btn" [routerLink]="['/team']" [queryParams]="{orgId: org.id}">
+                    <i data-lucide="users" size="16"></i>
+                    {{ 'ORGS.TEAM_BTN' | translate }}
+                </a>
+                <a class="action-btn" [routerLink]="['/sites']" [queryParams]="{orgId: org.id}">
+                    <i data-lucide="globe" size="16"></i>
+                    {{ 'ORGS.SITES_BTN' | translate }}
+                </a>
+            </div>
+        </div>
+
+        <div class="empty-state" *ngIf="organizations.length === 0">
+            <i data-lucide="building-2" size="48"></i>
+            <h3>{{ 'ORGS.NO_ORGS' | translate }}</h3>
+            <p>{{ 'ORGS.CREATE_FIRST' | translate }}</p>
+            <button class="btn btn-primary" (click)="toggleCreateForm()">
+                <i data-lucide="plus" size="16"></i>
+                {{ 'ORGS.CREATE_BTN' | translate }}
+            </button>
+        </div>
+    </div>
+</div>

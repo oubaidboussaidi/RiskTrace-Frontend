@@ -1,0 +1,96 @@
+
+<div class="dashboard-header">
+    <div>
+        <h1 class="page-title">{{ 'ADMIN_DASHBOARD.TITLE' | translate }}</h1>
+        <p class="page-subtitle">{{ 'ADMIN_DASHBOARD.SUBTITLE' | translate }}</p>
+    </div>
+    <div class="header-badge">
+        <i data-lucide="shield-check" size="16"></i>
+        <span>{{ 'ADMIN_DASHBOARD.BADGE' | translate }}</span>
+    </div>
+</div>
+
+<div class="kpi-row">
+    <div class="card kpi-card" *ngFor="let kpi of kpis">
+        <div class="kpi-top">
+            <span class="kpi-label">{{ kpi.label | translate }}</span>
+            <div class="kpi-icon-wrap" [style.background]="kpi.color + '15'" [style.color]="kpi.color">
+                <i [attr.data-lucide]="kpi.icon" size="18"></i>
+            </div>
+        </div>
+        <span class="kpi-value">{{ kpi.value }}</span>
+    </div>
+</div>
+
+<div class="charts-grid-2">
+    <div class="card chart-card">
+        <h3 class="chart-title">{{ 'ADMIN_DASHBOARD.CHART.LOGS_PER_ORG' | translate }}</h3>
+        <div id="admin-chart-logs-org"></div>
+    </div>
+    <div class="card chart-card">
+        <h3 class="chart-title">{{ 'ADMIN_DASHBOARD.CHART.ALERT_SEVERITY' | translate }}</h3>
+        <div id="admin-chart-severity"></div>
+    </div>
+</div>
+
+<div class="charts-grid-2">
+    <div class="card chart-card">
+        <h3 class="chart-title">{{ 'ADMIN_DASHBOARD.CHART.USER_ROLES' | translate }}</h3>
+        <div id="admin-chart-roles"></div>
+    </div>
+    <div class="card chart-card">
+        <h3 class="chart-title">{{ 'ADMIN_DASHBOARD.CHART.PLATFORM_ACTIVITY' | translate }}</h3>
+        <div id="admin-chart-activity"></div>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 24px;">
+    <div class="table-header">
+        <h3 class="chart-title">{{ 'ADMIN_DASHBOARD.ORG_HEALTH.TITLE' | translate }}</h3>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.ORG' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.STATUS' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.MEMBERS' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.LOGS' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.ANOMALIES' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.ALERTS' | translate }}</th>
+                    <th>{{ 'ADMIN_DASHBOARD.ORG_HEALTH.HEALTH' | translate }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let org of orgHealthData">
+                    <td>
+                        <div class="org-cell">
+                            <div class="org-avatar">{{ getInitials(org.name) }}</div>
+                            <span class="org-name-text">{{ org.name }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-dot" [class.active]="org.enabled" [class.suspended]="!org.enabled"></span>
+                        {{ org.enabled ? ('ADMIN_DASHBOARD.ORG_HEALTH.ACTIVE' | translate) : ('ADMIN_DASHBOARD.ORG_HEALTH.SUSPENDED' | translate) }}
+                    </td>
+                    <td>{{ org.membersCount }}</td>
+                    <td>{{ org.logCount }}</td>
+                    <td>
+                        <span [style.color]="org.anomalyCount > 0 ? 'var(--sev-critical)' : 'var(--text-secondary)'">
+                            {{ org.anomalyCount }}
+                        </span>
+                    </td>
+                    <td>{{ org.alertCount }}</td>
+                    <td>
+                        <span class="health-badge" [ngClass]="org.healthClass">
+                            {{ ('ADMIN_DASHBOARD.ORG_HEALTH.' + org.healthLabel) | translate }}
+                        </span>
+                    </td>
+                </tr>
+                <tr *ngIf="orgHealthData.length === 0">
+                    <td colspan="7" class="empty-state">{{ 'COMMON.NO_DATA' | translate }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

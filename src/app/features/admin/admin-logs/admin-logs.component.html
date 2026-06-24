@@ -1,0 +1,185 @@
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+    <div>
+        <h1 style="font-size: 24px; font-weight: 700;">{{ 'ADMIN_LOGS.TITLE' | translate }}</h1>
+        <p style="color: var(--text-secondary);">{{ 'ADMIN_LOGS.SUBTITLE' | translate }}</p>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <div class="action-menu-container">
+            <button class="btn btn-secondary" (click)="toggleExportMenu($event)"><i data-lucide="download"
+                    size="16"></i> {{ 'COMMON.EXPORT' | translate }} <i data-lucide="chevron-down"
+                    size="14"></i></button>
+            <div class="action-menu" [class.show]="isExportMenuOpen" style="right: auto; left: 0; min-width: 140px;">
+                <button (click)="exportLogs('csv')"><i data-lucide="file-spreadsheet" size="14"></i> {{ 'COMMON.EXPORT'
+                    | translate }} CSV</button>
+                <button (click)="exportLogs('json')"><i data-lucide="file-json" size="14"></i> {{ 'COMMON.EXPORT' |
+                    translate }} JSON</button>
+            </div>
+        </div>
+        <button class="btn" [ngClass]="liveTailActive ? 'btn-danger' : 'btn-primary'" (click)="toggleLiveTail()">
+            <span *ngIf="!liveTailActive" style="display: inline-flex; align-items: center;"><i data-lucide="play"
+                    size="16"></i></span>
+            <span *ngIf="liveTailActive" style="display: inline-flex; align-items: center;"><i data-lucide="square"
+                    size="16"></i></span>
+            {{liveTailActive ? ('LOGS.STOP_LIVE_TAIL' | translate) : ('LOGS.LIVE_TAIL' | translate)}}
+        </button>
+    </div>
+</div>
+
+<div class="card"
+    style="padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+
+    <div class="filter-dropdown">
+        <span style="color: var(--text-secondary);">{{ 'SIDEBAR.ORGANIZATIONS' | translate }}:</span>
+        <span class="filter-value">{{selectedOrganization === 'All Organizations' ? ('LOGS.ALL_ORGS' | translate) :
+            selectedOrganization}}</span>
+        <select [(ngModel)]="selectedOrganization" (ngModelChange)="onOrganizationChange()">
+            <option value="All Organizations">{{ 'LOGS.ALL_ORGS' | translate }}</option>
+            <option *ngFor="let org of organizations" [value]="org">{{org}}</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <div class="filter-dropdown" [style.opacity]="selectedOrganization === 'All Organizations' ? '0.5' : '1'">
+        <span style="color: var(--text-secondary);">{{ 'LOGS.SITE_FILTER' | translate }}</span>
+        <span class="filter-value">{{selectedSite === 'All Sites' ? ('LOGS.ALL_SITES' | translate) :
+            selectedSite}}</span>
+        <select [(ngModel)]="selectedSite" (ngModelChange)="filterLogs()" [disabled]="selectedOrganization === 'All Organizations'" [style.cursor]="selectedOrganization === 'All Organizations' ? 'not-allowed' : 'pointer'">
+            <option value="All Sites">{{ 'LOGS.ALL_SITES' | translate }}</option>
+            <option *ngFor="let site of sites" [value]="site">{{site}}</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <div class="filter-dropdown">
+        <span style="color: var(--text-secondary);">{{ 'LOGS.STATUS_FILTER' | translate }}</span>
+        <span class="filter-value">{{getStatusLabel(selectedStatus) | translate}}</span>
+        <select [(ngModel)]="selectedStatus" (ngModelChange)="filterLogs()">
+            <option value="All Status">{{ 'LOGS.ALL_STATUS' | translate }}</option>
+            <option value="4xx, 5xx">{{ 'LOGS.ERRORS' | translate }}</option>
+            <option value="2xx">{{ 'LOGS.SUCCESS' | translate }}</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <div class="filter-dropdown">
+        <span style="color: var(--text-secondary);">{{ 'LOGS.METHOD_FILTER' | translate }}</span>
+        <span class="filter-value">{{selectedMethod === 'All Methods' ? ('LOGS.ALL_METHODS' | translate) :
+            selectedMethod}}</span>
+        <select [(ngModel)]="selectedMethod" (ngModelChange)="filterLogs()">
+            <option value="All Methods">{{ 'LOGS.ALL_METHODS' | translate }}</option>
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+        </select>
+        <i data-lucide="chevron-down" size="12" style="pointer-events: none;"></i>
+    </div>
+
+    <div
+        style="display: flex; gap: 8px; align-items: center; background: var(--bg-elevated); padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border-color);">
+        <input type="date" [(ngModel)]="startDate" (ngModelChange)="filterLogs()" title="Start Date"
+            style="background: transparent; border: none; color: var(--text-primary); font-size: 12px; outline: none; font-family: 'Inter', sans-serif;">
+        <span style="color: var(--text-secondary); font-size: 12px;">{{ 'COMMON.BACK' | translate }}</span>
+        <input type="date" [(ngModel)]="endDate" (ngModelChange)="filterLogs()" title="End Date"
+            style="background: transparent; border: none; color: var(--text-primary); font-size: 12px; outline: none; font-family: 'Inter', sans-serif;">
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-secondary);">
+        <span>{{ 'LOGS.SCORE' | translate }}:</span>
+        <input type="range" min="0" max="100" [(ngModel)]="minRiskScore" (ngModelChange)="filterLogs()"
+            style="width: 80px; accent-color: var(--accent-primary);">
+        <span style="min-width: 24px;">{{minRiskScore}}</span>
+    </div>
+
+    <div style="flex-grow: 1; min-width: 200px; position: relative;">
+        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="filterLogs()"
+            [placeholder]="'ADMIN_LOGS.SEARCH_PLACEHOLDER' | translate"
+            style="width: 100%; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px 12px; border-radius: 6px; font-size: 13px;">
+    </div>
+</div>
+
+<div class="card" style="padding: 0; overflow: hidden;">
+    <table *ngIf="logs.length > 0; else noData">
+        <thead>
+            <tr>
+                <th>{{ 'ADMIN_LOGS.TABLE.TIMESTAMP' | translate }}</th>
+                <th>{{ 'ADMIN_ORGS.TABLE.ORG' | translate }}</th>
+                <th>{{ 'ADMIN_ORGS.TABLE.SITES' | translate }}</th>
+                <th>{{ 'LOGS.METHOD' | translate }}</th>
+                <th>{{ 'LOGS.PATH' | translate }}</th>
+                <th>{{ 'LOGS.IP_ADDRESS' | translate }}</th>
+                <th>{{ 'LOGS.SCORE' | translate }}</th>
+                <th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let log of paginatedLogs">
+                <td style="font-family: var(--font-mono); font-size: 11px;">{{log.timestamp}}</td>
+                <td>{{log.organization}}</td>
+                <td>{{log.site}}</td>
+                <td><span [style.color]="log.methodColor">{{log.method}}</span></td>
+                <td style="font-family: var(--font-mono);">{{log.path}}</td>
+                <td>{{log.ip}}</td>
+                <td><span class="status-badge" [ngClass]="log.scoreClass">{{log.score}}</span></td>
+                <td>
+                    <div class="action-menu-container">
+                        <span class="action-icon" (click)="toggleActionMenu(log, $event)"
+                            style="display: inline-flex; align-items: center; justify-content: center;">
+                            <i data-lucide="more-horizontal" size="16"></i>
+                        </span>
+                        <div class="action-menu" [class.show]="activeLogMenu === log">
+                            <button (click)="viewLogDetails(log)"><i data-lucide="file-json" size="14"></i> {{
+                                'LOGS.MODAL.VIEW_JSON' | translate }}</button>
+                            <button (click)="copyIp(log)"><i data-lucide="copy" size="14"></i> {{ 'LOGS.MODAL.COPY_IP' |
+                                translate }}</button>
+                            <button (click)="filterByIp(log)"><i data-lucide="filter" size="14"></i> {{
+                                'LOGS.MODAL.FILTER_BY_IP' | translate }}</button>
+                            <button (click)="filterByPath(log)"><i data-lucide="filter" size="14"></i> {{
+                                'LOGS.MODAL.FILTER_BY_PATH' | translate }}</button>
+                            <button (click)="filterByOrganization(log)"><i data-lucide="filter" size="14"></i> {{
+                                'LOGS.MODAL.FILTER_BY_IP' | translate }}</button>
+                            <button class="warning" (click)="markAsAnomaly(log)"><i data-lucide="flag" size="14"></i>
+                                {{ 'LOGS.MODAL.MARK_SUSPICIOUS' | translate }}</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ng-template #noData>
+        <div style="padding: 32px; text-align: center; color: var(--text-secondary);">
+            {{ 'LOGS.NO_LOGS' | translate }}
+        </div>
+    </ng-template>
+
+    <div class="pagination-controls"
+        style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-top: 1px solid var(--border-color); background: var(--bg-elevated); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;"
+        *ngIf="totalPages > 1">
+        <div style="font-size: 13px; color: var(--text-secondary);">
+            {{ 'COMMON.PAGE_OF' | translate:{current: currentPage, total: totalPages} }}
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">{{ 'COMMON.PREVIOUS' |
+                translate }}</button>
+            <button class="pagination-btn" [ngClass]="currentPage === p ? 'active' : ''" *ngFor="let p of getPages()"
+                (click)="goToPage(p)">{{ p }}</button>
+            <button class="pagination-btn" [disabled]="currentPage === totalPages" (click)="nextPage()">{{ 'COMMON.NEXT'
+                | translate }}</button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="showLogModal" class="modal-overlay" (click)="closeLogModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h2 style="font-size: 18px; font-weight: 600;">{{ 'LOGS.MODAL.RAW_DATA' | translate }}</h2>
+            <button class="btn-icon" (click)="closeLogModal()"><i data-lucide="x" size="20"></i></button>
+        </div>
+        <pre
+            style="background: var(--bg-dark); padding: 16px; border-radius: 6px; overflow-x: auto; color: #a5b4fc; font-family: var(--font-mono); font-size: 13px; margin:0;">{{ selectedLog | json }}</pre>
+        <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+            <button class="btn btn-secondary" (click)="closeLogModal()">{{ 'COMMON.CLOSE' | translate }}</button>
+        </div>
+    </div>
+</div>
