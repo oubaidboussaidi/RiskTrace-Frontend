@@ -398,6 +398,7 @@
     "CREATE_FIRST": "Create your first organization to get started",
     "LOADING": "Loading organizations…",
     "EDIT_BTN": "Edit Name",
+    "SUSPENDED_TOOLTIP": "This organization has been suspended by an administrator",
     "ALERTS": {
       "CREATED": "Organization created successfully.",
       "CREATE_FAILED": "Failed to create organization.",

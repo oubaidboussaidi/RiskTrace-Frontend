@@ -3,14 +3,13 @@ import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { jwtInterceptorFn } from './interceptors/jwt.interceptor';
-import { AuthService } from './services/auth.service';
-import { ApiService } from './services/api.service';
+import { jwtInterceptorFn } from '@core/interceptors/jwt.interceptor';
+import { AuthService } from '@core/services/auth.service';
+import { ApiService } from '@core/services/api.service';
 
 import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 
-/** Custom loader that always fetches fresh JSON (no-cache headers) */
 class NoCacheTranslateLoader implements TranslateLoader {
   constructor(private http: HttpClient) {}
   getTranslation(lang: string): Observable<any> {
@@ -31,7 +30,7 @@ class NoCacheTranslateLoader implements TranslateLoader {
  */
 function initializeAuth(authService: AuthService, apiService: ApiService) {
   return (): Promise<void> => {
-    // Only try refresh if there's a stored user (i.e. we were logged in before)
+
     const hasStoredUser = !!localStorage.getItem('user');
     if (!hasStoredUser) {
       return Promise.resolve();
@@ -44,9 +43,9 @@ function initializeAuth(authService: AuthService, apiService: ApiService) {
           resolve();
         },
         error: () => {
-          // Refresh failed (cookie expired or not present) — clear stale user info
+
           localStorage.removeItem('user');
-          resolve(); // still resolve so the app boots; auth guard will redirect to login
+          resolve(); 
         }
       });
     });

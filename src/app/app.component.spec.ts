@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterOutlet } from '@angular/router';
 import { AppComponent } from './app.component';
-import { LanguageService } from './services/language.service';
-import { ThemeService } from './services/theme.service';
+import { LanguageService } from '@core/services/language.service';
+import { ThemeService } from '@core/services/theme.service';
 
 describe('AppComponent', () => {
   let mockLanguageService: any;

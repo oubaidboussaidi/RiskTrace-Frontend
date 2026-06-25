@@ -393,6 +393,7 @@
     "CREATE_FIRST": "Créez votre première organisation pour commencer",
     "LOADING": "Chargement des organisations…",
     "EDIT_BTN": "Modifier le Nom",
+    "SUSPENDED_TOOLTIP": "Cette organisation a été suspendue par un administrateur",
     "ALERTS": {
       "CREATED": "Organisation créée avec succès.",
       "CREATE_FAILED": "Échec de la création de l'organisation.",
