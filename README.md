@@ -287,9 +287,6 @@ Multi-tenant organization management where users can create organizations, uploa
 
 Users can edit their profile, change passwords (with strength validation: 8+ chars, letter + number), and toggle Two-Factor Authentication. 2FA setup displays a QR code for Google Authenticator scanning.
 
-<div align="center">
-  <img src="docs/use_case_settings.png" alt="Settings Use Case" width="70%">
-</div>
 
 <div align="center">
   <img src="docs/settings.png" alt="Settings Page" width="80%">
